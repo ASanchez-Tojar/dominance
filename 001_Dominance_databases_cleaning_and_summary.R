@@ -1726,30 +1726,34 @@ for(i in 1:nrow(dom.final.v2)){
 ########################################################################################################
 
 
-########################################################################################################
-# # # 8.1.1 Showing the number of unique individuals per event = 9 events
-########################################################################################################
-
-# Quickly checking number of unique individuals per event
-
-indperevent <- count(counts.ind,c("individual","event"))
-
-
-#     Creating a different database per event with this for loop and printing the number of unique
-# individuals per event at the same time
-
-counter <- 1
-
-for(i in levels(indperevent$event)){
-  
-  x<-subset(indperevent, indperevent$event==i)
-  cat(paste0("\nNumber of individuals in ",
-             i,
-             " = ",
-             length(x$individual)))
-  assign(paste0("event",counter),x)
-  counter <- counter + 1
-}
+# ########################################################################################################
+# # # # 8.1.1 Showing the number of unique individuals per event = 9 events
+# ########################################################################################################
+# 
+# # Quickly checking number of unique individuals per event
+# 
+# indperevent <- count(counts.ind,c("individual","event"))
+# 
+# 
+# #     Creating a different database per event with this for loop and printing the number of unique
+# # individuals per event at the same time
+# 
+# counter <- 1
+# 
+# sink("summaries/summary_interactions_per_individual.txt")
+# 
+# for(i in levels(indperevent$event)){
+#   
+#   x<-subset(indperevent, indperevent$event==i)
+#   cat(paste0("\nNumber of individuals in ",
+#              i,
+#              " = ",
+#              length(x$individual)))
+#   assign(paste0("event",counter),x)
+#   counter <- counter + 1
+# }
+# 
+# sink()
 
 
 ########################################################################################################
@@ -1830,6 +1834,35 @@ onlyindSW <- as.data.frame(onlyindSW)
 superlist.num.eventSW <- count(onlyindSW,"onlyindSW")
 
 names(superlist.num.eventSW) <- c("individual","freqofeventsSW")
+
+
+######################################################################################################
+# # # 8.1.3 Showing the number of unique individuals per event = 6 events
+########################################################################################################
+
+#     Creating a different database per event with this for loop and printing the number of unique
+# individuals per event at the same time
+
+counter <- 1
+
+
+superlist.eventSW$eventSW <- as.factor(superlist.eventSW$eventSW)
+
+
+sink("summaries/summary_interactions_per_individual.txt")
+
+for(i in levels(superlist.eventSW$eventSW)){
+  
+  x<-subset(superlist.eventSW, superlist.eventSW$eventSW==i)
+  cat(paste0("\nNumber of individuals in ",
+             i,
+             " = ",
+             length(x$individual)))
+  assign(paste0("event",counter),x)
+  counter <- counter + 1
+}
+
+sink()
 
 
 ########################################################################################################
