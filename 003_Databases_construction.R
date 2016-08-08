@@ -113,8 +113,6 @@ male.social.fledglings$socfledglings <- ifelse(is.na(male.social.fledglings$Chic
 
 # getting the number of fledglings produced per year per individual
 
-
-
 male.social.annualfledglings<-summaryBy(socfledglings ~ BirdID_eventSW,
                                         data = male.social.fledglings, 
                                         FUN = list(sum),na.rm=TRUE)
