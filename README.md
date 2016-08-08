@@ -1,0 +1,1 @@
+The goal of the scripts within this folder is to analyze the dominance data that I obtained from captive and wild populations of house sparrows.
