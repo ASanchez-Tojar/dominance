@@ -41,6 +41,11 @@ rm(list=ls())
 
 lunique <- function(x){length(unique(x))}
 
+# loading the clean database to estimate the ratings
+
+elo_scores_all_events <- read.table("elo_scores_all_events.csv",header=TRUE,sep=",")
+birdsex.1 <- read.table("birdsex.1.csv",header=TRUE,sep=",")
+
 
 #########################################################################################################
 # 10. Getting all databases ready
