@@ -18,7 +18,13 @@
 # This script is to estimate elo-ratings per individual. This script needs data from the previous script
 # (001_Dominance_databases_cleaning_and_summary).
 #
-# The section 0:
+# The section 9.A: creates an Standardized Elo-rating for each individual
+#                  in each event. It also saves some summary information
+#                  as .txt. Plus, it analyzes how the dominance hierarchies
+#                  in each event are (Ttri = transitivity).
+#
+# The sections 9.B and 9.C: do the same but for the whole period and for
+#                           each of the 9 events separately.
 
 
 ########################################################################################################
@@ -31,11 +37,6 @@
 library(EloRating)
 library(statnet)
 library(rptR)
-library(ggplot2)
-library(doBy)
-library(lme4)
-library(blmeco)
-library(arm)
 
 # Clear memory and get to know where you are
 rm(list=ls())
