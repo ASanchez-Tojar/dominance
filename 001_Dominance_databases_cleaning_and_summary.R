@@ -69,14 +69,7 @@ rm(list=ls())
 library(plyr)
 library(reshape)
 library(stringr)
-library(EloRating)
-library(statnet)
-library(rptR)
-library(ggplot2)
 library(doBy)
-library(lme4)
-library(blmeco)
-library(arm)
 
 
 ########################################################################################################
