@@ -1902,7 +1902,7 @@ morethan1eventSW <- subset(superlist.num.eventSW,superlist.num.eventSW$freqofeve
 
 # Printing in a text file
 
-sink("summary_interactions.txt")
+sink("summaries/summary_interactions.txt")
 
 cat(paste0("\nThe number of interactions with doubts is: ",
            doubts.with.int,
@@ -1973,7 +1973,7 @@ par(mfrow=c(1,1))
 
 
 #to save the figure as tiff
-tiff("hist_interacions_per_event.tiff",
+tiff("plots/hist_interacions_per_event.tiff",
      height=18, width=27,units='cm', compression="lzw", res=300) 
 
 #number of total interactions per event per individual
@@ -1995,7 +1995,7 @@ dev.off()
 
 
 #to save the figure as tiff
-tiff("hist_events_per_individual.tiff",
+tiff("plots/hist_events_per_individual.tiff",
      height=18, width=27,units='cm', compression="lzw", res=300) 
 
 #number of eventsSW interacting per individual
@@ -2017,7 +2017,7 @@ dev.off()
 
 
 #to save the figure as tiff
-tiff("hist_dates_per_individual.tiff",
+tiff("plots/hist_dates_per_individual.tiff",
      height=18, width=27,units='cm', compression="lzw", res=300) 
 
 #number of dates interacting per individual
