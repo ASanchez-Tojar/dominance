@@ -422,7 +422,30 @@ rank.TLandM.VB.2 <- do.call("rbind", as.list(
   by(rank.TLandM.VB.2, rank.TLandM.VB.2["BirdID"], transform, agewithin=WithinIndCentr(age))))
 
 
-rank.TLandM.VB <- rank.TLandM.VB.2
+rank.TLandM.VB.2
+
+
+# excluding all VB=NA
+
+rank.TLandM.VB.3 <- subset(rank.TLandM.VB.2,
+                           !(is.na(rank.TLandM.VB$AvgOfEstimate.mean)))
+
+# Mean centering VB per event
+
+rank.TLandM.VB.4 <- ddply(rank.TLandM.VB.3, 
+                          c("eventSW"), 
+                          transform, 
+                          VBcenterevent = WithinIndCentr(AvgOfEstimate.mean))
+
+rank.TLandM.VB.4 <- rank.TLandM.VB.4[,c("BirdID_eventSW",
+                                        "VBcenterevent")]
+
+row.names(rank.TLandM.VB.2) <- NULL 
+
+rank.TLandM.VB <- merge(rank.TLandM.VB.2,
+                        rank.TLandM.VB.4,
+                        by="BirdID_eventSW",
+                        all.x=TRUE)
 
 
 #########################################################################################################
