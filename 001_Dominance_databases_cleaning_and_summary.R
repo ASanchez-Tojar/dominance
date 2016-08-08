@@ -1489,11 +1489,6 @@ dom.final.v2 <- subset(dom.final,!(dom.final$individual1 %in% birdsex.2.ID) &
                          !(dom.final$individual2 %in% birdsex.2.ID))
 
 
-# Saving the file for the following script
-
-write.csv(dom.final.v2,"dom.final.v2.csv",row.names=FALSE)
-
-
 ########################################################################################################
 # # 5.2. Excluding duplicates from dom.prop.wins
 ########################################################################################################
@@ -2029,3 +2024,8 @@ axis(1,at = seq(1,18,by=1),lwd=1)
 axis(2,at = seq(0,125,by=25),lwd=1,line=-0.75, las=2)
 
 dev.off()
+
+
+# Saving the file for the following script
+
+write.csv(dom.final.v2,"dom.final.v2.csv",row.names=FALSE)
