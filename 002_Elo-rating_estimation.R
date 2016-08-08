@@ -42,8 +42,13 @@ rm(list=ls())
 #getwd()
 
 
+# loading the clean database to estimate the ratings
+
+dom.final.v2 <- read.table("dom.final.v2.csv",header=TRUE,sep=",")
+
+
 ########################################################################################################
-# 9.A. Estimating ELO-RANKS per winter/summer
+# 9.A.1. Estimating ELO-RANKS per winter/summer
 ########################################################################################################
 
 # This repeats the sections 9.B. and 9.C. (below) but for each of the events. 
@@ -55,7 +60,6 @@ rm(list=ls())
 ########################################################################################################
 
 # First, spliting the database by event
-
 
 #     Creating a different database per event with this for loop, and at the same time, creating a 
 # database per event with elo_scores
@@ -82,24 +86,53 @@ for(i in levels(dom.final.v2$eventSW)){
 # # 9.A.3. Stability coefficient
 ########################################################################################################
 
+sink("summaries/stabilitycoefficient.txt")
+
+cat("\nEvent 2013.5: ")
 stab.elo(elo_scores.1)
+
+cat("\nEvent 2014: ")
 stab.elo(elo_scores.2)
+
+cat("\nEvent 2014.5: ")
 stab.elo(elo_scores.3)
+
+cat("\nEvent 2015: ")
 stab.elo(elo_scores.4)
+
+cat("\nEvent 2015.5: ")
 stab.elo(elo_scores.5)
+
+cat("\nEvent 2016: ")
 stab.elo(elo_scores.6)
 
+sink()
 
 ########################################################################################################
 # # 9.A.4. Proportion of unknown dyads
 ########################################################################################################
 
+sink("summaries/prop_unknown_dyads.txt")
+
+cat("\nEvent 2013.5\n")
 prunk(elo_scores.1)
+
+cat("\nEvent 2014\n")
 prunk(elo_scores.2)
+
+cat("\nEvent 2014.5\n")
 prunk(elo_scores.3)
+
+cat("\nEvent 2015\n")
 prunk(elo_scores.4)
+
+cat("\nEvent 2015.5\n")
 prunk(elo_scores.5)
+
+cat("\nEvent 2016\n")
 prunk(elo_scores.6)
+
+sink()
 
 
 ########################################################################################################
@@ -176,12 +209,18 @@ write.csv(elo_scores_all_events,"elo_scores_all_events.csv",row.names=FALSE)
 
 # Estimating repeatability of dominance rank. I'm using MCMC method, see above for ANOVA and REML.
 
+sink("summaries/simple_repeatability.txt")
+
 rpt.St.MCMC <- rpt(elo_scores_all_events$StElo,
                    elo_scores_all_events$individual,
                    datatype="Gaussian",
                    method="MCMC",
                    nboot=1000,
                    npermut=1000)
+
+rpt.St.MCMC
+
+sink()
 
 
 # saving it as a csv file
@@ -256,7 +295,12 @@ int.to.dom=function(x){((x>t(x)) & (x+t(x)>0))+0}
 
 
 # depending on the event you want to analyze, you've got to change m. I'll make a for loop late ron
-m<-int.to.dom(as.matrix(dyad_matrix.6))
+m<-int.to.dom(as.matrix(dyad_matrix.1))
+# m<-int.to.dom(as.matrix(dyad_matrix.2))
+# m<-int.to.dom(as.matrix(dyad_matrix.3))
+# m<-int.to.dom(as.matrix(dyad_matrix.4))
+# m<-int.to.dom(as.matrix(dyad_matrix.5))
+# m<-int.to.dom(as.matrix(dyad_matrix.6))
 
 g<-network(m,directed=TRUE)
 
@@ -294,6 +338,7 @@ while(j<1001){
 
 p=length(r.p.t[r.p.t>=Pt])/1000
 p
+
 
 
 
