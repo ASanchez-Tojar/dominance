@@ -2008,7 +2008,7 @@ hist(superlist.eventSW$freqppereventSW,breaks=max(superlist.eventSW$freqppereven
      axes=FALSE,
      cex.lab=1.75,
      right=FALSE)
-#title(ylab="Number of individuals", line=2.2, cex.lab=1.75)
+title(ylab="Number of individuals", line=2.2, cex.lab=1.75)
 axis(1,at = seq(0,400,by=50),lwd=1)
 axis(2,at = seq(0,70,by=10),lwd=1,line=-0.5, las=2)
 
@@ -2030,7 +2030,7 @@ hist(superlist.num.eventSW$freqofevents,breaks=6,
      axes=FALSE,
      cex.lab=1.75,
      right=FALSE)
-#title(ylab="Number of individuals", line=2.2, cex.lab=1.75)
+title(ylab="Number of individuals", line=2.2, cex.lab=1.75)
 axis(1,at = seq(1,6,by=1),lwd=1)
 axis(2,at = seq(0,240,by=40),lwd=1,line=-0.75, las=2)
 
