@@ -8,4 +8,4 @@ List of scripts and actions:
 
 003_Databases_construction_Lundy: it generates the Lundy databases needed for the following statistical analyses.
 
-004_
+003_Databases_construction_Seewiesen: it generates the final database to be used for the captive analyses. It does the whole process, so it would be equivalent to what the scripts: 002_Elo-rating_estimation and 003_Databases_construction_Lundy do for the Lundy data.
