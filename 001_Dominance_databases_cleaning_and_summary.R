@@ -1849,7 +1849,7 @@ counter <- 1
 superlist.eventSW$eventSW <- as.factor(superlist.eventSW$eventSW)
 
 
-sink("summaries/summary_interactions_per_individual.txt")
+sink("summaries/summary_interactions_per_individual_Lundy.txt")
 
 for(i in levels(superlist.eventSW$eventSW)){
   
@@ -1923,7 +1923,7 @@ morethan1eventSW <- subset(superlist.num.eventSW,superlist.num.eventSW$freqofeve
 
 # Printing in a text file
 
-sink("summaries/summary_interactions.txt")
+sink("summaries/summary_interactions_Lundy.txt")
 
 cat(paste0("\nThe number of interactions with doubts is: ",
            doubts.with.int,
