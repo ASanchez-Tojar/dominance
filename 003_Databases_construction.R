@@ -3,7 +3,7 @@
 # Github profile: https://github.com/ASanchez-Tojar
 
 # Script created on the 3rd of March, 2016
-# Script last updated on the 8th of August, 2016
+# Script last updated on the 9th of August, 2016
 
 ########################################################################################################
 # Description of script and Instructions
