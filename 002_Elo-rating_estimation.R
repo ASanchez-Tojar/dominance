@@ -87,7 +87,7 @@ for(i in levels(dom.final.v2$eventSW)){
 # # 9.A.3. Stability coefficient
 ########################################################################################################
 
-sink("summaries/stabilitycoefficient.txt")
+sink("summaries/stabilitycoefficient_Lundy.txt")
 
 cat("\nEvent 2013.5: ")
 stab.elo(elo_scores.1)
@@ -113,7 +113,7 @@ sink()
 # # 9.A.4. Proportion of unknown dyads
 ########################################################################################################
 
-sink("summaries/prop_unknown_dyads.txt")
+sink("summaries/prop_unknown_dyads_Lundy.txt")
 
 cat("\nEvent 2013.5\n")
 prunk(elo_scores.1)
@@ -210,7 +210,7 @@ write.csv(elo_scores_all_events,"elo_scores_all_events.csv",row.names=FALSE)
 
 # Estimating repeatability of dominance rank. I'm using MCMC method, see above for ANOVA and REML.
 
-sink("summaries/simple_repeatability.txt")
+sink("summaries/simple_repeatability_Lundy.txt")
 
 rpt.St.MCMC <- rpt(elo_scores_all_events$StElo,
                    elo_scores_all_events$individual,
