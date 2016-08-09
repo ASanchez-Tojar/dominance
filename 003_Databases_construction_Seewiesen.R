@@ -213,7 +213,7 @@ axis(2,at = seq(0,7,by=1),lwd=1,line=-0.75, las=2)
 dev.off()
 
 ########################################################################################################
-# # # 13.3.3. Counting number of interactions per individual per date
+# # # 13.2.3. Counting number of interactions per individual per date
 ########################################################################################################
 
 #       Generating a database with the individuals and their number of interactions per date. This way I
@@ -271,7 +271,7 @@ dev.off()
 
 
 ########################################################################################################
-# # # 13.3.4. Counting number of dates each individual showed up in
+# # # 13.2.4. Counting number of dates each individual showed up in
 ########################################################################################################
 
 # This allows me to count the number of dates each individual showed up in
@@ -313,9 +313,12 @@ dev.off()
 
 
 ########################################################################################################
-# # 9.A.2. Obtaining the elo-scores for each individual
+# # 13.3. Obtaining the elo-scores for each individual
 ########################################################################################################
 
+########################################################################################################
+# # # 13.3.1. Analyzing each aviary
+########################################################################################################
 
 counter <- 1
 
@@ -334,17 +337,65 @@ for(i in levels(final.dom.cap.3$Aviary)){
 
 
 ########################################################################################################
-# # 9.C.3. Stability coefficient
+# # # 13.3.2. Stability coefficient
 ########################################################################################################
 
+sink("summaries/stabilitycoefficient_Seewiesen.txt")
+
+cat("\nAviary 9: ")
 stab.elo(cap_elo_scores.1)
+
+cat("\nAviary 10: ")
 stab.elo(cap_elo_scores.2)
+
+cat("\nAviary 11: ")
 stab.elo(cap_elo_scores.3)
+
+cat("\nAviary 12: ")
 stab.elo(cap_elo_scores.4)
 
+sink()
 
 ########################################################################################################
-# # 9.C.5. Extracting elo-ratings per individual
+# # # 13.3.3. Proportion of unknown dyads
+########################################################################################################
+
+# First I will create the matrixes for each Aviary, this is because I didn't manage
+# to make prunk() work using cap_elo_scores.X (eventhough I did for the previous script)
+
+cap_dyad_matrix.1 <- creatematrix(cap_elo_scores.1,
+                              drawmethod="0.5") 
+
+cap_dyad_matrix.2 <- creatematrix(cap_elo_scores.2, 
+                              drawmethod="0.5") 
+
+cap_dyad_matrix.3 <- creatematrix(cap_elo_scores.3, 
+                              drawmethod="0.5") 
+
+cap_dyad_matrix.4 <- creatematrix(cap_elo_scores.4, 
+                              drawmethod="0.5") 
+
+# And now I can run prunk and print the results in a .txt
+
+sink("summaries/prop_unknown_dyads_Seewiesen.txt")
+
+cat("\nAviary 9\n")
+prunk(cap_dyad_matrix.1)
+
+cat("\nAviary 10\n")
+prunk(cap_dyad_matrix.2)
+
+cat("\nAviary 11\n")
+prunk(cap_dyad_matrix.3)
+
+cat("\nAviary 12\n")
+prunk(cap_dyad_matrix.4)
+
+sink()
+
+
+########################################################################################################
+# # # 13.3.4. Extracting elo-ratings per individual
 ########################################################################################################
 
 # this can be probably included in the for loop of line 2758
@@ -402,6 +453,9 @@ cap_elo_scores_all_events <- rbind(cap_elo_scores_ind.db.1,
                                    cap_elo_scores_ind.db.4)
 
 
+#########################################################################################################
+# # 13.4. Adding the phenotypic data to the StElo data
+#########################################################################################################
 
 # importing database with phenotypic data
 
@@ -410,6 +464,7 @@ db<-read.table("DataBase_Badge_and_dominance_Seewiesen_Winter2014_20150411-ASTva
 
 
 #transforming the necessary variables
+
 db$Av<-as.factor(db$Av)
 db$weeknumber2<-as.numeric(db$weeknumber2)
 db$Ring.ID<-as.factor(db$Ring.ID)
@@ -418,16 +473,25 @@ db$Mass<-as.numeric(db$Mass)
 #to remove the birds from which we don't have measurements, i.e. those that died during the experiment
 db.noNA <- subset(db,db$VB1 != "")
 
+
 # adding age to db.noNA
 
 ID.age <- ID[,c("BTO","age2014")]
 
+
+# adding 0.5 to make it comparable to what we have on Lundy
+
 ID.age$age2014 <- ID.age$age2014+0.5
+
+
+# merging it to the previous database
 
 db.noNA.age<-merge(db.noNA,ID.age,by.x="Ring.ID",by.y="BTO",all.x=TRUE)
 
 
-# reducing to my own measurements
+# reducing the database to my own measurements
+# This is because we found that the other observer wasn't consistent enough in the measurements.
+# She showed a steep increase from week 1 to 10 in the measurements.
 
 db.noNA.age.AST<-subset(db.noNA.age,db.noNA.age$Obs=="AST")
 
@@ -444,6 +508,21 @@ id.tarsus2 <- id.tarsus[,c("Ring.ID","TarsusLength")]
 
 
 id.meanVB.age.TL <- merge(id.meanVB.age,id.tarsus2,by="Ring.ID",all.x=TRUE)
+
+
+# I also want to add the average meanVB restricted only to the first 10 weeks
+
+db.noNA.age.AST.10weeks <- subset(db.noNA.age.AST,db.noNA.age.AST$weeknumber2<11)
+
+id.meanVB.age.10weeks <-summaryBy(meanVB ~ Ring.ID, data = db.noNA.age.AST.10weeks, 
+                                  FUN = list(mean))
+
+# I then add it to the database
+
+id.meanVB.age.10weeks.2 <- rename(id.meanVB.age.10weeks, c(meanVB.mean="meanVB.mean10"))
+
+id.meanVB.age.TL.2 <- merge(id.meanVB.age.TL,id.meanVB.age.10weeks.2,
+                            by="Ring.ID", all.x=TRUE)
 
 
 # Final database to run the analyses
