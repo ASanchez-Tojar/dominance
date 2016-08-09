@@ -22,6 +22,9 @@
 
 library(doBy)
 library(reshape)
+library(EloRating)
+library(statnet)
+library(plyr)
 
 
 # Clear memory and get to know where you are
@@ -32,6 +35,10 @@ rm(list=ls())
 
 #########################################################################################################
 # 13. CAPTIVE ANALYSES
+#########################################################################################################
+
+#########################################################################################################
+# # 13.1. Getting the database ready for generating the StElo
 #########################################################################################################
 
 # loading the database
@@ -90,55 +97,55 @@ dom.cap.ID.4 <- merge(dom.cap.ID.3,ID.2,
 dom.cap.ID.5 <- rename(dom.cap.ID.4, c(BTO="Winner2"))
 
 
-# final database
+# now the BTO's of Losers and Winners are added. It is time for the final database
+# First, cleaning a bit, I don't need the rest of the variables.
 
 final.dom.cap <- dom.cap.ID.5[,c("Date","Aviary","Loser2","Winner2","Level","Draw")]
+
+
+# Then, renaming back and make date a factor. I want to exclude February from analyses
+# This is because I'm missing data on the levels for part of February and Abril. Moises
+# has it but I don't manage to contact him.
 
 final.dom.cap.2 <- rename(final.dom.cap, c(Loser2="Loser",Winner2="Winner"))
 
 final.dom.cap.2$Date <- factor(final.dom.cap.2$Date)
 
-levels(final.dom.cap.2$Date)
-
 final.dom.cap.3 <- subset(final.dom.cap.2,final.dom.cap.2$Date!="2015-02-16")
 final.dom.cap.3 <- subset(final.dom.cap.3,final.dom.cap.3$Date!="2015-02-23")
 
+
+# re-setting the levels of the factor
+
 final.dom.cap.3$Date <- factor(final.dom.cap.3$Date)
 
-#levels(final.dom.cap.3$Date)
 
+#########################################################################################################
+# # 13.2. Obtaining the elo-scores for each individual
+#########################################################################################################
 
-# getting the elo-ratings per individual, for that I first divide the database in 1 per aviary
+# First, spliting the database by aviary
 
-########################################################################################################
-# # 13.C.2. Obtaining the elo-scores for each individual
-########################################################################################################
-
-# First, spliting the database by event
-
-
-#     Creating a different database per event with this for loop, and at the same time, creating a 
-# database per event with elo_scores
+#     Creating a different database per aviary with this for loop, and at the same time, creating a 
+# database per aviary with elo_scores
 
 seqcheck(winner=final.dom.cap.3$Winner, 
          loser=final.dom.cap.3$Loser, 
          Date=final.dom.cap.3$Date, 
          draw=final.dom.cap.3$Draw)
 
-# there are some typos because loser ID equals winner ID, I'm going to remove them from the database
+# there are some further typos, Loser equals Winner, I'm going to remove them from the database
 
 final.dom.cap.3<-final.dom.cap.3[final.dom.cap.3$Loser!=final.dom.cap.3$Winner,]
 
 final.dom.cap.3$Aviary <- as.factor(final.dom.cap.3$Aviary)
 
 
-#####
-# Counting
-#####
+########################################################################################################
+# # # 13.2.1. Generating a list of the individuals included in the database
+########################################################################################################
 
-########################################################################################################
-# # # 13.9.1. Generating a list of the individuals included in the database
-########################################################################################################
+# Before I proceed to estimate the StElo of each individual, I want to do some countings
 
 #       This generates a list of the individiuals by combining the columns Loser and Winner
 # This way we can count interactions by counting number of times that each individual shows up in the
@@ -159,7 +166,7 @@ list.Winner <- final.dom.cap.3$Winner
 list.Winner <- as.data.frame(list.Winner)
 
 
-#       Here I rename the variable in list.Winner and list.Loser so that they have the same names, otherwise, rbind 
+#     Here I rename the variable in list.Winner and list.Loser so that they have the same names, otherwise, rbind 
 # does not work the way I want it to work
 
 names(list.Loser) <- c("BirdID")
@@ -172,7 +179,7 @@ list.x <- rbind(list.Loser,list.Winner)
 
 
 ########################################################################################################
-# # # 13.9.2. Counting number of interactions per individual for the whole database
+# # # 13.2.2. Counting number of interactions per individual for the whole database
 ########################################################################################################
 
 # Generating a database with the individuals and their number of total interactions in the whole dataset
@@ -182,11 +189,17 @@ ind.counts <- count(list.x,"BirdID")
 names(ind.counts)<-c("BirdID","totalfreq")
 
 
+# Saving a histogram on the number of interactions
+
+#to save the figure as tiff
+tiff("plots/hist_interacions_Seewiesen.tiff",
+     height=18, width=27,units='cm', compression="lzw", res=300)
+
 #number of dates interacting per individual
-hist(ind.counts$totalfreq,freq=TRUE,breaks=306,
+hist(ind.counts$totalfreq,freq=TRUE,breaks=65,
      main = "",
      xlab = "Number of interactions",
-     ylim = c(0,4),
+     ylim = c(0,7),
      xlim = c(0,325),
      ylab = "",
      col="grey75",
@@ -195,11 +208,12 @@ hist(ind.counts$totalfreq,freq=TRUE,breaks=306,
      right=FALSE)
 title(ylab="Number of individuals", line=2.2, cex.lab=1.75)
 axis(1,at = seq(0,325,by=25),lwd=1)
-axis(2,at = seq(0,4,by=1),lwd=1,line=-0.75, las=2)
+axis(2,at = seq(0,7,by=1),lwd=1,line=-0.75, las=2)
 
+dev.off()
 
 ########################################################################################################
-# # # 13.9.3. Counting number of interactions per individual per date
+# # # 13.3.3. Counting number of interactions per individual per date
 ########################################################################################################
 
 #       Generating a database with the individuals and their number of interactions per date. This way I
@@ -232,8 +246,32 @@ names(ind.counts.date) <- c("BirdID","date","freqperdate")
 #hist(ind.counts.date$freqperdate,breaks=20)
 
 
+# Saving a histogram on the number of interactions
+
+#to save the figure as tiff
+tiff("plots/hist_interacions_per_date_Seewiesen.tiff",
+     height=18, width=27,units='cm', compression="lzw", res=300)
+
+#number of dates interacting per individual
+hist(ind.counts.date$freqperdate,freq=TRUE,breaks=102,
+     main = "",
+     xlab = "Number of interactions",
+     ylim = c(0,80),
+     xlim = c(0,105),
+     ylab = "",
+     col="grey75",
+     axes=FALSE,
+     cex.lab=1.75,
+     right=FALSE)
+title(ylab="Number of individuals", line=2.2, cex.lab=1.75)
+axis(1,at = seq(0,105,by=15),lwd=1)
+axis(2,at = seq(0,80,by=10),lwd=1,line=-0.75, las=2)
+
+dev.off()
+
+
 ########################################################################################################
-# # # 3.9.4. Counting number of dates each individual showed up in
+# # # 13.3.4. Counting number of dates each individual showed up in
 ########################################################################################################
 
 # This allows me to count the number of dates each individual showed up in
@@ -250,6 +288,12 @@ superlist.num.date <- count(onlyind,"onlyind")
 names(superlist.num.date) <- c("BirdID","freqofdates")
 
 
+# Saving a histogram on the number of interactions
+
+#to save the figure as tiff
+tiff("plots/hist_dates_per_individual_Seewiesen.tiff",
+     height=18, width=27,units='cm', compression="lzw", res=300)
+
 #number of dates interacting per individual
 hist(superlist.num.date$freqofdates,freq=TRUE,breaks=10,
      main = "",
@@ -265,12 +309,13 @@ title(ylab="Number of individuals", line=2.2, cex.lab=1.75)
 axis(1,at = seq(1,10,by=1),lwd=1)
 axis(2,at = seq(0,70,by=10),lwd=1,line=-0.75, las=2)
 
+dev.off()
 
 
+########################################################################################################
+# # 9.A.2. Obtaining the elo-scores for each individual
+########################################################################################################
 
-#####
-
-#####
 
 counter <- 1
 
