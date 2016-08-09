@@ -527,5 +527,26 @@ id.meanVB.age.TL.2 <- merge(id.meanVB.age.TL,id.meanVB.age.10weeks.2,
 
 # Final database to run the analyses
 
-final.cap.db <- merge(cap_elo_scores_all_events,id.meanVB.age.TL,
+final.cap.db <- merge(cap_elo_scores_all_events,id.meanVB.age.TL.2,
                       by.x="individual",by.y="Ring.ID",all.x=TRUE)
+
+
+# Now I want to mean centre VB per aviary. This makes more sense for the analyses
+
+WithinIndCentr <- function(x) x-mean(x,na.rm = TRUE)
+
+final.cap.db.2 <- ddply(final.cap.db, 
+                        c("Aviary"), 
+                        transform, 
+                        meanVBcentredAv = WithinIndCentr(meanVB.mean))
+
+
+final.cap.db.3 <- ddply(final.cap.db.2, 
+                        c("Aviary"), 
+                        transform, 
+                        meanVB.10centredAv = WithinIndCentr(meanVB.mean10))
+
+
+# I'm saving this file for the following scripts
+
+write.csv(final.cap.db.3,"final.cap.db.3.csv",row.names=FALSE)
