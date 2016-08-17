@@ -247,6 +247,15 @@ elo_scores_all_events_age <- elo_scores_all_events_age[order(elo_scores_all_even
                                                              elo_scores_all_events_age$eventSW),]
 
 
+# the mean value of StElos per individual for the whole study period: 
+
+numberofStEloperbird <- 
+  as.numeric(table(as.factor(elo_scores_all_events_age$BirdID)))
+
+summary(numberofStEloperbird[numberofStEloperbird!=0])
+
+
+
 #########################################################################################################
 # # # 10.1.3. Adding tarsus length, mass and visible badge
 #########################################################################################################
