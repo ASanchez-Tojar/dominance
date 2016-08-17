@@ -256,6 +256,13 @@ elo_scores_all_events_age <- elo_scores_all_events_age[order(elo_scores_all_even
 tarsuslengthandMass <- read.table("BirdID-Tarsus-Mass.csv",header=TRUE,sep=",")
 
 
+# the mean value of tarsus measurements per individual is: 
+
+numberofTLmeasurements <- as.numeric(table(as.factor(tarsuslengthandMass$BirdID)))
+
+summary(numberofTLmeasurements[numberofTLmeasurements!=0])
+
+
 # loading the database with Visible Badge
 
 visibleBadge <-  read.table("BirdID-VisibleBadge.csv",header=TRUE,sep=",")
@@ -302,6 +309,13 @@ ind.TLandM <- summaryBy(Tarsus + Mass ~ BirdID, data = tarsuslengthandMass,
 
 #lifehistory.VB <- subset(visibleBadge,visibleBadge$Observer=="AST")
 visibleBadge.AST <- subset(visibleBadge,visibleBadge$Observer=="AST")
+
+
+# the mean value of bib measurements per individual is: 
+
+numberofBibmeasurements <- as.numeric(table(as.factor(visibleBadge.AST$BirdID)))
+
+summary(numberofBibmeasurements[numberofBibmeasurements!=0])
 
 
 # Just want to create new variables with year and month so that I can do my subsetting later on
