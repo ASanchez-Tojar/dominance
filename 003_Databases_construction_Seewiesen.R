@@ -517,6 +517,13 @@ db.noNA.age.AST.10weeks <- subset(db.noNA.age.AST,db.noNA.age.AST$weeknumber2<11
 id.meanVB.age.10weeks <-summaryBy(meanVB ~ Ring.ID, data = db.noNA.age.AST.10weeks, 
                                   FUN = list(mean))
 
+# the mean value of measurements per individual is: 
+
+numberofmeasurements <- as.numeric(table(db.noNA.age.AST.10weeks$Ring.ID))
+
+summary(numberofmeasurements[numberofmeasurements!=0])
+
+
 # I then add it to the database
 
 id.meanVB.age.10weeks.2 <- rename(id.meanVB.age.10weeks, c(meanVB.mean="meanVB.mean10"))
