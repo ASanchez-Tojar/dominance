@@ -379,6 +379,13 @@ ind.event.VB<-summaryBy(AvgOfEstimate ~ BirdID_eventSW, data = visibleBadge.AST,
                         FUN = list(mean),na.rm=TRUE)
 
 
+# the mean value of bib measurements per individual per event is: 
+
+numberofBibmeasurementsperevent <- as.numeric(table(as.factor(visibleBadge.AST$BirdID_eventSW)))
+
+summary(numberofBibmeasurementsperevent[numberofBibmeasurementsperevent!=0])
+
+
 # Excluding those with no value
 
 #ind.event.VB2 <- subset(ind.event.VB,!(is.na(ind.event.VB$AvgOfEstimate.mean)))
@@ -554,6 +561,15 @@ ccbirdidcohort3 <- unique(ccbirdidcohort2)
 
 
 VB.TLandM.age <- merge(VB.TLandM,ccbirdidcohort3,by="BirdID",all.x=TRUE)
+
+
+# the mean value of bib measurements per individual for the whole study period: 
+
+numberofBibmeasurementsperstudyperido <- 
+  as.numeric(table(VB.TLandM.age$BirdID))
+
+summary(numberofBibmeasurementsperstudyperido[numberofBibmeasurementsperstudyperido!=0])
+
 
 
 #########################################################################################################
