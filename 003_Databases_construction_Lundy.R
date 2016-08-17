@@ -30,6 +30,8 @@
 # script)
 
 library(doBy)
+library(lme4)
+library(arm)
 
 
 # Clear memory and get to know where you are
@@ -258,6 +260,31 @@ tarsuslengthandMass <- read.table("BirdID-Tarsus-Mass.csv",header=TRUE,sep=",")
 
 visibleBadge <-  read.table("BirdID-VisibleBadge.csv",header=TRUE,sep=",")
 
+
+# #########################################################################################################
+# # # # # 10.1.3.0. Estimating tarsus length repeatability  
+# #########################################################################################################
+# 
+# # first I get rid off Observer = NA, and also those that have less than 10 measurements,
+# # i.e. CM, HD, TB
+# 
+# tarsuslength.rep <- subset(tarsuslengthandMass,
+#                                   tarsuslengthandMass$Observer!="")
+# 
+# tarsuslength.rep.2 <- subset(tarsuslength.rep,
+#                              tarsuslength.rep$Observer!="CM" &
+#                                tarsuslength.rep$Observer!="HD" &
+#                                tarsuslength.rep$Observer!="TB")
+# 
+# mod.tarsus.rep <- lmer(Tarsus ~ 1 + (1|BirdID) + (1|Observer), data=tarsuslength.rep.2)
+# 
+# BirdID.var <- 0.65435
+# Observer.var <- 0.03409
+# Residual.var <- 0.13961
+# total.variance <- BirdID.var+Observer.var+Residual.var
+# 
+# repeatability <- BirdID.var/total.variance
+# Observer.noise <- Observer.var/total.variance
 
 #########################################################################################################
 # # # # 10.1.3.1. Mean tarsus length and Mass per individual
