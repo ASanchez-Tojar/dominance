@@ -556,7 +556,7 @@ write.csv(rank.TLandM.VB.fledg.recruits.9int,"rank.TLandM.VB.fledg.recruits.9int
 ind.event.VB2 <- ind.event.VB
 
 ind.event.VB2$BirdID <- factor(substr(ind.event.VB2$BirdID_eventSW, 1, 4)) 
-ind.event.VB2$eventSW <- factor(substr(ind.event.VB2$BirdID_eventSW, 6, 11)) 
+ind.event.VB2$eventSW <- as.numeric(substr(ind.event.VB2$BirdID_eventSW, 6, 11)) 
 
 
 # Now we can add tarsus length and mass
@@ -581,6 +581,24 @@ numberofBibmeasurementsperstudyperido <-
 summary(numberofBibmeasurementsperstudyperido[numberofBibmeasurementsperstudyperido!=0])
 
 
+# Now I can estimate age
+
+VB.TLandM.age$age <- VB.TLandM.age$eventSW - VB.TLandM.age$Cohort
+
+
+# WITHIN- and BETWEEN-INDIVIDUAL effects
+
+AveByInd <- function(x) mean(x)
+
+VB.TLandM.age.2 <- do.call("rbind", as.list(
+  by(VB.TLandM.age, VB.TLandM.age["BirdID"], transform, meanage=AveByInd(age))))  
+
+
+WithinIndCentr <- function(x) x-mean(x)
+
+VB.TLandM.age.2 <- do.call("rbind", as.list(  
+  by(VB.TLandM.age.2, VB.TLandM.age.2["BirdID"], transform, agewithin=WithinIndCentr(age))))
+
 
 #########################################################################################################
 # # # 10.2.2. Adding fitness
@@ -588,7 +606,7 @@ summary(numberofBibmeasurementsperstudyperido[numberofBibmeasurementsperstudyper
 
 # First we add fledglings
 
-VB.TLandM.age.fledg <- merge(VB.TLandM.age, male.social.annualfledglings,
+VB.TLandM.age.fledg <- merge(VB.TLandM.age.2, male.social.annualfledglings,
                              by="BirdID_eventSW",all.x=TRUE)
 
 
