@@ -3,14 +3,14 @@
 # Github profile: https://github.com/ASanchez-Tojar
 
 # Script created on the 16th of August, 2016
-# Script last updated on the 16th of August, 2016
+# Script last updated on the 18th of August, 2016
 
 
 ########################################################################################################
 # Description of script and Instructions
 ########################################################################################################
 
-# This script is to estimate how much time per event we analyzed
+# This script is to estimate how much time per day (and in total) we analyzed
 
 
 # Clear memory and get to know where you are
