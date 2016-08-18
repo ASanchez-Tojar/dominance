@@ -321,6 +321,9 @@ ind.TLandM <- summaryBy(Tarsus + Mass ~ BirdID, data = tarsuslengthandMass,
 visibleBadge.AST <- subset(visibleBadge,visibleBadge$Observer=="AST")
 
 
+# This is to exclude a clear outlier from following analyses
+visibleBadge.AST <- subset(visibleBadge.AST,visibleBadge.AST$AvgOfEstimate!=34)
+
 # the mean value of bib measurements per individual is: 
 
 numberofBibmeasurements <- as.numeric(table(as.factor(visibleBadge.AST$BirdID)))
