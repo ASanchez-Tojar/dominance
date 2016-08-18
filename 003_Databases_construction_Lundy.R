@@ -32,6 +32,7 @@
 library(doBy)
 library(lme4)
 library(arm)
+library(plyr)
 
 
 # Clear memory and get to know where you are
