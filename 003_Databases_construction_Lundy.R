@@ -60,6 +60,9 @@ morethan8pereventSW <- read.table("morethan8pereventSW.csv",header=TRUE,sep=",")
 #########################################################################################################
 
 # importing database with all those males that attempted breeding from 2014 to the 15th of July, 2016
+# SELECT tblBroods.BroodRef, tblBroods.BroodName, tblNestboxes.NestboxName, tblBroodEvents.EventNumber, tblBroodEvents.EventDate, tblBroods.SocialDadID, tblBroods.SocialDadCertain
+# FROM tblNestboxes INNER JOIN (tblBroods INNER JOIN tblBroodEvents ON tblBroods.BroodRef = tblBroodEvents.BroodRef) ON tblNestboxes.NestboxRef = tblBroods.NestboxRef
+# WHERE (((tblBroodEvents.EventNumber)=0) AND ((tblBroodEvents.EventDate)>#1/1/2014#));
 
 male.breeding <- read.table("allbreedingbirdsfrom2014-20160715-2.csv",header=TRUE,sep=",")
 
