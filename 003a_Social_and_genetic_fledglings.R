@@ -435,3 +435,14 @@ genetic.per.Dad.2 <- genetic.per.Dad[!(is.na(genetic.per.Dad$GeneticDadID)),]
 write.csv(genetic.per.Dad.2,
           "fledglings12/annual_genetic_fledglings12d_per_Dad.csv",
           row.names=FALSE)
+
+
+# counting but without including birds that were caugth as unringed
+
+offspring.12d.ped.noZ <- offspring.12d.ped[!(is.na(offspring.12d.ped$twodaysonBroodRef)),]
+genetic.per.Dad.noZ <- count(offspring.12d.ped.noZ,c("GeneticDadID","Cohort"))
+genetic.per.Dad.noZ.2 <- genetic.per.Dad.noZ[!(is.na(genetic.per.Dad.noZ$GeneticDadID)),]
+
+write.csv(genetic.per.Dad.noZ.2,
+          "fledglings12/annual_genetic_fledglings12d_per_Dad_noZ.csv",
+          row.names=FALSE)
