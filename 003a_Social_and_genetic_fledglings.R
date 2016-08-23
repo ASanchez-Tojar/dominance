@@ -1,13 +1,27 @@
-# Estimating number of chicks reaching the age of 12 days for each social father in each year
+# Author: Alfredo Sanchez-Tojar, MPIO (Seewiesen) and ICL (Silwood Park), alfredo.tojar@gmail.com
+# Github profile: https://github.com/ASanchez-Tojar
 
+# Script created on the 19th of August, 2016
+# Script last updated on the 23rd of August, 2016
 
-# After that, I created a new variable in excel by substracting the lastseenalive to the hatching
-# date
+########################################################################################################
+# Description of script and Instructions
+########################################################################################################
 
+# This script is to estimate the number of chicks reaching the age of 12 days for each 
+# social and genetic father in each year. It does this by extracting all BirdIDs except
+# unhatched BirdIDs (done in AccessDatabase query). Then it assigns to each bird the 
+# hatching date and the date of lastseenalive, which is then used to estimate those
+# BirdIDs that make it, at least, to their 12 day of life (what we call 12 days old).
+# It also adds the fosterBroodRef for those birds that were crossfostered. This is used
+# to assing to each BirdID the DadID that took care of it from at least day 2 (when we
+# crossfoster) to day 12. After that, the pedigree is brought in to assign a genetic sire
+# to each BirdID.
 
-# Clear memory and get to know where you are
-rm(list=ls())
-#getwd()
+# During this script, I also looked at those Birds for which we did not have SocialDadID
+# available (mostly because of Dads missing rings). By comparing the information we had
+# on their remaining rings and the pedigree, I could decrease the number of missing
+# SocialDadIDs by a bit more than half (only ca. 4% missing, instead of ca. 9%)
 
 
 ########################################################################################################
@@ -20,37 +34,13 @@ rm(list=ls())
 library(plyr)
 
 
-##########################################################################
-# One way of doing it
-##########################################################################
-
-# The following commented code is what I did to start with, then I did not
-# trust it and did it step by step afterwards (see below)
-# The sql code for this database is:
-# SELECT tblBirdID.BirdID, tblBirdID.Cohort, tblBirdID.BroodRef, tblBroodEvents.EventDate, sys_LastSeenAlive.LastLiveRecord, tblBroods.SocialDadID
-# FROM tblBroods LEFT JOIN (sys_LastSeenAlive RIGHT JOIN (tblBirdID LEFT JOIN tblBroodEvents ON tblBirdID.BroodRef = tblBroodEvents.BroodRef) ON sys_LastSeenAlive.BirdID = tblBirdID.BirdID) ON tblBroods.BroodRef = tblBirdID.BroodRef
-# WHERE (((tblBirdID.Cohort)>2013) AND ((tblBroodEvents.EventNumber)=1) AND ((tblBirdID.LastStage)>1));
-# 
-# 
-# offspring <- read.table("fledglings12/BirdsCohorts2014-2016-socANDgen_fledglings_2_20160715.csv",
-#                         header=TRUE,sep=",")
-# 
-# 
-# # I want to look at those negatives values to see if there is
-# # anything wrong going on there
-# 
-# offspring.neg <- subset(offspring,offspring$age.days<0)
-# 
-# 
-# # First thing is to subset the database to those that survived until day 12
-# 
-# offspring.12d <- subset(offspring,offspring$age.days>11)
-# 
-# # They are too few, is there a problem?
+# Clear memory and get to know where you are
+rm(list=ls())
+#getwd()
 
 
 ##########################################################################
-# Second way of doing it
+# Different datasets from sparrow main database
 ##########################################################################
 
 # I'll do the same but withouth using the query designer
