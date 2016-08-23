@@ -402,5 +402,19 @@ offspring.12d$SocialDadCertain <- ifelse(offspring.12d$twodaysonBroodRef==1944,
 social.per.Dad <- count(offspring.12d.ped,c("SocialDadID2","Cohort"))
 social.per.Dad.2 <- social.per.Dad[!(is.na(social.per.Dad$SocialDadID2)),]
 
+
+# saving it for further analyses
+
+write.csv(social.per.Dad.2,
+          "fledglings12/annual_social_fledglings12d_per_Dad.csv",
+          row.names=FALSE)
+
 genetic.per.Dad <- count(offspring.12d.ped,c("GeneticDadID","Cohort"))
 genetic.per.Dad.2 <- genetic.per.Dad[!(is.na(genetic.per.Dad$GeneticDadID)),]
+
+
+# saving it for further analyses
+
+write.csv(genetic.per.Dad.2,
+          "fledglings12/annual_genetic_fledglings12d_per_Dad.csv",
+          row.names=FALSE)
