@@ -67,16 +67,57 @@ morethan8pereventSW <- read.table("morethan8pereventSW.csv",header=TRUE,sep=",")
 male.breeding <- read.table("allbreedingbirdsfrom2014-20160715-2.csv",header=TRUE,sep=",")
 
 
-# First, exclude IDCertain=FALSE
+# First thing is to import those SocialDadIDs that I managed to bring back to the
+# database by looking at books and pedigree. Comes from 003a script
 
-male.breeding2 <- male.breeding[male.breeding$SocialDadCertain==TRUE,]
+SocialDads <- read.table("BroodRef_SocialDadID_2014-2016_Updated.csv",
+                         header=TRUE,sep=",")
+
+
+# Just to make sure there are not BroodRef in SocialDads that don't exist in 
+# male.breeding
+
+setdiff(SocialDads$BroodRef,male.breeding$BroodRef)
+
+
+# Mergin both datasets
+
+male.breeding.1 <- merge(male.breeding,
+                         SocialDads,
+                         by="BroodRef",
+                         all.x=TRUE)
+
+# Now I want to combine both SocialDadID to create the final one
+
+male.breeding.1$SocialDadID.final<-male.breeding.1$SocialDadID2
+
+male.breeding.1$SocialDadID.final<-ifelse(is.na(male.breeding.1$SocialDadID2),
+                                          male.breeding.1$SocialDadID,
+                                          male.breeding.1$SocialDadID2)
+
+
+# Checking those IDCertain=FALSE for SocialDadID only (SocialDadID2 was checked
+# in the previoius script):
+# 1708: bird observed with binos, no probs.
+# 1768: bird was also observed breeding later on, no probs.
+# 1944: bird was the genetic sired of all 4 offspring, no probs.
+# 1970: bird was also observed breeding later on, no probs.
+# 2049: bird was also observed breeding later on, no probs.
+# This means, I can trust SocialDadID.final and get rid off the rest, including
+# missing social dads here.
+
+male.breeding2 <- male.breeding.1[!(is.na(male.breeding.1$SocialDadID.final)),
+                                  c("BroodRef","BroodName",
+                                    "NestboxName","EventDate",
+                                     "SocialDadID.final")]
 
 
 # Then create and identifier
 
 male.breeding2$BirdID_BroodName <- factor(paste(male.breeding2$SocialDadID,male.breeding2$BroodName,sep="_"))
 
-male.breeding2 <- male.breeding2[,c("BirdID_BroodName","SocialDadID","BroodName")]
+male.breeding2 <- male.breeding2[,c("BirdID_BroodName","SocialDadID.final",
+                                    "BroodName","BroodRef")]
 
 
 # getting the year for the estimates to estimate the annual number of fledglings/recruits
@@ -92,42 +133,96 @@ male.breeding2$BirdID_eventSW <- factor(paste(male.breeding2$SocialDadID,
                                               male.breeding2$year,
                                               sep="_"))
 
-male.breeding3 <- male.breeding2[,c("BirdID_BroodName","BirdID_eventSW","SocialDadID","BroodName","year")]
+male.breeding3 <- male.breeding2[,c("BirdID_BroodName","BirdID_eventSW",
+                                    "SocialDadID.final","BroodName","year",
+                                    "BroodRef")]
 
 
 #########################################################################################################
 # # # # 10.0.1.1 (social) annual number of fledglings
 #########################################################################################################
 
-# importing database with all those males that got some ringed fledglings from 2014 to the 15th of July, 2016
+# # importing database with all those males that got some ringed fledglings from 2014 to the 15th of July, 2016
+# Updated after generating script 003a_...
 
-male.fledglings <- read.table("leavingfledglingsfrom2014to20160715.csv",header=TRUE,sep=",")
+male.fledglings <- read.table("fledglings12/annual_social_fledglings12d_per_Dad.csv",
+                              header=TRUE,sep=",")
 
-male.fledglings$BirdID_BroodName <- factor(paste(male.fledglings$SocialDadID,male.fledglings$BroodName,sep="_"))
 
-male.fledglings2 <- male.fledglings[,c("BirdID_BroodName","ChickCoun2")]
+# to merge it with the previous one
+
+male.fledglings$BirdID_eventSW <- factor(paste(male.fledglings$SocialDadID2,
+                                               male.fledglings$Cohort,
+                                              sep="_"))
+
+male.fledglings2 <- male.fledglings[,c("BirdID_eventSW","freq")]
+
+
+# reducing male.breeding3 to the necessary
+
+male.breeding4 <- male.breeding3[,c("BirdID_eventSW","SocialDadID.final",
+                                    "year")]
+
+male.breeding5 <- unique(male.breeding4)
 
 
 # Now we merge those two databases to include 0s in too
 
-male.social.fledglings <- merge(male.breeding3,male.fledglings2,by="BirdID_BroodName",all.x=TRUE)
-
-
-# convert the NA's in 0 as that's what they are (exceptions for the last layed broods from this year)
-
-male.social.fledglings$socfledglings <- ifelse(is.na(male.social.fledglings$ChickCoun2),
-                                               0,male.social.fledglings$ChickCoun2)
+male.social.fledglings <- merge(male.breeding5,
+                                male.fledglings2,
+                                by="BirdID_eventSW",all.x=TRUE)
 
 
 # getting the number of fledglings produced per year per individual
+# but before, there are some that NA in freq that might potentially be in need
+# of being excluded
+# male.social.fledglings[is.na(male.social.fledglings$freq),]
+# 4682_2015: 2 broods that failed, but one after catching female...
+# 4745_2014: 1 inaccessible wild nest
+# 4896_2015: 1 endoscope counting on day 9 = 4chicks, 1 abandoned, 1 inaccessible
+# 5004_2014: 1 inaccessible wild nest with chicks ca. 10 days
+# 5048_2014: 1 inaccessible wild nest with chicks ca. 10 days
+# 5107_2014: 2 inaccessible wild nests
+# 5110_2014: 1 inaccessible wild nest with chicks ca. 10 days
+# 5253_2014: 1 wild nest that failed at the end of the season, so probably more before
+# 6270_2016: 1 inaccessible wild nest, but update after summer
+# 6386_2015: 1 inaccessible wild nest
+# 6517_2015: NOT EXCLUDED, only nestbox nest failed 
+# 6648_2016: 1 inaccessible wild nest? Excluded for now, but update after summer
+# 6688_2016: NOT EXCLUDED, only nestbox nest failed, but update after summer
+# 6768_2015: 1 inaccessible wild nest with chicks ca. 10 days
+# 6768_2016: 1 inaccessible wild nest with chicks ca. 6 days, but update after summer
+# 6778_2014: NOT EXCLUDED, 1 wild nest that failed mid-season
+# 6789_2014: 1 inaccessible wild nest
+# 6789_2015: 3 inaccessible wild nests
+# 6789_2016: 1 inaccessible wild nest
+# 6793_2014: NOT EXCLUDED, 1 wild nest that failed beginning of May
+# 6807_2014: 1 inaccessible wild nest with chicks ca. 10 days
+# 6832_2015: 1 inaccessible wild nest, and one ringed before day 12
+# 6862_2014: 1 wild nest failed but the other was ringed on day 10!
+# 6921_2014: 2 inaccessible wild nests
+# 6978_2014: 1 inaccessible wild nest
+# 7017_2015: 1 inaccessible wild nest
+# 7019_2014: NOT EXCLUDED, 1 wild nest that failed mid-season
+# 7060_2014: 1 wild nest failed, but another inaccessible
+# 7266_2014: 1 nestbox nest at the end of the season that was ringed on day 10!
+# 7273_2014: NOT EXCLUDED, only nestbox nest failed
+# 7275_2015: 3 inaccessible wild nests
+# 7570_2015: 1 inaccessible wild nest
+# 7793_2015: 1 nestbox nest at the end of the season that was ringed on day 7!
+# 7984_2015: NOT EXCLUDED, 2 nestbox nests failed
+# 8307_2015: 1 inaccessible wild nest with chicks ca. 11 days
+# The following ones are 2016, wait for the database update before continuing
 
-male.social.annualfledglings<-summaryBy(socfledglings ~ BirdID_eventSW,
-                                        data = male.social.fledglings, 
-                                        FUN = list(sum),na.rm=TRUE)
+# convert the NA's in 0 as that's what they are
+# (exceptions for the last layed broods from this year)
+
+male.social.fledglings$soc.fledglings12d <- ifelse(is.na(male.social.fledglings$freq),
+                                                   0,male.social.fledglings$freq)
 
 
 #########################################################################################################
-# # # # 10.0.1.2 (social) annual number of recruits
+# # # # 10.0.1.2 (social) annual number of recruits # NEEDS UPDATING
 #########################################################################################################
 
 # this SQL code for this database is:
