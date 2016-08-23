@@ -10,13 +10,14 @@
 
 # This script is to estimate the number of chicks reaching the age of 12 days for each 
 # social and genetic father in each year. It does this by extracting all BirdIDs except
-# unhatched BirdIDs (done in AccessDatabase query). Then it assigns to each bird the 
-# hatching date and the date of lastseenalive, which is then used to estimate those
-# BirdIDs that make it, at least, to their 12 day of life (what we call 12 days old).
+# unhatched and chigg BirdIDs (done in AccessDatabase query). Then it assigns to each bird 
+# the hatching date (if known) and the date of lastseenalive, which is then used to estimate
+# those BirdIDs that make it, at least, to their 12 day of life (what we call 12 days old).
 # It also adds the fosterBroodRef for those birds that were crossfostered. This is used
 # to assing to each BirdID the DadID that took care of it from at least day 2 (when we
 # crossfoster) to day 12. After that, the pedigree is brought in to assign a genetic sire
-# to each BirdID.
+# to each BirdID. Notice that there are some individuals (N=110?), for which brood is uknown
+# this is because we caught them as fledglings or 1st winter individuals.
 
 # During this script, I also looked at those Birds for which we did not have SocialDadID
 # available (mostly because of Dads missing rings). By comparing the information we had
@@ -99,7 +100,7 @@ names(fledglings3) <- c("BirdID","Cohort","DeathDate",
 
 # getting rid off those that we don't know the hatching date from
 
-fledglings4 <- fledglings3[!(is.na(fledglings3$HatchDate)),]
+fledglings4 <- fledglings3#[!(is.na(fledglings3$HatchDate)),]
 
 
 # Estimating last known age
@@ -114,7 +115,7 @@ fledglings4$age.days <-
 # There are some NA due to some LastLiveRecord missing. Those missing values are of birds
 # that died when we first saw them, i.e. we found the dead to start with
 
-fledglings5 <- fledglings4[!(is.na(fledglings4$age.days)),]
+fledglings5 <- fledglings4#[!(is.na(fledglings4$age.days)),]
 
 
 # Now I want to create a variable with the BroodRef where the individual lived from
@@ -357,16 +358,23 @@ names(BroodRef_SocialDadID) <- c("BroodRef","SocialDadID2")
 
 BroodRef_SocialDadID.2 <- unique(BroodRef_SocialDadID)
 
-write.csv(BroodRef_SocialDadID.2,
+BroodRef_SocialDadID.3 <- BroodRef_SocialDadID.2[!(is.na(BroodRef_SocialDadID.2$BroodRef)),]
+
+write.csv(BroodRef_SocialDadID.3,
           "BroodRef_SocialDadID_2014-2016_Updated.csv",
           row.names=FALSE)
 
 
 # Subsetting the database according to those that survived, at least, to day 12
-# This way we can estimate the number of fledglings per individual.
+# This way we can estimate the number of fledglings per individual. I leave NAs as
+# I also want to estimate the number of genetic fledglings. But I remove those age.days = NA
+# for which HatchDate is known, this is because these ones refer to chicks that were first
+# recorded as dead individuals, i.e. they did not make it to 12 days old
 
-offspring.12d <- fledglings6[fledglings6$age.days>11,]
-
+offspring.12d <- subset(fledglings6,
+                        fledglings6$age.days>11 | 
+                          (is.na(fledglings6$age.days) & is.na(fledglings6$HatchDate))
+                        )
 
 # Now I'm going to add the genetic dad from the pedigree
 
@@ -388,11 +396,20 @@ offspring.12d.ped <- merge(offspring.12d,pedigree.red,
 # the exception, and the pedigree says that all 4 offspring of that nest were 
 # sired by the SocialDadID, therefore, I'll change SocialDadCertain to TRUE!
 
-offspring.12d$SocialDadCertain <- ifelse(offspring.12d$twodaysonBroodRef==1944,
+offspring.12d.ped$SocialDadCertain <- ifelse(offspring.12d.ped$twodaysonBroodRef==1944,
                                          TRUE,
-                                         offspring.12d$SocialDadCertain)
+                                         offspring.12d.ped$SocialDadCertain)
 
 # I, anyway, consider all the SocialIDs to be the right ones.
+
+
+# # To check the BirdIDs caught as fledglings or more that don't have a genetic father
+# # assigned:
+# write.csv(offspring.12d.ped[is.na(offspring.12d.ped$age.days) & 
+#                     is.na(offspring.12d.ped$GeneticDadID) & 
+#                     offspring.12d.ped$Cohort!=2016,],
+#           "fledglings12/BirdIDsmissingGeneticDad.csv",
+#           row.names=FALSE)
 
 
 # Now I can count the annual number of social and genetic offspring reaching the age  
