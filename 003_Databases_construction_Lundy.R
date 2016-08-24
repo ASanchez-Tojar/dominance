@@ -3,7 +3,7 @@
 # Github profile: https://github.com/ASanchez-Tojar
 
 # Script created on the 3rd of March, 2016
-# Script last updated on the 8th of August, 2016
+# Script last updated on the 24th of August, 2016
 
 ########################################################################################################
 # Description of script and Instructions
@@ -129,6 +129,9 @@ male.breeding2$year <- ifelse(male.breeding2$yearCode=="N",
                               ifelse(male.breeding2$yearCode=="O",
                                      2015,2016))
 
+
+# Creating an identifier bird_year and reducing dataset
+
 male.breeding2$BirdID_eventSW <- factor(paste(male.breeding2$SocialDadID,
                                               male.breeding2$year,
                                               sep="_"))
@@ -158,44 +161,47 @@ male.fledglings$BirdID_eventSW <- factor(paste(male.fledglings$SocialDadID2,
 male.fledglings2 <- male.fledglings[,c("BirdID_eventSW","freq")]
 
 
-# reducing male.breeding3 to the necessary
+# reducing male.breeding3 (see above) to the necessary
 
 male.breeding4 <- male.breeding3[,c("BirdID_eventSW","SocialDadID.final",
                                     "year")]
 
+# removing repeated rows
+
 male.breeding5 <- unique(male.breeding4)
 
 
-# Now we merge those two databases to include 0s in too
+# Now we merge those two databases to subsequently include 0s in the database
 
-male.social.fledglings <- merge(male.breeding5,
-                                male.fledglings2,
-                                by="BirdID_eventSW",all.x=TRUE)
+social.fitness <- merge(male.breeding5,
+                        male.fledglings2,
+                        by="BirdID_eventSW",all.x=TRUE)
 
 
-# getting the number of fledglings produced per year per individual
-# but before, there are some that NA in freq that might potentially be in need
-# of being excluded
+# Before adding 0 to the database, I checked if they would really be 0's. The 0's
+# would be allocated to freq==NA, this is because those birds were observed
+# breeding but didn't get any social fledgling reaching 12d. However, it could also
+# be that those males come from inaccessible wild nests, and therefore, saying 0
+# would not be appropriate as we didn't really know the number of chicks.
+# I can check those NA's one by one in the database (yes, annoying, but that's life)
+# by running the following line:
 # male.social.fledglings[is.na(male.social.fledglings$freq),]
-# 4682_2015: 2 broods that failed, but one after catching female...
+
+# This is the list of freq==NA and the comments after checking the database:
+# 4682_2015: 2 broods that failed, but one after catching female (i.e mortality human causes?)
 # 4745_2014: 1 inaccessible wild nest
-# 4896_2015: 1 endoscope counting on day 9 = 4chicks, 1 abandoned, 1 inaccessible
+# 4896_2015: 1 endoscope counting on day 9 = 4 chicks, 1 abandoned, 1 inaccessible
 # 5004_2014: 1 inaccessible wild nest with chicks ca. 10 days
 # 5048_2014: 1 inaccessible wild nest with chicks ca. 10 days
 # 5107_2014: 2 inaccessible wild nests
 # 5110_2014: 1 inaccessible wild nest with chicks ca. 10 days
-# 5253_2014: 1 wild nest that failed at the end of the season, so probably more before
-# 6270_2016: 1 inaccessible wild nest, but update after summer
+# 5253_2014: 1 wild nest that failed at the end of the season, probably more before
 # 6386_2015: 1 inaccessible wild nest
 # 6517_2015: NOT EXCLUDED, only nestbox nest failed 
-# 6648_2016: 1 inaccessible wild nest? Excluded for now, but update after summer
-# 6688_2016: NOT EXCLUDED, only nestbox nest failed, but update after summer
 # 6768_2015: 1 inaccessible wild nest with chicks ca. 10 days
-# 6768_2016: 1 inaccessible wild nest with chicks ca. 6 days, but update after summer
 # 6778_2014: NOT EXCLUDED, 1 wild nest that failed mid-season
 # 6789_2014: 1 inaccessible wild nest
 # 6789_2015: 3 inaccessible wild nests
-# 6789_2016: 1 inaccessible wild nest
 # 6793_2014: NOT EXCLUDED, 1 wild nest that failed beginning of May
 # 6807_2014: 1 inaccessible wild nest with chicks ca. 10 days
 # 6832_2015: 1 inaccessible wild nest, and one ringed before day 12
@@ -212,13 +218,33 @@ male.social.fledglings <- merge(male.breeding5,
 # 7793_2015: 1 nestbox nest at the end of the season that was ringed on day 7!
 # 7984_2015: NOT EXCLUDED, 2 nestbox nests failed
 # 8307_2015: 1 inaccessible wild nest with chicks ca. 11 days
-# The following ones are 2016, wait for the database update before continuing
+
+# For the 2016, wait for the database update before continuing, a few are:
+# 6270_2016: 1 inaccessible wild nest, but update after summer
+# 6648_2016: 1 inaccessible wild nest?, but update after summer
+# 6688_2016: NOT EXCLUDED, only nestbox nest failed, but update after summer
+# 6768_2016: 1 inaccessible wild nest with chicks ca. 6 days, but update after summer
+# 6789_2016: 1 inaccessible wild nest, but update after summer
+
+
+# This is the list for which fitness=0 is uncertain
+uncertain <- c("4682_2015","4745_2014","4896_2015","5004_2014","5048_2014","5107_2014",
+               "5110_2014","5253_2014","6386_2015","6768_2015","6789_2014","6789_2015",
+               "6807_2014","6832_2015","6862_2014","6921_2014","6978_2014","7017_2015",
+               "7060_2014","7266_2014","7275_2015","7570_2015","7793_2015","8307_2015")
+
 
 # convert the NA's in 0 as that's what they are
 # (exceptions for the last layed broods from this year)
 
-male.social.fledglings$soc.fledglings12d <- ifelse(is.na(male.social.fledglings$freq),
-                                                   0,male.social.fledglings$freq)
+social.fitness$soc.fledglings12d <- ifelse(is.na(social.fitness$freq),
+                                           0,social.fitness$freq)
+
+
+# Create a new variable showing whether the fitness estimates is certain or not
+
+social.fitness$soc.fledglings12dCertain <- ifelse(!(social.fitness$BirdID_eventSW %in% uncertain),
+                                                  0,1)
 
 
 #########################################################################################################
