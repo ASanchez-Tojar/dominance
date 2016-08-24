@@ -257,11 +257,22 @@ social.fitness$soc.fledglings12dCertain <- ifelse(!(social.fitness$BirdID_eventS
 # FROM (tblBirdID INNER JOIN tblBroods ON tblBirdID.BirdID = tblBroods.SocialDadID) INNER JOIN tblBroods AS tblBroods_1 ON tblBirdID.BroodRef = tblBroods_1.BroodRef
 # WHERE (((tblBirdID.Cohort)>2013 And (tblBirdID.Cohort)<2016));
 
-# This database includes all birds in 2014 and 2015 that became social fathers themselves. All these
-# recruits are assigned to their social dad ID, this way, we can count the number of recurits per
-# social Dad for each year.
+# This database includes all birds in 2014 and 2015 that became social fathers
+# themselves. All these recruits are assigned to their social dad ID, this way, 
+# we can count the number of recruits per social Dad for each year.
 
 male.recruits <- read.table("leavingrecruitsfrom2014to2015.csv",header=TRUE,sep=",")
+
+
+# # Another way of checking how many of the Birds born between 2014 and 2016
+# # became social fathers themselves. Is using the database created above with all
+# # breeding birds and the list of birds born during the period, and merging them
+# # to see that.
+# 
+# male.breeding5 #social Dads from 2014 - to 2016
+# 
+# Birds2014_2016 <- read.table("fledglings12/BirdID-Cohort-DeathDate-BroodRef.csv",
+#                              header=TRUE,sep=",")
 
 
 # get rid off those without socialDadID as I cannot do anything with them.

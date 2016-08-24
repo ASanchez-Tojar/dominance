@@ -81,6 +81,9 @@ db4 <- read.table("fledglings12/BirdID_FosterBroodRef.csv",
                   header=TRUE,sep=",")
 
 
+##########################################################################
+# Generating a database with all information needed per BirdID
+##########################################################################
 
 # Let's start merging them to get the final one
 
@@ -98,7 +101,7 @@ names(fledglings3) <- c("BirdID","Cohort","DeathDate",
                         "HatchDate","FosterBroodRef")
 
 
-# getting rid off those that we don't know the hatching date from
+# getting rid off those that we don't know the hatching date from #not active now
 
 fledglings4 <- fledglings3#[!(is.na(fledglings3$HatchDate)),]
 
@@ -115,7 +118,7 @@ fledglings4$age.days <-
 # There are some NA due to some LastLiveRecord missing. Those missing values are of birds
 # that died when we first saw them, i.e. we found the dead to start with
 
-fledglings5 <- fledglings4#[!(is.na(fledglings4$age.days)),]
+fledglings5 <- fledglings4#[!(is.na(fledglings4$age.days)),] #not active now
 
 
 # Now I want to create a variable with the BroodRef where the individual lived from
@@ -127,6 +130,10 @@ fledglings5$twodaysonBroodRef<-ifelse(is.na(fledglings5$twodaysonBroodRef),
                                       fledglings5$OriginalBroodRef,
                                       fledglings5$twodaysonBroodRef)
 
+
+##########################################################################
+# Assigning social dads to each BirdID
+##########################################################################
 
 # Now, I will add the ID of the Social Dad that took care of the individual from 
 # day 2 on. Thus, this takes into account crossfostering and assumes that the social
@@ -360,9 +367,9 @@ BroodRef_SocialDadID.2 <- unique(BroodRef_SocialDadID)
 
 BroodRef_SocialDadID.3 <- BroodRef_SocialDadID.2[!(is.na(BroodRef_SocialDadID.2$BroodRef)),]
 
-write.csv(BroodRef_SocialDadID.3,
-          "BroodRef_SocialDadID_2014-2016_Updated.csv",
-          row.names=FALSE)
+# write.csv(BroodRef_SocialDadID.3,
+#           "BroodRef_SocialDadID_2014-2016_Updated.csv",
+#           row.names=FALSE)
 
 
 # Subsetting the database according to those that survived, at least, to day 12
@@ -375,6 +382,11 @@ offspring.12d <- subset(fledglings6,
                         fledglings6$age.days>11 | 
                           (is.na(fledglings6$age.days) & is.na(fledglings6$HatchDate))
                         )
+
+
+##########################################################################
+# Assigning genetic dads to each BirdID
+##########################################################################
 
 # Now I'm going to add the genetic dad from the pedigree
 
@@ -410,6 +422,101 @@ offspring.12d.ped$SocialDadCertain <- ifelse(offspring.12d.ped$twodaysonBroodRef
 #                     offspring.12d.ped$Cohort!=2016,],
 #           "fledglings12/BirdIDsmissingGeneticDad.csv",
 #           row.names=FALSE)
+
+
+##########################################################################
+# Generating a list of breeders from 2014 to 2016
+##########################################################################
+
+# First I need the updated list of all breeders from 2014 to 2016
+
+# importing database with all those males that attempted breeding from 2014 to the 15th of July, 2016
+# SELECT tblBroods.BroodRef, tblBroods.BroodName, tblNestboxes.NestboxName, tblBroodEvents.EventNumber, tblBroodEvents.EventDate, tblBroods.SocialDadID, tblBroods.SocialDadCertain
+# FROM tblNestboxes INNER JOIN (tblBroods INNER JOIN tblBroodEvents ON tblBroods.BroodRef = tblBroodEvents.BroodRef) ON tblNestboxes.NestboxRef = tblBroods.NestboxRef
+# WHERE (((tblBroodEvents.EventNumber)=0) AND ((tblBroodEvents.EventDate)>#1/1/2014#));
+
+male.breeding <- read.table("allbreedingbirdsfrom2014-20160715-2.csv",header=TRUE,sep=",")
+
+
+# Just to make sure there are not BroodRef in BroodRef_SocialDadID.3 that don't exist in
+# male.breeding
+
+setdiff(BroodRef_SocialDadID.3$BroodRef,male.breeding$BroodRef)
+
+
+# Mergin both datasets
+
+male.breeding.1 <- merge(male.breeding,
+                         BroodRef_SocialDadID.3,
+                         by="BroodRef",
+                         all.x=TRUE)
+
+
+# Now I want to combine both SocialDadID to create the final one
+
+male.breeding.1$SocialDadID.final<-male.breeding.1$SocialDadID2
+
+male.breeding.1$SocialDadID.final<-ifelse(is.na(male.breeding.1$SocialDadID2),
+                                          male.breeding.1$SocialDadID,
+                                          male.breeding.1$SocialDadID2)
+
+
+# Checking those IDCertain=FALSE for SocialDadID only (SocialDadID2 was checked
+# in the previoius script):
+# 1708: bird observed with binos, no probs.
+# 1768: bird was also observed breeding later on, no probs.
+# 1944: bird was the genetic sired of all 4 offspring, no probs.
+# 1970: bird was also observed breeding later on, no probs.
+# 2049: bird was also observed breeding later on, no probs.
+# This means, I can trust SocialDadID.final and get rid off the rest, including
+# missing social dads here.
+
+male.breeding2 <- male.breeding.1[!(is.na(male.breeding.1$SocialDadID.final)),
+                                  c("BroodRef","BroodName",
+                                    "NestboxName","EventDate",
+                                    "SocialDadID.final")]
+
+
+# Then create and identifier
+
+male.breeding2$BirdID_BroodName <- factor(paste(male.breeding2$SocialDadID,male.breeding2$BroodName,sep="_"))
+
+male.breeding2 <- male.breeding2[,c("BirdID_BroodName","SocialDadID.final",
+                                    "BroodName","BroodRef")]
+
+
+# getting the year for the estimates to estimate the annual number of fledglings/recruits
+
+male.breeding2$yearCode <- factor(substr(male.breeding2$BroodName, 1, 1))
+
+male.breeding2$year <- ifelse(male.breeding2$yearCode=="N",
+                              2014,
+                              ifelse(male.breeding2$yearCode=="O",
+                                     2015,2016))
+
+
+# Creating an identifier bird_year and reducing dataset
+
+male.breeding2$BirdID_eventSW <- factor(paste(male.breeding2$SocialDadID,
+                                              male.breeding2$year,
+                                              sep="_"))
+
+male.breeding3 <- male.breeding2[,c("BirdID_eventSW",
+                                    "SocialDadID.final","year")]
+
+
+# removing repeated rows
+
+male.breeding4 <- unique(male.breeding3)
+
+
+
+
+
+
+
+
+
 
 
 # Now I can count the annual number of social and genetic offspring reaching the age  
