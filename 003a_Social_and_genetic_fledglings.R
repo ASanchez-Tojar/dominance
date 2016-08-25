@@ -207,7 +207,7 @@ fledglings6$SocialDadID2 <- ifelse(fledglings6$twodaysonBroodRef==1655,
                                    fledglings6$SocialDadID2)
 
 
-# *BroodRef 1665: N027: Dad's rings = ZZ/MO (book). - not enough rings
+# *BroodRef 1665: N027: Dad's rings = ZZ/MO (book).
 #  Genetic father of all 4 offspring in brood = DR/MO
 #  Therefore, SocialDadID2 <- 6532
 
@@ -225,7 +225,7 @@ fledglings6$SocialDadID2 <- ifelse(fledglings6$twodaysonBroodRef==1675,
                                    fledglings6$SocialDadID2)
 
 
-# *BroodRef 1683: N045: Dad's rings = ZZ/MO (book). - not enough rings
+# *BroodRef 1683: N045: Dad's rings = ZZ/MO (book).
 #  Genetic father of all 4 offspring in brood = DY/MO
 #  Therefore, SocialDadID2 <- 6527
 
@@ -297,7 +297,7 @@ fledglings6$SocialDadID2 <- ifelse(fledglings6$twodaysonBroodRef==1723,
                                    fledglings6$SocialDadID2)
 
 
-# *BroodRef 1726: N088: Dad's rings = ZZ/MC (book). - not enough rings
+# *BroodRef 1726: N088: Dad's rings = ZZ/MC (book). 
 #  Genetic father of all 4 offspring in brood = RG/MC
 #  Therefore, SocialDadID2 <- 5139
 
@@ -306,7 +306,7 @@ fledglings6$SocialDadID2 <- ifelse(fledglings6$twodaysonBroodRef==1726,
                                    fledglings6$SocialDadID2)
 
 
-# *BroodRef 1738: N100: Dad's rings = ZM/ZW (book). - not enough rings
+# *BroodRef 1738: N100: Dad's rings = ZM/ZW (book). 
 #  Genetic father of all 4 offspring in brood = BM/WB
 #  Therefore, SocialDadID2 <- 4757
 
@@ -315,7 +315,7 @@ fledglings6$SocialDadID2 <- ifelse(fledglings6$twodaysonBroodRef==1738,
                                    fledglings6$SocialDadID2)
 
 
-# *BroodRef 1777: N139: Dad's rings = MD/ZZ (book). - not enough rings
+# *BroodRef 1777: N139: Dad's rings = MD/ZZ (book). 
 #  Genetic father of all 4 offspring in brood = MD/DC
 #  Therefore, SocialDadID2 <- 6847
 
@@ -432,6 +432,10 @@ offspring.12d.ped$SocialDadCertain <- ifelse(offspring.12d.ped$twodaysonBroodRef
 # Generating a list of breeders from 2014 to 2016
 ##########################################################################
 
+##########################################################################
+# MALES
+##########################################################################
+
 # First I need the updated list of all breeders from 2014 to 2016
 
 # importing database with all those males that attempted breeding from 2014 to the 15th of July, 2016
@@ -478,24 +482,123 @@ male.breeding.1$SocialDadID.final<-ifelse(is.na(male.breeding.1$SocialDadID2),
 male.breeding2 <- unique(male.breeding.1[!(is.na(male.breeding.1$SocialDadID.final)),
                                          c("SocialDadID.final")])
 
+# Note: I only made the extra-effort of going through books and pedigree
+# for those missing dads in fledglings6, which only includea BirdIDs that
+# reached the stage of nestling, i.e. eggs and chiggs are not included. 
+# Including those could increase the number of SocialDads recovered
+# because it could include broods that were left out before. Althogh this
+# SocialDadIDs are anyway in "all.males.breeding" (see below), I'm
+# interested in having a full list of social dads to subsequently check if
+# some of those actually had 0 fledglings reaching the age of 12 d.
+
+# Therefore, I'm going to make the extra effort of checking those broods
+# that I din't check before and see if I can recover more SocialDadIDs
+
+# First thing is to check how many more BroodRef without SocialDad assigned
+# are in the total list compare to the one I already checked: = 25!
+
+setdiff(unique(male.breeding[is.na(male.breeding$SocialDadID),c("BroodRef")]),
+        unique(fledglings6.noDad$twodaysonBroodRef))
+
+
+##########################################################################################
+
+# Only one more Social Dad could be recovered
+
+# BroodRef 1905: O026: Dad's rings = ZO/ZM (database)
+#  Genetic father of all 3 offspring in brood = OV/MD
+#  Therefore, SocialDadID2 <- 6927
+
+# The ones left undecided:
+
+# BroodRef 1867: N229: Dad's rings = uknown (database)
+# BroodRef 1868: N230: Dad's rings = uknown (book)
+# BroodRef 1869: N231: Dad's rings = uknown (database)
+# BroodRef 1870: N232: Dad's rings = uknown (database)
+# BroodRef 1871: N233: Dad's rings = uknown (database)
+# BroodRef 1872: N234: Dad's rings = MO/ (database). Non of the 4 offspring were genotyped.
+# BroodRef 1873: N235: Dad's rings = uknown (database)
+# BroodRef 1899: O020: Dad's rings = uknown (database)
+# BroodRef 1900: O021: Dad's rings = /WY (database). No offspring sampled.
+# BroodRef 1903: O024: Dad's rings = uknown (database)
+# BroodRef 1994: O115: Dad's rings = MO/B?C? (database). No offspring sampled.
+# BroodRef 2008: N248: Dad's rings = MD/ZZ (database & book)
+# BroodRef 2010: N250: Dad's rings = MD/WY or RW/MO, both showed up in videos (database & book)
+# BroodRef 2013: N253: Dad's rings = GN/CM (database & book) or WN/CM (database)
+# BroodRef 2016: N256: Dad's rings = ZZ/ZM. - not enough rings (database)
+
+##########################################################################################
+
+
+
+# The remaining BroodRef correspond to 2016, for which no pedigree is
+# available yet. Therefore, I cannot check anything.
+
 # But I can also see if there are some dads that pop up as genetic fathers
 # but were not recorded as social
 
 # List of genetic fathers from 2014-2016 extracted from pedigree:
 # Notice that the genetic pedigree isn't available for 2016 or birds caught
-# unringed in February 2016.
+# unringed in February 2016. (*that meant 2 more birds than before in the final list)
 
-genetic.males.breeding <- unique(pedigree[pedigree$Cohort>2013 & !(is.na(pedigree$sire)),
+genetic.males.breeding <- unique(pedigree[pedigree$Cohort>2013 & 
+                                            !(is.na(pedigree$sire)),
                                    c("sire")])
 
 
-# How many pop up as genetic but not social parents? 21 
+# How many pop up as genetic but not social parents? 23 
 
 setdiff(genetic.males.breeding,male.breeding2)
 
 all.males.breeding <- c(male.breeding2,
                             setdiff(genetic.males.breeding,male.breeding2))
 
+
+
+
+
+
+##########################################################################
+# FEMALES
+##########################################################################
+
+# First I need the updated list of all breeders from 2014 to 2016
+
+# SELECT tblBroods.BroodRef, tblBroods.BroodName, tblNestboxes.NestboxName, tblBroodEvents.EventNumber, tblBroodEvents.EventDate, tblBroods.SocialMumID, tblBroods.SocialMumCertain
+# FROM tblNestboxes INNER JOIN (tblBroods INNER JOIN tblBroodEvents ON tblBroods.BroodRef = tblBroodEvents.BroodRef) ON tblNestboxes.NestboxRef = tblBroods.NestboxRef
+# WHERE (((tblBroodEvents.EventNumber)=0) AND ((tblBroodEvents.EventDate)>#1/1/2014#));
+
+# importing database with all those males that attempted breeding from 2014 to the 15th of July, 2016
+
+
+female.breeding <- read.table("allbreedingfemalesfrom2014-20160715.csv",header=TRUE,sep=",")
+
+
+# First, I'm going to check, as I did before, if I can recover some femaless
+# by looking at the books and the pedigree.
+# Run:
+#female.breeding[is.na(female.breeding$SocialMumID),c("BroodRef")]
+
+# # Just to make sure there are not BroodRef in BroodRef_SocialDadID.3 (those leaving some 
+# # offspring) that don't exist in male.breeding
+# 
+# setdiff(BroodRef_SocialDadID.3$BroodRef,male.breeding$BroodRef)
+# 
+# 
+# # Mergin both datasets
+# 
+# male.breeding.1 <- merge(male.breeding,
+#                          BroodRef_SocialDadID.3,
+#                          by="BroodRef",
+#                          all.x=TRUE)    
+
+
+
+
+
+
+
+                                               
 
 ##########################################################################
 # Generating a variable for recruits: 0 = didn't recruit, 1 = recruited
@@ -505,6 +608,13 @@ offspring.12d.ped$recruited <- ifelse(!(offspring.12d.ped$BirdID %in% male.breed
                                                   0,1)
 
 setdiff(BroodRef_SocialDadID.3$SocialDadID2,male.breeding2)
+
+
+
+
+
+
+
 ##########################################################################
 # Final fitness databases
 ##########################################################################
