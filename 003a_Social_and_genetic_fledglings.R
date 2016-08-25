@@ -481,10 +481,13 @@ male.breeding2 <- unique(male.breeding.1[!(is.na(male.breeding.1$SocialDadID.fin
 # But I can also see if there are some dads that pop up as genetic fathers
 # but were not recorded as social
 
-# List of genetic fathers from 2014-2016:
+# List of genetic fathers from 2014-2016 extracted from pedigree:
+# Notice that the genetic pedigree isn't available for 2016 or birds caught
+# unringed in February 2016.
 
-genetic.males.breeding <- unique(fledglings6.ped[!(is.na(fledglings6.ped$GeneticDadID)),
-                                 c("GeneticDadID")])
+genetic.males.breeding <- unique(pedigree[pedigree$Cohort>2013 & !(is.na(pedigree$sire)),
+                                   c("sire")])
+
 
 # How many pop up as genetic but not social parents? 21 
 
