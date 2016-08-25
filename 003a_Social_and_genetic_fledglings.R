@@ -16,7 +16,7 @@
 # It also adds the fosterBroodRef for those birds that were crossfostered. This is used
 # to assing to each BirdID the DadID that took care of it from at least day 2 (when we
 # crossfoster) to day 12. After that, the pedigree is brought in to assign a genetic sire
-# to each BirdID. Notice that there are some individuals (N=110?), for which brood is uknown
+# to each BirdID. Notice that there are some individuals (N=110?), for which brood is unkown
 # this is because we caught them as fledglings or 1st winter individuals.
 
 # During this script, I also looked at those Birds for which we did not have SocialDadID
@@ -338,14 +338,14 @@ fledglings6$SocialDadID2 <- ifelse(fledglings6$twodaysonBroodRef==1892,
 # BroodRef 1674: N036: Dad's rings = ZZ/ZM (book). - not enough rings
 # BroodRef 1704: N066: Dad's rings = ZM/ZZ (book). - not enough rings
 # BroodRef 1716: N078: Dad's rings = ZZ/ZM (book). - not enough rings
-# BroodRef 1724: N086: Dad's rings = uknown
-# BroodRef 1731: N093: Dad's rings = uknown
+# BroodRef 1724: N086: Dad's rings = unkown
+# BroodRef 1731: N093: Dad's rings = unkown
 # BroodRef 1732: N094: Dad's rings = ZZ/ZM (book). - not enough rings
-# BroodRef 1770: N132: Dad's rings = uknown
+# BroodRef 1770: N132: Dad's rings = unkown
 # BroodRef 1813: N175: Dad's rings = ZZ/ZM (book). - not enough rings
-# BroodRef 1822: N184: Dad's rings = uknown
-# BroodRef 1849: N211: Dad's rings = uknown
-# BroodRef 1852: N214: Dad's rings = uknown
+# BroodRef 1822: N184: Dad's rings = unkown
+# BroodRef 1849: N211: Dad's rings = unkown
+# BroodRef 1852: N214: Dad's rings = unkown
 # BroodRef 1860: N222: Dad's rings = ZZ/ZM (book). - not enough rings
 # BroodRef 2028: P010: No pedigree for 2016 yet
 # BroodRef 2054: P036: No pedigree for 2016 yet
@@ -476,11 +476,9 @@ male.breeding.1$SocialDadID.final<-ifelse(is.na(male.breeding.1$SocialDadID2),
 # 1944: bird was the genetic sired of all 4 offspring, no probs.
 # 1970: bird was also observed breeding later on, no probs.
 # 2049: bird was also observed breeding later on, no probs.
-# This means, I can trust SocialDadID.final and get rid off the rest, including
-# missing social dads here. This is the list of social breeders from 2014 to 2016:
 
-male.breeding2 <- unique(male.breeding.1[!(is.na(male.breeding.1$SocialDadID.final)),
-                                         c("SocialDadID.final")])
+# This means, I can trust SocialDadID.final and get rid off the rest, including
+# missing social dads here. 
 
 # Note: I only made the extra-effort of going through books and pedigree
 # for those missing dads in fledglings6, which only includea BirdIDs that
@@ -505,30 +503,47 @@ setdiff(unique(male.breeding[is.na(male.breeding$SocialDadID),c("BroodRef")]),
 
 # Only one more Social Dad could be recovered
 
-# BroodRef 1905: O026: Dad's rings = ZO/ZM (database)
-#  Genetic father of all 3 offspring in brood = OV/MD
-#  Therefore, SocialDadID2 <- 6927
+# *BroodRef 1905: O026: Dad's rings = ZO/ZM (database)
+#  Genetic father of all 3 offspring in brood = OV/MD (BirdID: 6927)
+
+male.breeding.1$SocialDadID.final <- ifelse(male.breeding.1$BroodRef==1905,
+                                            6927,
+                                            male.breeding.1$SocialDadID.final)
 
 # The ones left undecided:
 
-# BroodRef 1867: N229: Dad's rings = uknown (database)
-# BroodRef 1868: N230: Dad's rings = uknown (book)
-# BroodRef 1869: N231: Dad's rings = uknown (database)
-# BroodRef 1870: N232: Dad's rings = uknown (database)
-# BroodRef 1871: N233: Dad's rings = uknown (database)
+# BroodRef 1867: N229: Dad's rings = unkown (database)
+# BroodRef 1868: N230: Dad's rings = unkown (book)
+# BroodRef 1869: N231: Dad's rings = unkown (database)
+# BroodRef 1870: N232: Dad's rings = unkown (database)
+# BroodRef 1871: N233: Dad's rings = unkown (database)
 # BroodRef 1872: N234: Dad's rings = MO/ (database). Non of the 4 offspring were genotyped.
-# BroodRef 1873: N235: Dad's rings = uknown (database)
-# BroodRef 1899: O020: Dad's rings = uknown (database)
+# BroodRef 1873: N235: Dad's rings = unkown (database)
+# BroodRef 1899: O020: Dad's rings = unkown (database)
 # BroodRef 1900: O021: Dad's rings = /WY (database). No offspring sampled.
-# BroodRef 1903: O024: Dad's rings = uknown (database)
+# BroodRef 1903: O024: Dad's rings = unkown (database)
 # BroodRef 1994: O115: Dad's rings = MO/B?C? (database). No offspring sampled.
 # BroodRef 2008: N248: Dad's rings = MD/ZZ (database & book)
 # BroodRef 2010: N250: Dad's rings = MD/WY or RW/MO, both showed up in videos (database & book)
 # BroodRef 2013: N253: Dad's rings = GN/CM (database & book) or WN/CM (database)
-# BroodRef 2016: N256: Dad's rings = ZZ/ZM. - not enough rings (database)
+# BroodRef 2016: N256: Dad's rings = ZZ/ZM (database) - not enough rings 
+# BroodRef 2033: No pedigree for 2016 yet
+# BroodRef 2052: No pedigree for 2016 yet
+# BroodRef 2072: No pedigree for 2016 yet
+# BroodRef 2073: No pedigree for 2016 yet
+# BroodRef 2104: No pedigree for 2016 yet
+# BroodRef 2105: No pedigree for 2016 yet
+# BroodRef 2123: No pedigree for 2016 yet
+# BroodRef 2129: No pedigree for 2016 yet
+# BroodRef 2135: No pedigree for 2016 yet
 
 ##########################################################################################
 
+
+# Finally, this is the list of social breeders from 2014 to 2016:
+
+male.breeding2 <- unique(male.breeding.1[!(is.na(male.breeding.1$SocialDadID.final)),
+                                         c("SocialDadID.final")])
 
 
 # The remaining BroodRef correspond to 2016, for which no pedigree is
@@ -546,16 +561,12 @@ genetic.males.breeding <- unique(pedigree[pedigree$Cohort>2013 &
                                    c("sire")])
 
 
-# How many pop up as genetic but not social parents? 23 
+# How many pop up as genetic but not social parents? 22 
 
 setdiff(genetic.males.breeding,male.breeding2)
 
 all.males.breeding <- c(male.breeding2,
                             setdiff(genetic.males.breeding,male.breeding2))
-
-
-
-
 
 
 ##########################################################################
@@ -574,23 +585,192 @@ all.males.breeding <- c(male.breeding2,
 female.breeding <- read.table("allbreedingfemalesfrom2014-20160715.csv",header=TRUE,sep=",")
 
 
-# First, I'm going to check, as I did before, if I can recover some femaless
+# First, I'm going to check, as I did before, if I can recover some females
 # by looking at the books and the pedigree.
-# Run:
-#female.breeding[is.na(female.breeding$SocialMumID),c("BroodRef")]
 
-# # Just to make sure there are not BroodRef in BroodRef_SocialDadID.3 (those leaving some 
-# # offspring) that don't exist in male.breeding
-# 
-# setdiff(BroodRef_SocialDadID.3$BroodRef,male.breeding$BroodRef)
-# 
-# 
-# # Mergin both datasets
-# 
-# male.breeding.1 <- merge(male.breeding,
-#                          BroodRef_SocialDadID.3,
-#                          by="BroodRef",
-#                          all.x=TRUE)    
+# Note: I wouldn't need to do this for this project because by combining pedigree and
+# social mum IDs I would any way get the full list. However, by doing this now, I can 
+# increase the number of social mum IDs to look at maternal effects in the following
+# project. So, let's do it and then it is done!
+
+# Run:
+female.breeding[is.na(female.breeding$SocialMumID),c("BroodRef")]
+
+# Notice that for mums, we always assume that the genetic mother of the chicks is also
+# the social mother of the chicks. This is because we have never found a confirmed case
+# of egg dumping in the Lundy Island population, even though we have a genetic and social
+# pedigree covering 16 years of data, so far...
+
+# *BroodRef 1642: N004: Mum's rings = ZZ/ZM (database & book)
+#  Genetic mother of all 4 offspring in brood = RB/MC (BirdID: 5140)
+
+female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1642,
+                                       5140,
+                                       female.breeding$SocialMumID)
+
+# *BroodRef 1696: N058: Mum's rings = ZZ/ZZ (book)
+#  Genetic mother of all 3 offspring in brood = WN/RM (BirdID: 7868)
+
+female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1696,
+                                       7868,
+                                       female.breeding$SocialMumID)
+
+# *BroodRef 1708: N070: Mum's rings = MD/O?D (book)
+#  Genetic mother of all 4 offspring in brood = MD/RD (BirdID: 6772)
+
+female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1708,
+                                       6772,
+                                       female.breeding$SocialMumID)
+
+# *BroodRef 1715: N077: Mum's rings = ZZ/ZM (book)
+#  Genetic mother of all 3 (genotyped) offspring in brood = ON/MO (BirdID: 6463)
+
+female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1715,
+                                       6463,
+                                       female.breeding$SocialMumID)
+
+# *BroodRef 1724: N086: Mum's rings = unkown (book)
+#  Genetic mother of 2 out of 3 offspring in brood, the other offspring has NA assigned = OD/MO (BirdID: 6473)
+
+female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1724,
+                                       6473,
+                                       female.breeding$SocialMumID)
+
+# *BroodRef 1744: N106: Mum's rings = ZZ/ZM (book)
+#  Genetic mother of all 4 offspring in brood = WW/RM (BirdID: 6925)
+
+female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1744,
+                                       6925,
+                                       female.breeding$SocialMumID)
+
+# *BroodRef 1747: N109: Mum's rings = MD/ (book)
+#  Genetic mother of all 2 offspring in brood = DM/VV (BirdID: 6919)
+
+female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1747,
+                                       6919,
+                                       female.breeding$SocialMumID)
+
+# *BroodRef 1751: N113: Mum's rings = NN/
+#  Genetic mother of all 3 genotyped offspring in brood = NN/DM (BirdID: 7119)
+
+female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1751,
+                                       7119,
+                                       female.breeding$SocialMumID)
+
+# *BroodRef 1768: N130: Mum's rings = unknown (book)
+#  Genetic mother of all 2 genotyped offspring in brood = WW/MD (BirdID: 6974)
+
+female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1768,
+                                       6974,
+                                       female.breeding$SocialMumID)
+
+# *BroodRef 1816: N178: Mum's rings = unkown (book)
+#  Genetic mother of 1 out of 4 offspring in brood, the other offspring has NA assigned = OD/MO (BirdID: 6473)
+
+female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1816,
+                                       6473,
+                                       female.breeding$SocialMumID)
+
+# *BroodRef 1862: N224: Mum's rings = unkown (database)
+#  Genetic mother of all 2 offspring in brood = WB/DM (BirdID: 7086)
+
+female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1862,
+                                       7086,
+                                       female.breeding$SocialMumID)
+
+# *BroodRef 1867: N229: Mum's rings = unkown (database)
+#  Genetic mother of all 2 offspring in brood = CC/OM (BirdID: 6640)
+
+female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1867,
+                                       6640,
+                                       female.breeding$SocialMumID)
+
+# *BroodRef 1869: N231: Mum's rings = unkown (database)
+#  Genetic mother of all 2 offspring in brood = DM/VV (BirdID: 6919)
+
+female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1869,
+                                       6919,
+                                       female.breeding$SocialMumID)
+
+# *BroodRef 1899: O020: Mum's rings = unkown (database)
+#  Genetic mother of the only offspring in brood = MO/NN (BirdID: 6267)
+
+female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1899,
+                                       6267,
+                                       female.breeding$SocialMumID)
+
+# *BroodRef 1901: O022: Mum's rings = ZZ/ZM (database)
+#  Genetic mother of all 3 offspring in brood = BN/MG (BirdID: 8636)
+
+female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1901,
+                                       8636,
+                                       female.breeding$SocialMumID)
+
+# *BroodRef 1903: O024: Mum's rings = unkown (database)
+#  Genetic mother of the only offspring in brood = RM/GG (BirdID: 7894)
+
+female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1903,
+                                       7894,
+                                       female.breeding$SocialMumID)
+
+# *BroodRef 1938: O059: Mum's rings = ZZ/ZM (database)
+#  Genetic mother of all 4 offspring in brood = BN/MG (BirdID: 8636)
+
+female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1938,
+                                       8636,
+                                       female.breeding$SocialMumID)
+
+# *BroodRef 1952: O073: Mum's rings = ZW/OM (database)
+#  Genetic mother of all 4 offspring in brood = WN/OM (BirdID: 6536)
+
+female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1952,
+                                       6536,
+                                       female.breeding$SocialMumID)
+
+# BroodRef 1970: O091: Mum's rings = unkown (database)
+#  Genetic mother of the only genotyped offspring in brood = MG/CC (BirdID: 8300)
+
+female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1970,
+                                       8300,
+                                       female.breeding$SocialMumID)
+
+# The ones left undecided:
+
+# BroodRef 1695: N057: Mum's rings = ZZ/ZM (book)
+#  Genetic mother of all 4 offspring in brood = NA (unkown, surprisingly)
+# BroodRef 1818: N180: Mum's rings = MD/ZC (database)
+#  Genetic mother of 2 out of 5 offspring in brood = WN/MW (BirdID: 4854) Last seen alive August 2015
+#  Genetic mother of 1 out of 5 offspring in brood = WB/MO (BirdID: 6499) Last seen alive July 2013
+#  Genetic mother of 1 out of 5 offspring in brood = MD/NC (BirdID: 6767) Last seen alive June 2014
+#  The other offspring left unassigned
+# BroodRef 1861: N223: Mum's rings = ZO/MW (database). Offspring's genotype not available
+# BroodRef 1870: N232: Mum's rings = unkown (database). No offspring genotyped.
+# BroodRef 1871: N233: Mum's rings = unkown (database). No offspring genotyped.
+# BroodRef 1873: N235: Mum's rings = unkown (database). No offspring genotyped.
+# BroodRef 1890: O011: Mum's rings = YB/MD? (database). No offspring.
+# BroodRef 1925: O046: Mum's rings = unkown (database). No offspring.
+# BroodRef 1971: O092: Mum's rings = ZM/CG (database). No offspring.
+# BroodRef 1981: O102: Mum's rings = ZM/CC (database). No offspring.
+# BroodRef 1985: O106: Mum's rings = NY/ZM (database). No offspring.
+# BroodRef 1986: O107: Mum's rings = NY/ZM (database). No offspring.
+# BroodRef 1994: O115: Mum's rings = MO/N?B? (database). No offspring.
+# BroodRef 1997: O118: Mum's rings = NY/ZM (database). No offspring.
+# BroodRef 2005: N245: Mum's rings = ZM/ZZ (database). No offspring.
+# BroodRef 2006: N246: Mum's rings = NY/ZM (database). No offspring.
+# BroodRef 2007: N247: Mum's rings = ZZ/ZZ (database). No offspring.
+# BroodRef 2012: N252: Mum's rings = OM/ZZ (database). No offspring.
+# BroodRef 2023: No pedigree for 2016 yet
+# BroodRef 2033: No pedigree for 2016 yet
+# BroodRef 2048: No pedigree for 2016 yet
+# BroodRef 2052: No pedigree for 2016 yet
+# BroodRef 2055: No pedigree for 2016 yet
+# BroodRef 2062: No pedigree for 2016 yet
+# BroodRef 2063: No pedigree for 2016 yet
+# BroodRef 2072: No pedigree for 2016 yet
+# BroodRef 2104: No pedigree for 2016 yet
+# BroodRef 2105: No pedigree for 2016 yet
+# BroodRef 2137: No pedigree for 2016 yet
+
 
 
 
