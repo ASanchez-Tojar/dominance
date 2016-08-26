@@ -497,6 +497,9 @@ genetic.per.Dad.2$BirdID_eventSW <- factor(paste(genetic.per.Dad.2$GeneticDadID,
 
 
 
+
+
+
 ##########################################################################
 # Annual number of genetic recruits
 ##########################################################################
