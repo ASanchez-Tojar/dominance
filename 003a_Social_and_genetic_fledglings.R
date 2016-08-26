@@ -2,7 +2,7 @@
 # Github profile: https://github.com/ASanchez-Tojar
 
 # Script created on the 19th of August, 2016
-# Script last updated on the 23rd of August, 2016
+# Script last updated on the 26th of August, 2016
 
 ########################################################################################################
 # Description of script and Instructions
@@ -593,8 +593,8 @@ female.breeding <- read.table("allbreedingfemalesfrom2014-20160715.csv",header=T
 # increase the number of social mum IDs to look at maternal effects in the following
 # project. So, let's do it and then it is done!
 
-# Run:
-female.breeding[is.na(female.breeding$SocialMumID),c("BroodRef")]
+# # Run:
+# female.breeding[is.na(female.breeding$SocialMumID),c("BroodRef")]
 
 # Notice that for mums, we always assume that the genetic mother of the chicks is also
 # the social mother of the chicks. This is because we have never found a confirmed case
@@ -613,126 +613,126 @@ female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1642,
 
 female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1696,
                                        7868,
-                                       female.breeding$SocialMumID)
+                                       female.breeding$SocialMumID2)
 
 # *BroodRef 1708: N070: Mum's rings = MD/O?D (book)
 #  Genetic mother of all 4 offspring in brood = MD/RD (BirdID: 6772)
 
 female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1708,
                                        6772,
-                                       female.breeding$SocialMumID)
+                                       female.breeding$SocialMumID2)
 
 # *BroodRef 1715: N077: Mum's rings = ZZ/ZM (book)
 #  Genetic mother of all 3 (genotyped) offspring in brood = ON/MO (BirdID: 6463)
 
 female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1715,
                                        6463,
-                                       female.breeding$SocialMumID)
+                                       female.breeding$SocialMumID2)
 
 # *BroodRef 1724: N086: Mum's rings = unkown (book)
 #  Genetic mother of 2 out of 3 offspring in brood, the other offspring has NA assigned = OD/MO (BirdID: 6473)
 
 female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1724,
                                        6473,
-                                       female.breeding$SocialMumID)
+                                       female.breeding$SocialMumID2)
 
 # *BroodRef 1744: N106: Mum's rings = ZZ/ZM (book)
 #  Genetic mother of all 4 offspring in brood = WW/RM (BirdID: 6925)
 
 female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1744,
                                        6925,
-                                       female.breeding$SocialMumID)
+                                       female.breeding$SocialMumID2)
 
 # *BroodRef 1747: N109: Mum's rings = MD/ (book)
 #  Genetic mother of all 2 offspring in brood = DM/VV (BirdID: 6919)
 
 female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1747,
                                        6919,
-                                       female.breeding$SocialMumID)
+                                       female.breeding$SocialMumID2)
 
 # *BroodRef 1751: N113: Mum's rings = NN/
 #  Genetic mother of all 3 genotyped offspring in brood = NN/DM (BirdID: 7119)
 
 female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1751,
                                        7119,
-                                       female.breeding$SocialMumID)
+                                       female.breeding$SocialMumID2)
 
 # *BroodRef 1768: N130: Mum's rings = unknown (book)
 #  Genetic mother of all 2 genotyped offspring in brood = WW/MD (BirdID: 6974)
 
 female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1768,
                                        6974,
-                                       female.breeding$SocialMumID)
+                                       female.breeding$SocialMumID2)
 
 # *BroodRef 1816: N178: Mum's rings = unkown (book)
-#  Genetic mother of 1 out of 4 offspring in brood, the other offspring has NA assigned = OD/MO (BirdID: 6473)
+#  Genetic mother of 1 out of 4 offspring in brood, the other offspring have NA assigned = OD/MO (BirdID: 6473)
 
 female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1816,
                                        6473,
-                                       female.breeding$SocialMumID)
+                                       female.breeding$SocialMumID2)
 
 # *BroodRef 1862: N224: Mum's rings = unkown (database)
 #  Genetic mother of all 2 offspring in brood = WB/DM (BirdID: 7086)
 
 female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1862,
                                        7086,
-                                       female.breeding$SocialMumID)
+                                       female.breeding$SocialMumID2)
 
 # *BroodRef 1867: N229: Mum's rings = unkown (database)
 #  Genetic mother of all 2 offspring in brood = CC/OM (BirdID: 6640)
 
 female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1867,
                                        6640,
-                                       female.breeding$SocialMumID)
+                                       female.breeding$SocialMumID2)
 
 # *BroodRef 1869: N231: Mum's rings = unkown (database)
 #  Genetic mother of all 2 offspring in brood = DM/VV (BirdID: 6919)
 
 female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1869,
                                        6919,
-                                       female.breeding$SocialMumID)
+                                       female.breeding$SocialMumID2)
 
 # *BroodRef 1899: O020: Mum's rings = unkown (database)
 #  Genetic mother of the only offspring in brood = MO/NN (BirdID: 6267)
 
 female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1899,
                                        6267,
-                                       female.breeding$SocialMumID)
+                                       female.breeding$SocialMumID2)
 
 # *BroodRef 1901: O022: Mum's rings = ZZ/ZM (database)
 #  Genetic mother of all 3 offspring in brood = BN/MG (BirdID: 8636)
 
 female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1901,
                                        8636,
-                                       female.breeding$SocialMumID)
+                                       female.breeding$SocialMumID2)
 
 # *BroodRef 1903: O024: Mum's rings = unkown (database)
 #  Genetic mother of the only offspring in brood = RM/GG (BirdID: 7894)
 
 female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1903,
                                        7894,
-                                       female.breeding$SocialMumID)
+                                       female.breeding$SocialMumID2)
 
 # *BroodRef 1938: O059: Mum's rings = ZZ/ZM (database)
 #  Genetic mother of all 4 offspring in brood = BN/MG (BirdID: 8636)
 
 female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1938,
                                        8636,
-                                       female.breeding$SocialMumID)
+                                       female.breeding$SocialMumID2)
 
 # *BroodRef 1952: O073: Mum's rings = ZW/OM (database)
 #  Genetic mother of all 4 offspring in brood = WN/OM (BirdID: 6536)
 
 female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1952,
                                        6536,
-                                       female.breeding$SocialMumID)
+                                       female.breeding$SocialMumID2)
 
 # BroodRef 1970: O091: Mum's rings = unkown (database)
 #  Genetic mother of the only genotyped offspring in brood = MG/CC (BirdID: 8300)
 
 female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1970,
                                        8300,
-                                       female.breeding$SocialMumID)
+                                       female.breeding$SocialMumID2)
 
 # The ones left undecided:
 
@@ -772,22 +772,55 @@ female.breeding$SocialMumID2 <- ifelse(female.breeding$BroodRef==1970,
 # BroodRef 2137: No pedigree for 2016 yet
 
 
+# Now I can save it for posterior analyses
+
+write.csv(female.breeding,
+          "BroodRef_SocialMumID_2014-2016_Updated.csv",     
+          row.names=FALSE)
 
 
+# But also, let's create a list of female breeders to estimate recruits later on
+
+# Finally, this is the list of social female breeders from 2014 to 2016:
+
+female.breeding.1 <- unique(female.breeding[!(is.na(female.breeding$SocialMumID2)),
+                                         c("SocialMumID2")])
 
 
+# But I can also see if there are some mums that pop up as genetic mothers
+# but were not recorded as social
+
+# List of genetic mothers from 2014-2016 extracted from pedigree:
+# Notice that the genetic pedigree isn't available for 2016 or birds caught
+# unringed in February 2016.
+
+genetic.females.breeding <- unique(pedigree[pedigree$Cohort>2013 & 
+                                            !(is.na(pedigree$dam)),
+                                          c("dam")])
 
 
+# How many pop up as genetic but not social parents? 9 
+
+setdiff(genetic.females.breeding,female.breeding.1)
+
+all.females.breeding <- c(female.breeding.1,
+                          setdiff(genetic.females.breeding,female.breeding.1))
+
+
+##########################################################################
+# Final breeder list (males and females)
+##########################################################################
+
+all.birds.breeding <- c(all.males.breeding,all.females.breeding)
                                                
 
 ##########################################################################
 # Generating a variable for recruits: 0 = didn't recruit, 1 = recruited
 ##########################################################################
 
-offspring.12d.ped$recruited <- ifelse(!(offspring.12d.ped$BirdID %in% male.breeding2),
+offspring.12d.ped$recruited <- ifelse(!(offspring.12d.ped$BirdID %in% all.birds.breeding),
                                                   0,1)
 
-setdiff(BroodRef_SocialDadID.3$SocialDadID2,male.breeding2)
 
 
 
