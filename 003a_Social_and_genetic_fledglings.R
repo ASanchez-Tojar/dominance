@@ -678,3 +678,4 @@ fitness.full <- fitness.full[order(fitness.full$BirdID,
 
 row.names(fitness.full) <- NULL
 
+
