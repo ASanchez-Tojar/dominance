@@ -8,6 +8,8 @@ List of scripts and actions:
 
 002_Elo-rating_estimation: it estimates the Standardized (0-1) Elo-rating (StElo) for each individual. By default, one StElo will be estimated per event per individual, but there is commented code that will do it for the whole database or even more detailed.
 
+003a_Social_and_genetic_fledglings: it creates a database with BirdID and their four mesures of fitness. It is needed before running 003_Databases_construction_Lundy.
+
 003_Databases_construction_Lundy: it generates the Lundy databases needed for the following statistical analyses.
 
 003_Databases_construction_Seewiesen: it generates the final database to be used for the captive analyses. It does the whole process, so it would be equivalent to what the scripts: 002_Elo-rating_estimation and 003_Databases_construction_Lundy do for the Lundy data.
