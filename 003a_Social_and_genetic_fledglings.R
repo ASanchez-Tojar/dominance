@@ -2,7 +2,7 @@
 # Github profile: https://github.com/ASanchez-Tojar
 
 # Script created on the 19th of August, 2016
-# Script last updated on the 26th of August, 2016
+# Script last updated on the 29th of August, 2016
 
 ########################################################################################################
 # Description of script and Instructions
@@ -73,7 +73,7 @@ db3 <- read.table("fledglings12/BirdID_HatchingDate_builtinquery.csv",
                   header=TRUE,sep=",")
 
 
-# database 5
+# database 4
 # SELECT tblFosterBroods.BirdID, tblFosterBroods.FosterBrood, tblFosterBroods.FosterDate
 # FROM tblFosterBroods;
 
@@ -95,6 +95,10 @@ fledglings3 <- merge(fledglings2,db4,by="BirdID",all.x=TRUE)
 
 
 # Changing the names of some variables
+
+fledglings3 <- fledglings3[,c("BirdID","Cohort","DeathDate",
+                              "BroodRef","LastLiveRecord","Source",
+                              "HatchDate","FosterBrood")]
 
 names(fledglings3) <- c("BirdID","Cohort","DeathDate",
                         "OriginalBroodRef","LastLiveRecord","Source",
@@ -384,25 +388,23 @@ social.per.Dad.2$BirdID_eventSW <- factor(paste(social.per.Dad.2$SocialDadID,
 # 8307_2015: 1 inaccessible wild nest with chicks ca. 11 days
 
 # For the 2016, wait for the database update before continuing, a few are:
-# 6270_2016: 1 inaccessible wild nest, but update after summer
-# 6648_2016: 1 inaccessible wild nest?, but update after summer
-# 6688_2016: NOT EXCLUDED, only nestbox nest failed, but update after summer
-# 6768_2016: 1 inaccessible wild nest with chicks ca. 6 days, but update after summer
-# 6789_2016: 1 inaccessible wild nest, but update after summer
-# 8307_2016
-# 8390_2016
-# 8414_2016
-# 8486_2016
-# 8499_2016
-# 8642_2016
-# 8652_2016
-# 8697_2016
-# 8715_2016
+# 6270_2016: 1 inaccessible wild nest
+# 6648_2016: 2 inaccessible wild nests
+# 6688_2016: NOT EXCLUDED, only nestbox nest failed
+# 6768_2016: 1 inaccessible wild nest with chicks ca. 6 days
+# 6789_2016: 1 inaccessible wild nest
+# 8307_2016: 1 inaccessible wild nest
+# 8486_2016: 1 inaccessible wild nest
+# 8642_2016: 2 accessible wild nests, but in the second chicks were ringed on day 10! So, I'll exclude this one
+# 8652_2016: 1 inaccessible wild nest
+# 8697_2016: NOT EXCLUDED, 1 accessible wild nest that failed
+# 8706_2016: 1 inaccessible wild nest
 
 # The list to be included with 0 social fitness for the specific year:
 
 certain <- c("6517_2015","6778_2014","6793_2014",
-             "7019_2014","7273_2014","7984_2015")
+             "7019_2014","7273_2014","7984_2015",
+             "6688_2016","8697_2016")
 
 # subsetting those that we can assign a 0 fitness
 
@@ -428,6 +430,7 @@ social.per.Dad.3 <- rbind(social.per.Dad.2,social.fitness.0)
 
 names(social.per.Dad.3) <- c("SocialDadID","year","soc.fledg.12d","BirdID_eventSW")
 
+# hist(social.per.Dad.3$soc.fledg.12d,breaks=22)
 
 ##########################################################################
 # Annual number of social recruits
@@ -475,7 +478,7 @@ social.fitness$soc.recruits <- ifelse(social.fitness$year!=2016,
                                              social.fitness$soc.recruits),
                                       social.fitness$soc.recruits)
 
-
+# hist(social.fitness$soc.recruits,breaks=3,right=FALSE)
 
 ##########################################################################
 # Annual number of genetic fledglings reaching day 12 after hatching
@@ -489,17 +492,189 @@ genetic.per.Dad.2$BirdID_eventSW <- factor(paste(genetic.per.Dad.2$GeneticDadID,
                                                  sep="_"))
 
 
-# Now I need to add those that had 0 genetic fledglings, so I need the full
-# list of breeders
+# Now I need to add those that had 0 genetic fledglings. For this, I'm going
+# to use the full list of breeders, i.e. social and genetic. I know there will
+# be some bias in the estimates for the parents of those birds that we caught
+# us unringed because we obviously caught only the ones that survived long
+# enough. However, there will always be some bias in the fitness estimates,
+# and in this population that bias shouldn't be very big. I think it is a
+# better solution that excluding birds that we catch as unringed.
+
+# I need to create a list of all the breeders and the year
+
+# I will start with the genetic ones as this is very easy
+
+genetic.males.breeding.year <- unique(pedigree[pedigree$Cohort>2013 & 
+                                                 !(is.na(pedigree$sire)),
+                                               c("sire","Cohort")])
+
+genetic.males.breeding.year$BirdID_eventSW <- factor(paste(genetic.males.breeding.year$sire,
+                                                           genetic.males.breeding.year$Cohort,
+                                                           sep="_"))
 
 
+names(genetic.males.breeding.year) <- c("Dad","year","BirdID_eventSW")
+
+# Now I need the same for the social list cleaned above. I exclude 2016 because we
+# don't have the pedigree yet
+
+social.males.breeding.year <- unique(SocialDads.year[!(is.na(SocialDads.year$SocialDadID)) &
+                                                       SocialDads.year$SocialDadCertain==TRUE &                                                       
+                                                       SocialDads.year$year!=2016,
+                                                     c("SocialDadID",
+                                                       "year","BirdID_eventSW")])
 
 
+names(social.males.breeding.year) <- c("Dad","year","BirdID_eventSW")
 
 
+# Now I can put both together to generate the full list of breeders per year
 
+males.breeding.year <- unique(rbind(genetic.males.breeding.year,
+                                    social.males.breeding.year))
+
+
+# Now I can check which ones from that list aren't in the genetic.per.Dad.2
+# database and assign them a 0 fitness
+
+males.breeding.year$freq <- ifelse((males.breeding.year$BirdID_eventSW %in%
+                                     setdiff(males.breeding.year$BirdID_eventSW,
+                                             genetic.per.Dad.2$BirdID_eventSW)),
+                                   0,
+                                   NA)
+
+
+males.breeding.year.0 <- males.breeding.year[!(is.na(males.breeding.year$freq)),
+                                             c("Dad","year","freq","BirdID_eventSW")]
+
+
+names(males.breeding.year.0) <- c("GeneticDadID","Cohort","freq","BirdID_eventSW")
+
+
+# FINAL DATABASE
+
+# rbinding both database
+
+genetic.per.Dad.3 <- rbind(genetic.per.Dad.2,males.breeding.year.0)
+
+names(genetic.per.Dad.3) <- c("GeneticDadID","year","gen.fledg.12d","BirdID_eventSW")
+
+# hist(genetic.per.Dad.3$freq,breaks=24,right=FALSE)
 
 
 ##########################################################################
 # Annual number of genetic recruits
 ##########################################################################
+
+# I can just count the number of recruits per GeneticDad when recruited=1
+# after that, I'll put it together with the previous database and assign
+# 0 to those in genetic.per.Dad.3 that did not leave any
+
+genetic.recruits.per.Dad <- count(offspring.12d.ped[offspring.12d.ped$recruited==1 & 
+                                                      (!(is.na(offspring.12d.ped$recruited))),],
+                                  c("GeneticDadID","Cohort"))
+
+genetic.recruits.per.Dad.2 <- genetic.recruits.per.Dad[!(is.na(genetic.recruits.per.Dad$GeneticDadID)),]
+
+
+# identifier to merge both databases
+
+genetic.recruits.per.Dad.2$BirdID_eventSW <- factor(paste(genetic.recruits.per.Dad.2$GeneticDadID,
+                                                          genetic.recruits.per.Dad.2$Cohort,
+                                                          sep="_"))
+
+
+genetic.recruits.per.Dad.3 <- genetic.recruits.per.Dad.2[,c("BirdID_eventSW","freq")]
+
+names(genetic.recruits.per.Dad.3) <- c("BirdID_eventSW","gen.recruits")
+
+
+##########################################################################
+# Final genetic fitness database
+##########################################################################
+
+# merging fledglings and recruits
+
+genetic.fitness <- merge(genetic.per.Dad.3,
+                         genetic.recruits.per.Dad.3,
+                         by="BirdID_eventSW",
+                         all.x=TRUE)
+
+# assigning 0 recruits to those social that breed in 2014 and 2015
+
+genetic.fitness$gen.recruits <- ifelse(genetic.fitness$Cohort!=2016,
+                                       ifelse(is.na(genetic.fitness$gen.recruits),
+                                              0,
+                                              genetic.fitness$gen.recruits),
+                                       genetic.fitness$gen.recruits)
+
+
+names(genetic.fitness) <- c("BirdID_eventSW","GeneticDadID",
+                            "year","gen.fledg.12d","gen.recruits")
+
+# hist(genetic.fitness$gen.recruits,breaks=4,right=FALSE)
+
+
+##########################################################################
+# FINAL FITNESS DATABASE
+##########################################################################
+
+# # There are quite a few individuals_year in the genetic.fitness database
+# # that don't show up in the social.fitness
+# 
+# setdiff(genetic.fitness$BirdID_eventSW,
+#         social.fitness$BirdID_eventSW)
+# 
+# # All the ones showing up in social.fitness but not in genetic.fitness
+# # correspond to 2016, when there is no pedigree available.
+# 
+# setdiff(social.fitness$BirdID_eventSW,
+#         genetic.fitness$BirdID_eventSW)
+
+social.fitness.red <- social.fitness[,c("BirdID_eventSW",
+                                        "soc.fledg.12d",
+                                        "soc.recruits")]
+
+
+fitness <- merge(genetic.fitness,
+                 social.fitness.red,
+                 by="BirdID_eventSW",
+                 all.x=TRUE)
+
+# Now I have to add the ones from 2016, which are still missing after that merge()
+
+social.fitness.2016 <- social.fitness[social.fitness$year==2016,]
+
+social.fitness.2016$gen.fledg.12d <- NA
+
+social.fitness.2016$gen.recruits <- NA
+
+social.fitness.2016 <- social.fitness.2016[,c("BirdID_eventSW","SocialDadID",
+                                              "year","gen.fledg.12d",
+                                              "gen.recruits","soc.fledg.12d",
+                                              "soc.recruits")]
+
+names(social.fitness.2016) <- c("BirdID_eventSW","GeneticDadID",
+                                "year","gen.fledg.12d",
+                                "gen.recruits","soc.fledg.12d",
+                                "soc.recruits")
+
+
+
+##########################################################################
+# FINAL FITNESS DATABASE (for real)
+##########################################################################
+
+fitness.full <- rbind(fitness,social.fitness.2016)
+
+
+names(fitness.full) <- c("BirdID_eventSW","BirdID",
+                         "year","gen.fledg.12d",
+                         "gen.recruits","soc.fledg.12d",
+                         "soc.recruits")
+
+fitness.full <- fitness.full[order(fitness.full$BirdID,
+                                   fitness.full$year),]
+
+row.names(fitness.full) <- NULL
+
