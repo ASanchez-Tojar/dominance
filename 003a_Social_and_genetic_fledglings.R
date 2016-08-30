@@ -2,7 +2,6 @@
 # Github profile: https://github.com/ASanchez-Tojar
 
 # Script created on the 19th of August, 2016
-# Script last updated on the 29th of August, 2016
 
 ########################################################################################################
 # Description of script and Instructions
@@ -67,8 +66,7 @@
 # Packages needed
 ########################################################################################################
 
-# packages needed to be loaded for this script (a couple of them might be only needed in the following
-# script)
+# packages needed to be loaded for this script
 
 library(plyr)
 
@@ -79,14 +77,15 @@ rm(list=ls())
 
 
 ##########################################################################
-# Different datasets from sparrow main database
+# Loading different datasets from sparrow main database
 ##########################################################################
 
-# I'll do the same but withouth using the query designer
 # database 1
+
 # SELECT tblBirdID.BirdID, tblBirdID.Cohort, tblBirdID.BroodRef, tblBirdID.DeathDate
 # FROM tblBirdID
 # WHERE (((tblBirdID.Cohort)>2013) AND ((tblBirdID.LastStage)>1));
+
 # Check that Date is in the right format, i.e. 4/25/2011
 
 db1 <- read.table("fledglings12/BirdID-Cohort-DeathDate-BroodRef.csv",
@@ -94,8 +93,10 @@ db1 <- read.table("fledglings12/BirdID-Cohort-DeathDate-BroodRef.csv",
 
 
 # database 2
+
 # SELECT sys_LastSeenAlive.BirdID, sys_LastSeenAlive.LastLiveRecord, sys_LastSeenAlive.Source
 # FROM sys_LastSeenAlive;
+
 # Check that Date is in the right format, i.e. 4/25/2011
 
 db2 <- read.table("fledglings12/BirdID-LastSeenAlive-Source.csv",
@@ -103,8 +104,10 @@ db2 <- read.table("fledglings12/BirdID-LastSeenAlive-Source.csv",
 
 
 # database 3
+
 # SELECT sys_EggAndHatchDates.BirdID, sys_EggAndHatchDates.HatchDate
 # FROM sys_EggAndHatchDates;
+
 # Check that Date is in the right format, i.e. 4/25/2011
 
 db3 <- read.table("fledglings12/BirdID_HatchingDate_builtinquery.csv",
@@ -123,16 +126,26 @@ db4 <- read.table("fledglings12/BirdID_FosterBroodRef.csv",
 # Generating a database with all information needed per BirdID
 ##########################################################################
 
-# Let's start merging them to get the final one
+# Let's start merging them to get the final one:
+
+
+# Adding the LastSeeAlive date for each BirdID born between 2014 and 2016
 
 fledglings1 <- merge(db1,db2,by="BirdID",all.x=TRUE)
 
+
+# Adding the Hatching date for each BirdID born between 2014 and 2016
+
 fledglings2 <- merge(fledglings1,db3,by="BirdID",all.x=TRUE)
+
+
+# Adding the FosterBroodRef for each crossfostered BirdID born between 2014
+# and 2016. Those with NA here will correspond to the non-crossfostered ones.
 
 fledglings3 <- merge(fledglings2,db4,by="BirdID",all.x=TRUE)
 
 
-# Changing the names of some variables
+# Changing the order and then the names of some variables
 
 fledglings3 <- fledglings3[,c("BirdID","Cohort","DeathDate",
                               "BroodRef","LastLiveRecord","Source",
@@ -143,28 +156,33 @@ names(fledglings3) <- c("BirdID","Cohort","DeathDate",
                         "HatchDate","FosterBroodRef")
 
 
-# getting rid off those that we don't know the hatching date from #not active now
+# getting rid off those that we don't know the hatching date from
+### this step is no longer needed. Left for future changes.
 
-fledglings4 <- fledglings3#[!(is.na(fledglings3$HatchDate)),]
+fledglings4 <- fledglings3#[!(is.na(fledglings3$HatchDate)),] #no longer active
 
 
 # Estimating last known age
-# "+1" gives as the age that we expect since, for example, 4/10/2016 - 4/1/2016 = 9,
-# instead of 10 days old :)
+# "+1" gives age as I expect it. This is because 4/10/2016 - 4/1/2016 = 9,
+# instead of 10 days old. But for me it means 10 days alive, brain cheating :)
 
 fledglings4$age.days <- 
   as.numeric(as.Date(fledglings4$LastLiveRecord, format="%m/%d/%Y")-
                as.Date(fledglings4$HatchDate, format="%m/%d/%Y")) + 1
 
 
-# There are some NA due to some LastLiveRecord missing. Those missing values are of birds
-# that died when we first saw them, i.e. we found the dead to start with
+# There are some NA due to some LastLiveRecord missing. Those missing values
+# are of birds that died when we first saw them, i.e. we found them dead to
+# start with
+### this step is no longer needed. Left for future changes.
 
-fledglings5 <- fledglings4#[!(is.na(fledglings4$age.days)),] #not active now
+fledglings5 <- fledglings4#[!(is.na(fledglings4$age.days)),] #no longer active
 
 
 # Now I want to create a variable with the BroodRef where the individual lived from
-# day 2 (i.e. day of crossfostering) on.
+# day 2 (i.e. day of crossfostering) on. See description above. Therefore, if a bird
+# has a fosterbrood, that's the reference it's assigned to it, otherwise, the
+# original one it's assigned. For birds caught as fledglings on, BroodRef is uknown
 
 fledglings5$twodaysonBroodRef<-fledglings5$FosterBroodRef
 
@@ -177,11 +195,9 @@ fledglings5$twodaysonBroodRef<-ifelse(is.na(fledglings5$twodaysonBroodRef),
 # Assigning social dads to each BirdID
 ##########################################################################
 
-# Now, I will add the ID of the Social Dad that took care of the individual from 
-# day 2 on. Thus, this takes into account crossfostering and assumes that the social
-# influence of the dad during the first 24h is negligible. This is indeed very likely
-# in our population as nest mortality mainly occurs from day 2 to day 5, but it is
-# true that this also assumess that carry-over effects are negligible
+# Now, I will add the ID of the Social Dad that took care of the individual 
+# from day 2 on. 
+
 
 # First, load the database with BroodRef and SocialDadID (updated from script 003aa)
 
@@ -189,7 +205,8 @@ SocialDads <- read.table("BroodRef_SocialDadID_IDCertain_2014-2016_Updated.csv",
                          header=TRUE,sep=",")
 
 
-# merging it in relation to twodaysonBroodRef
+# merging it in relation to twodaysonBroodRef so that I assign to each bird
+# the dad that took care of him at least from day 2 on.
 
 fledglings6 <- merge(fledglings5,SocialDads,
                      by.x="twodaysonBroodRef",
@@ -206,6 +223,8 @@ fledglings6 <- merge(fledglings5,SocialDads,
 pedigree <- read.table("fledglings12/PedigreeUpToIncl2015-versionwithNA.txt",
                        header=TRUE,sep="\t")
 
+
+# reducing database before merging
 
 pedigree.red <- pedigree[,c("id","sire")]
 names(pedigree.red) <- c("BirdID","GeneticDadID")
@@ -224,24 +243,25 @@ fledglings6.ped <- merge(fledglings6,pedigree.red,
 # MALES
 ##########################################################################
 
-# But I can also see if there are some dads that pop up as genetic fathers
-# but were not recorded as social, and add them to the list of social dads
-
 # List of genetic fathers from 2014-2016 extracted from pedigree:
 # Notice that the genetic pedigree isn't available for 2016 or birds caught
-# unringed in February 2016. (*that meant 2 more birds than before in the final list)
+# unringed in February 2016.
 
 genetic.males.breeding <- unique(pedigree[pedigree$Cohort>2013 & 
                                             !(is.na(pedigree$sire)),
                                    c("sire")])
 
 
-# How many pop up as genetic but not social parents? 21 
+# Adding those that pop up as genetic but not social parents
+
+# First making a clean list of social dads
 
 SocialDads.list <- unique(SocialDads[!(is.na(SocialDads$SocialDadID)) & 
                                        SocialDads$SocialDadCertain==TRUE,
                                      c("SocialDadID")])
 
+# Then adding those that pop up as genetic but not as social to make
+# a full list of breeders.
 
 all.males.breeding <- c(SocialDads.list,
                         setdiff(genetic.males.breeding,SocialDads.list))
@@ -257,24 +277,25 @@ SocialMums <- read.table("BroodRef_SocialMumID_IDCertain_2014-2016_Updated.csv",
                          header=TRUE,sep=",")
 
 
-# But I can also see if there are some dads that pop up as genetic fathers
-# but were not recorded as social, and add them to the list of social dads
-
-# List of genetic fathers from 2014-2016 extracted from pedigree:
+# List of genetic mums from 2014-2016 extracted from pedigree:
 # Notice that the genetic pedigree isn't available for 2016 or birds caught
-# unringed in February 2016. (*that meant 2 more birds than before in the final list)
+# unringed in February 2016.
 
 genetic.females.breeding <- unique(pedigree[pedigree$Cohort>2013 & 
                                               !(is.na(pedigree$dam)),
                                             c("dam")])
 
+# Adding those that pop up as genetic but not social parents
 
-# How many pop up as genetic but not social parents? 9 
+# First making a clean list of social mums
 
 SocialMums.list <- unique(SocialMums[!(is.na(SocialMums$SocialMumID)) & 
                                        SocialMums$SocialMumCertain==TRUE,
                                      c("SocialMumID")])
 
+
+# Then adding those that pop up as genetic but not as social to make
+# a full list of breeders.
 
 all.females.breeding <- c(SocialMums.list, 
                           setdiff(genetic.females.breeding,SocialMums.list))
@@ -290,6 +311,10 @@ all.birds.breeding <- c(all.males.breeding,all.females.breeding)
 ##########################################################################
 # Generating a variable for recruits: 0 = didn't recruit, 1 = recruited
 ##########################################################################
+
+# This is, if BirdID showed up in all.birds.breeding, it means that it
+# recruited. Note that 2016 is excluded as we don't have data for the 
+# following season, i.e. no data for 2017 yet.
 
 fledglings6.ped$recruited <- ifelse(fledglings6.ped$Cohort==2016,
                                       NA,
@@ -309,11 +334,12 @@ fledglings6.ped$recruited <- ifelse(fledglings6.ped$Cohort==2016,
 # 12days old individuals
 ##########################################################################
 
-# Subsetting the database according to those that survived, at least, to day 12
-# This way we can estimate the number of fledglings per individual. I leave NAs as
-# I also want to estimate the number of genetic fledglings. But I remove those age.days = NA
-# for which HatchDate is known, this is because these ones refer to chicks that were first
-# recorded as dead individuals, i.e. they did not make it to 12 days old
+# Subsetting the database according to those that survived, at least, to 
+# day 12. This way we can estimate the number of fledglings per individual. 
+# I leave NAs as I also want to estimate the number of genetic fledglings. 
+# But I remove those age.days = NA for which HatchDate is known, this is 
+# because these ones refer to chicks that were first recorded as dead 
+# individuals, i.e. they did not make it to 12 days old
 
 offspring.12d.ped <- subset(fledglings6.ped,
                             fledglings6.ped$age.days>11 | 
@@ -332,19 +358,21 @@ offspring.12d.ped <- subset(fledglings6.ped,
 ##########################################################################
 
 # Now I can count the annual number of social offspring reaching the age
-# of 12 days per social and genetic dad respectively. I just need to count
-# the number of times each SocialDadID2 and GeneticDadID show up in each
-# year. 
+# of 12 days per social dad. I just need to count the number of times each 
+# SocialDadID shows up in each year. 
 
 social.per.Dad <- count(offspring.12d.ped,c("SocialDadID","Cohort"))
+
+# Getting ridd off the counts for SocialDadID==NA
 social.per.Dad.2 <- social.per.Dad[!(is.na(social.per.Dad$SocialDadID)),]
 
 
-# To include 0 reproduction, I need to check all social breeders each year
-# to assigned them 0 if they are not in social.per.Dad.2
+# To include birds with 0 fitness, I need to check all social breeders each 
+# year to assigned them 0 if they are not in social.per.Dad.2
+
 
 # First, load a database with BroodRef and BroodName to get year for each
-# BroodRef in SocialDads
+# BroodRef in SocialDads, which is the full list of social breeders
 
 # SELECT tblBroods.BroodRef, tblBroods.BroodName
 # FROM tblBroods;
@@ -368,6 +396,7 @@ SocialDads.year$year <- ifelse(SocialDads.year$yearCode=="N",
                               ifelse(SocialDads.year$yearCode=="O",
                                      2015,2016))
 
+
 # Creating an identifier bird_year to subset later on
 
 SocialDads.year$BirdID_eventSW <- as.factor(ifelse(!(is.na(SocialDads.year$SocialDadID)),
@@ -377,12 +406,16 @@ SocialDads.year$BirdID_eventSW <- as.factor(ifelse(!(is.na(SocialDads.year$Socia
                                                    NA))
 
 
-# I also create an identifier for social.per.Dad.2
+# I also create an identifier for social.per.Dad.2, the social fledgling 
+# fitness database that I need to add 0's to
 
 social.per.Dad.2$BirdID_eventSW <- factor(paste(social.per.Dad.2$SocialDadID,
                                                 social.per.Dad.2$Cohort,
                                                 sep="_"))
 
+
+# I need to check all those socialdads that coudl potentially be assigned 
+# with 0 fitness. This is because I need to check if I can really say that.
 
 # sort(setdiff(SocialDads.year$BirdID_eventSW,
 #         social.per.Dad.2$BirdID_eventSW))
@@ -438,13 +471,14 @@ social.per.Dad.2$BirdID_eventSW <- factor(paste(social.per.Dad.2$SocialDadID,
 # 8697_2016: NOT EXCLUDED, 1 accessible wild nest that failed
 # 8706_2016: 1 inaccessible wild nest
 
-# The list to be included with 0 social fitness for the specific year:
+# After all, the list of birds for which I'm confident enough that they
+# have 0 social fitness is:
 
 certain <- c("6517_2015","6778_2014","6793_2014",
              "7019_2014","7273_2014","7984_2015",
              "6688_2016","8697_2016")
 
-# subsetting those that we can assign a 0 fitness
+# subsetting those that we can assign a 0 fitness from the SocialDads.year database
 
 social.fitness.0 <-unique(SocialDads.year[!(is.na(SocialDads.year$SocialDadID)) &
                                             SocialDads.year$SocialDadCertain==TRUE &
@@ -454,6 +488,9 @@ social.fitness.0 <-unique(SocialDads.year[!(is.na(SocialDads.year$SocialDadID)) 
 # Setting their fitness to 0
 
 social.fitness.0$freq <- 0
+
+
+# Changing the order of the variables for rbinding later on
 
 social.fitness.0 <- social.fitness.0[,c("SocialDadID","year","freq","BirdID_eventSW")]
 
@@ -470,6 +507,8 @@ names(social.per.Dad.3) <- c("SocialDadID","year","soc.fledg.12d","BirdID_eventS
 
 # hist(social.per.Dad.3$soc.fledg.12d,breaks=22)
 
+
+
 ##########################################################################
 # Annual number of social recruits
 ##########################################################################
@@ -481,6 +520,9 @@ names(social.per.Dad.3) <- c("SocialDadID","year","soc.fledg.12d","BirdID_eventS
 social.recruits.per.Dad <- count(offspring.12d.ped[offspring.12d.ped$recruited==1 & 
                                                      (!(is.na(offspring.12d.ped$recruited))),],
                                  c("SocialDadID","Cohort"))
+
+
+# Getting ridd off the counts for SocialDadID==NA
 
 social.recruits.per.Dad.2 <- social.recruits.per.Dad[!(is.na(social.recruits.per.Dad$SocialDadID)),]
 
@@ -508,7 +550,8 @@ social.fitness <- merge(social.per.Dad.3,
                         by="BirdID_eventSW",
                         all.x=TRUE)
 
-# assigning 0 recruits to those social that breed in 2014 and 2015
+# assigning 0 recruits to those social dads with soc.recruits==NA that 
+# breed in 2014 and 2015. @016 excluded because we don't know yet.
 
 social.fitness$soc.recruits <- ifelse(social.fitness$year!=2016,
                                       ifelse(is.na(social.fitness$soc.recruits),
@@ -518,12 +561,25 @@ social.fitness$soc.recruits <- ifelse(social.fitness$year!=2016,
 
 # hist(social.fitness$soc.recruits,breaks=3,right=FALSE)
 
+
+
 ##########################################################################
 # Annual number of genetic fledglings reaching day 12 after hatching
 ##########################################################################
 
+# Now I can count the annual number of genetic offspring reaching the age
+# of 12 days per genetic dad. I just need to count the number of times each 
+# GeneticDadID shows up in each year. 
+
 genetic.per.Dad <- count(offspring.12d.ped,c("GeneticDadID","Cohort"))
+
+
+# Getting ridd off the counts for GeneticDadID==NA
+
 genetic.per.Dad.2 <- genetic.per.Dad[!(is.na(genetic.per.Dad$GeneticDadID)),]
+
+
+# creating a BirdID_year identifier for later on
 
 genetic.per.Dad.2$BirdID_eventSW <- factor(paste(genetic.per.Dad.2$GeneticDadID,
                                                  genetic.per.Dad.2$Cohort,
@@ -531,20 +587,17 @@ genetic.per.Dad.2$BirdID_eventSW <- factor(paste(genetic.per.Dad.2$GeneticDadID,
 
 
 # Now I need to add those that had 0 genetic fledglings. For this, I'm going
-# to use the full list of breeders, i.e. social and genetic. I know there will
-# be some bias in the estimates for the parents of those birds that we caught
-# us unringed because we obviously caught only the ones that survived long
-# enough. However, there will always be some bias in the fitness estimates,
-# and in this population that bias shouldn't be very big. I think it is a
-# better solution that excluding birds that we catch as unringed.
+# to use the full list of breeders, i.e. social and genetic. 
 
-# I need to create a list of all the breeders and the year
-
-# I will start with the genetic ones as this is very easy
+# I need to create a list of all the breeders and the year, I will start with 
+# the genetic ones as that is very easy
 
 genetic.males.breeding.year <- unique(pedigree[pedigree$Cohort>2013 & 
                                                  !(is.na(pedigree$sire)),
                                                c("sire","Cohort")])
+
+
+# creating a BirdID_year identifier for later on
 
 genetic.males.breeding.year$BirdID_eventSW <- factor(paste(genetic.males.breeding.year$sire,
                                                            genetic.males.breeding.year$Cohort,
@@ -553,8 +606,9 @@ genetic.males.breeding.year$BirdID_eventSW <- factor(paste(genetic.males.breedin
 
 names(genetic.males.breeding.year) <- c("Dad","year","BirdID_eventSW")
 
-# Now I need the same for the social list cleaned above. I exclude 2016 because we
-# don't have the pedigree yet
+
+# Now I need the same for the social list cleaned above. I exclude 2016 
+# because we don't have the pedigree yet
 
 social.males.breeding.year <- unique(SocialDads.year[!(is.na(SocialDads.year$SocialDadID)) &
                                                        SocialDads.year$SocialDadCertain==TRUE &                                                       
@@ -582,6 +636,8 @@ males.breeding.year$freq <- ifelse((males.breeding.year$BirdID_eventSW %in%
                                    NA)
 
 
+# selecting only those few with 0 fitness
+
 males.breeding.year.0 <- males.breeding.year[!(is.na(males.breeding.year$freq)),
                                              c("Dad","year","freq","BirdID_eventSW")]
 
@@ -598,6 +654,7 @@ genetic.per.Dad.3 <- rbind(genetic.per.Dad.2,males.breeding.year.0)
 names(genetic.per.Dad.3) <- c("GeneticDadID","year","gen.fledg.12d","BirdID_eventSW")
 
 # hist(genetic.per.Dad.3$freq,breaks=24,right=FALSE)
+
 
 
 ##########################################################################
@@ -627,6 +684,7 @@ genetic.recruits.per.Dad.3 <- genetic.recruits.per.Dad.2[,c("BirdID_eventSW","fr
 names(genetic.recruits.per.Dad.3) <- c("BirdID_eventSW","gen.recruits")
 
 
+
 ##########################################################################
 # Final genetic fitness database
 ##########################################################################
@@ -640,15 +698,15 @@ genetic.fitness <- merge(genetic.per.Dad.3,
 
 # assigning 0 recruits to those social that breed in 2014 and 2015
 
-genetic.fitness$gen.recruits <- ifelse(genetic.fitness$Cohort!=2016,
+genetic.fitness$gen.recruits <- ifelse(genetic.fitness$year!=2016,
                                        ifelse(is.na(genetic.fitness$gen.recruits),
                                               0,
                                               genetic.fitness$gen.recruits),
                                        genetic.fitness$gen.recruits)
 
 
-names(genetic.fitness) <- c("BirdID_eventSW","GeneticDadID",
-                            "year","gen.fledg.12d","gen.recruits")
+# names(genetic.fitness) <- c("BirdID_eventSW","GeneticDadID",
+#                             "year","gen.fledg.12d","gen.recruits")
 
 # hist(genetic.fitness$gen.recruits,breaks=4,right=FALSE)
 
@@ -663,8 +721,8 @@ names(genetic.fitness) <- c("BirdID_eventSW","GeneticDadID",
 # setdiff(genetic.fitness$BirdID_eventSW,
 #         social.fitness$BirdID_eventSW)
 # 
-# # All the ones showing up in social.fitness but not in genetic.fitness
-# # correspond to 2016, when there is no pedigree available.
+# # However, All the ones showing up in social.fitness but not in 
+# # genetic.fitness correspond to 2016, when there is no pedigree available.
 # 
 # setdiff(social.fitness$BirdID_eventSW,
 #         genetic.fitness$BirdID_eventSW)
@@ -678,6 +736,7 @@ fitness <- merge(genetic.fitness,
                  social.fitness.red,
                  by="BirdID_eventSW",
                  all.x=TRUE)
+
 
 # Now I have to add the ones from 2016, which are still missing after that merge()
 
@@ -716,4 +775,9 @@ fitness.full <- fitness.full[order(fitness.full$BirdID,
 
 row.names(fitness.full) <- NULL
 
+# cor(fitness.full[,c("gen.fledg.12d",
+#                     "gen.recruits","soc.fledg.12d",
+#                     "soc.recruits")],use="complete.obs")
 
+
+write.csv(fitness.full,"fledglings12/fitness.full.csv",row.names=FALSE)
