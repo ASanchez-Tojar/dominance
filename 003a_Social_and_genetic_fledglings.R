@@ -786,16 +786,16 @@ write.csv(fitness.full,"fledglings12/fitness.full.csv",row.names=FALSE)
 # Saving some histograms
 
 p1 <- ggplot(fitness.full, aes(x=gen.fledg.12d, fill=as.factor(year))) +
-  geom_histogram(binwidth=.5, alpha=.5, position="dodge")
+  geom_histogram(binwidth=1, alpha=.5, position="identity")
 
 p2 <- ggplot(fitness.full, aes(x=gen.recruits, fill=as.factor(year))) +
-  geom_histogram(binwidth=.5, alpha=.5, position="dodge")
+  geom_histogram(binwidth=1, alpha=.5, position="identity")
 
 p3 <- ggplot(fitness.full, aes(x=soc.fledg.12d, fill=as.factor(year))) +
-  geom_histogram(binwidth=.5, alpha=.5, position="dodge")
+  geom_histogram(binwidth=1, alpha=.5, position="identity")
 
 p4 <- ggplot(fitness.full, aes(x=soc.recruits, fill=as.factor(year))) +
-  geom_histogram(binwidth=.5, alpha=.5, position="dodge")
+  geom_histogram(binwidth=1, alpha=.5, position="identity")
 
 multiplot(p1,p3,p2,p4, cols=2)
 
