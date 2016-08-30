@@ -8,21 +8,59 @@
 # Description of script and Instructions
 ########################################################################################################
 
-# This script is to estimate the number of chicks reaching the age of 12 days for each 
-# social and genetic father in each year. It does this by extracting all BirdIDs except
-# unhatched and chigg BirdIDs (done in AccessDatabase query). Then it assigns to each bird 
-# the hatching date (if known) and the date of lastseenalive, which is then used to estimate
-# those BirdIDs that make it, at least, to their 12 day of life (what we call 12 days old).
-# It also adds the fosterBroodRef for those birds that were crossfostered. This is used
-# to assing to each BirdID the DadID that took care of it from at least day 2 (when we
-# crossfoster) to day 12. After that, the pedigree is brought in to assign a genetic sire
-# to each BirdID. Notice that there are some individuals (N=110?), for which brood is unkown
-# this is because we caught them as fledglings or 1st winter individuals.
+# This script is to estimate four measures of annual fitness for all breeding birds
+# on Lundy from 2014 to 2016. The four measures are:
 
-# During this script, I also looked at those Birds for which we did not have SocialDadID
-# available (mostly because of Dads missing rings). By comparing the information we had
-# on their remaining rings and the pedigree, I could decrease the number of missing
-# SocialDadIDs by a bit more than half (only ca. 4% missing, instead of ca. 9%)
+# (1) Annual number of social offspring surviving to day 12 after hatching: in short,
+# the age of each bird born from 2014 to 2016 is estimated using the hatching date of
+# the bird and the date of last seen alive. For each bird, I assigned a social dad ID.
+# Since we crossfoster great part of the broods each year, I decided that the social
+# dad ID assigned for each offspring would be the one of the dad that took care of it
+# from day 2 after hatching (when we crossfoster) on. Most post-hatching mortality
+# takes place from day 2 to 5 in our population (unpublished data). This measure
+# of fitness allows us to look at social effects of the Dad's phenotype on nestling
+# survival to independence. Importantly, this measure of fitness is the most common
+# measure used in previous studies looking at bib size and fitness in house sparrows,
+# which allows us to directly compare our results to what's been previously published.
+# As all measures of fitness, this measure has some biases. For example, some bias
+# comes from those broods for which there was no access, i.e. some of the broods
+# happening outside nestboxes. To account for this, I've excluded from the list of
+# social breeders all birds observed breeding in inaccessible nests and for which 
+# this measure of fitness was recorded as NA. Practically, this means that the 
+# estimate of this measure of fitness is NA instead of 0 for this birds. Thus, 0 
+# fitness was only assigned to those birds that were observed breeding in accessible 
+# nests and whose breeding failed before day 12 after hatching. Further biases come 
+# from birds that bred but were not observed doing so. These is probably negligible 
+# in our population as we do a lot of effor in monitoring all breeding occuring on 
+# Lundy, but also, it would be accounted for in the genetic measures of fitness (2)
+# and (4).
+
+# (2) Annual number of genetic offspring surviving to day 12 after hatching: in short,
+# this measure of fitness is estimated similarly to the one above. The main difference
+# being that the dad assigned is the genetic dad according to the genetic pedigree of
+# the population (only available for 2014 and 2015). This allows to look at genetic
+# effects of the Dad's phenoype on nestling survival to independence. Importantly, 
+# this measure of fitness takes into account the occurrence of extra-pair paternity. 
+# There would be some bias specific to this estimate, specifically, fitness would be
+# underestimated for those birds breeding in inaccessible wild nests, since we obtain 
+# great part of their genetic fitness (i.e. their within-pair fitness) after their 
+# offspring fledges (day 15-16 usually)
+
+# (3) Annual number of social recruits: in short, it is estimated using the same list
+# of breeders than (1). A bird is considered to be a recruit if it attempted breeding 
+# at least once, this involves all sort of breeding, social and genetic.This allows to 
+# look at social effects of the Dad's phenoype on nestling survival to breeding, i.e.
+# recruitment. It has been argued that bib size, which is supposedly a proxy of
+# dominance status, depends on the social dad (Griffith et al. 1999). We can test this
+# using this measure of fitness. Recruitment in our population is a very precise
+# measure due to the absent of migration and our effort which involves social and 
+# genetic information.
+
+# (4) Annual number of genetic recruits: in short, it is estimated using the same list
+# of breeders than (2), and in the same way as (3). This is probably the best mesure
+# of fitness as it is not affected by any bias in data collection in the previous
+# season. This allows to look at genetic effects of the Dad's phenoype on nestling
+# survival to breeding, for example, due to good genes.
 
 
 ########################################################################################################
