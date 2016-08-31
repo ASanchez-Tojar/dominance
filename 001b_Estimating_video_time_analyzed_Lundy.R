@@ -12,7 +12,6 @@
 
 # This script is to estimate how much time per day (and in total) we analyzed
 
-
 # Clear memory and get to know where you are
 rm(list=ls())
 #getwd()
