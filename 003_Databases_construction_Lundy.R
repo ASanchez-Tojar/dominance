@@ -3,7 +3,6 @@
 # Github profile: https://github.com/ASanchez-Tojar
 
 # Script created on the 3rd of March, 2016
-# Script last updated on the 24th of August, 2016
 
 ########################################################################################################
 # Description of script and Instructions
@@ -89,7 +88,7 @@ for(i in 1:nrow(elo_scores_all_events)){
 ccbirdidcohort <- birdsex.1[,c("Code","BirdID","SexEstimate","Cohort","CohortEstimated")]
 
 
-# adding that information to the elo_scores_all_events. "yuhu" is the new database with all info
+# adding that information to the elo_scores_all_events.
 
 elo_scores_all_events_age <- merge(elo_scores_all_events,ccbirdidcohort,
                                    by.x="individual",by.y="Code",
@@ -103,17 +102,8 @@ elo_scores_all_events_age$age <- elo_scores_all_events_age$eventSW - elo_scores_
 
 # individual identifier per event
 
-elo_scores_all_events_age$BirdID_eventSW <- paste(elo_scores_all_events_age$BirdID,
-                                                  elo_scores_all_events_age$eventSW,sep="_")
-
-
-elo_scores_all_events_age$BirdID_eventSW <- factor(elo_scores_all_events_age$BirdID_eventSW)
-
-
-# Sorting the database according to individual colour code and eventSW
-
-elo_scores_all_events_age <- elo_scores_all_events_age[order(elo_scores_all_events_age$individual, 
-                                                             elo_scores_all_events_age$eventSW),]
+elo_scores_all_events_age$BirdID_eventSW <- factor(paste(elo_scores_all_events_age$BirdID,
+                                                         elo_scores_all_events_age$eventSW,sep="_"))
 
 
 # the mean value of StElos per individual for the whole study period: 
@@ -122,7 +112,6 @@ numberofStEloperbird <-
   as.numeric(table(as.factor(elo_scores_all_events_age$BirdID)))
 
 summary(numberofStEloperbird[numberofStEloperbird!=0])
-
 
 
 #########################################################################################################
@@ -248,13 +237,11 @@ for(i in 1:nrow(visibleBadge.AST)){
 
 # Creating an identifier to merge this database witht the elo-rankings one
 
-visibleBadge.AST$BirdID_eventSW <- paste(visibleBadge.AST$BirdID,visibleBadge.AST$eventSW,sep="_")
+visibleBadge.AST$BirdID_eventSW <- factor(paste(visibleBadge.AST$BirdID,
+                                                visibleBadge.AST$eventSW,sep="_"))
 
 
 # Now we can finally estimate a mean visible badge per summer/winter
-
-visibleBadge.AST$BirdID_eventSW <- factor(visibleBadge.AST$BirdID_eventSW)
-
 
 ind.event.VB<-summaryBy(AvgOfEstimate ~ BirdID_eventSW, data = visibleBadge.AST, 
                         FUN = list(mean),na.rm=TRUE)
@@ -375,21 +362,29 @@ rank.TLandM.VB <- merge(rank.TLandM.VB.2,
 # # # 10.1.5. Final RANK database with fitness included
 #########################################################################################################
 
-# First adding fledglings
+# reducing fitness database before merging
 
-rank.TLandM.VB.fledg <- merge(rank.TLandM.VB,male.social.annualfledglings,
-                              by="BirdID_eventSW",all.x=TRUE)
+fitness.full.2 <- fitness.full[,c("BirdID_eventSW","gen.fledg.12d",
+                                  "gen.recruits","soc.fledg.12d",
+                                  "soc.recruits")]
 
+rank.TLandM.VB.fitness <- merge(rank.TLandM.VB,fitness.full.2,
+                                by="BirdID_eventSW",all.x=TRUE)
 
-# Second adding recruits
-
-rank.TLandM.VB.fledg.recruits <- merge(rank.TLandM.VB.fledg,male.social.annualrecruits,
-                                       by="BirdID_eventSW",all.x=TRUE)
+names(rank.TLandM.VB.fitness) <- c("BirdID_eventSW","BirdID","colourrings",
+                                   "StElo","eventSW","sex","cohort",
+                                   "cohortEstimated","age","tarsus",
+                                   "mass","bib","season","meanage",
+                                   "agewithin","bib.centred",
+                                   "gen.fledg.12d","gen.recruits",
+                                   "soc.fledg.12d","soc.recruits")
 
 
 # I'm saving this file for the following scripts
 
-write.csv(rank.TLandM.VB.fledg.recruits,"rank.TLandM.VB.fledg.recruits.csv",row.names=FALSE)
+write.csv(rank.TLandM.VB.fitness,
+          "finaldatabases/rank.TLandM.VB.fitness.csv",
+          row.names=FALSE)
 
 
 #########################################################################################################
@@ -402,16 +397,18 @@ intpereventSW <- morethan8pereventSW[,c("indevent","freqppereventSW")]
 
 names(intpereventSW)<-c("ind_eventSW","freqppereventSW")
 
-rank.TLandM.VB.fledg.recruits$ind_eventSW <- factor(paste(rank.TLandM.VB.fledg.recruits$individual,
-                                                          rank.TLandM.VB.fledg.recruits$eventSW,sep="_"))
+rank.TLandM.VB.fitness$ind_eventSW <- factor(paste(rank.TLandM.VB.fitness$individual,
+                                                   rank.TLandM.VB.fitness$eventSW,sep="_"))
 
-rank.TLandM.VB.fledg.recruits.9int <- merge(rank.TLandM.VB.fledg.recruits,intpereventSW,
-                                            by="ind_eventSW",all.y=TRUE)
+rank.TLandM.VB.fitness.9int <- merge(rank.TLandM.VB.fitness,intpereventSW,
+                                     by="ind_eventSW",all.y=TRUE)
 
 
 # I'm saving this file for the following scripts
 
-write.csv(rank.TLandM.VB.fledg.recruits.9int,"rank.TLandM.VB.fledg.recruits.9int.csv",row.names=FALSE)
+write.csv(rank.TLandM.VB.fitness.9int,
+          "finaldatabases/rank.TLandM.VB.fitness.9int.csv",
+          row.names=FALSE)
 
 
 #########################################################################################################
@@ -437,11 +434,19 @@ VB.TLandM <- merge(ind.event.VB2,ind.TLandM,by="BirdID",all.x=TRUE)
 
 # Now we can add Cohort to estimate age. But first we have to delete duplicated BirdIDs in ccbirdidcohort
 
-ccbirdidcohort2 <- ccbirdidcohort[,c("BirdID","Cohort","CohortEstimated")]
-ccbirdidcohort3 <- unique(ccbirdidcohort2)
+ccbirdidcohort2 <- unique(ccbirdidcohort[,c("BirdID","Cohort","CohortEstimated")])
 
 
-VB.TLandM.age <- merge(VB.TLandM,ccbirdidcohort3,by="BirdID",all.x=TRUE)
+VB.TLandM.age <- merge(VB.TLandM,ccbirdidcohort2,by="BirdID",all.x=TRUE)
+
+
+# the bird with missing Cohort is due to duplicated colour rings. It got its colour
+# rings back before the breeding season. Therefore, there is no reason to exclude it
+# from THIS database. I'll put back the information with this code.
+
+VB.TLandM.age$Cohort <- ifelse(is.na(VB.TLandM.age$Cohort),
+                               2013,
+                               VB.TLandM.age$Cohort)
 
 
 # the mean value of bib measurements per individual for the whole study period: 
@@ -477,19 +482,23 @@ VB.TLandM.age.2 <- do.call("rbind", as.list(
 
 # First we add fledglings
 
-VB.TLandM.age.fledg <- merge(VB.TLandM.age.2, male.social.annualfledglings,
-                             by="BirdID_eventSW",all.x=TRUE)
+VB.TLandM.age.fitness <- merge(VB.TLandM.age.2, fitness.full.2,
+                               by="BirdID_eventSW",all.x=TRUE)
 
 
-# Second we add recruits
-
-VB.TLandM.age.fledg.recruits <- merge(VB.TLandM.age.fledg, male.social.annualrecruits,
-                                      by="BirdID_eventSW",all.x=TRUE)
+names(VB.TLandM.age.fitness) <- c("BirdID_eventSW","BirdID","bib",
+                                  "eventSW","tarsus","mass",
+                                  "cohort","cohortEstimated",
+                                  "age","meanage","agewithin",
+                                  "gen.fledg.12d","gen.recruits",
+                                  "soc.fledg.12d","soc.recruits")
 
 
 # I'm saving this file for the following scripts
 
-write.csv(VB.TLandM.age.fledg.recruits,"VB.TLandM.age.fledg.recruits.csv",row.names=FALSE)
+write.csv(VB.TLandM.age.fitness,
+          "finaldatabases/VB.TLandM.age.fitness.csv",
+          row.names=FALSE)
 
 
 
@@ -497,27 +506,31 @@ write.csv(VB.TLandM.age.fledg.recruits,"VB.TLandM.age.fledg.recruits.csv",row.na
 # # 10.3. AGE and FITNESS database containing all the neccessary information
 #########################################################################################################
 
-# We first combine male.social.annualfledglings with male.social.annualrecruits
+age.fitness <- merge(fitness.full,ccbirdidcohort2,
+                     by="BirdID",all.x=TRUE)
 
-fledg.recruits <- merge(male.social.annualfledglings,male.social.annualrecruits,
-                        by="BirdID_eventSW",all.x=TRUE)
+# the 2 birds with missing Cohort is due to duplicated colour rings in the first place
+# and a new bird not included in ccbirdidcohort2 yet. I'll give them back their cohorts.
 
+age.fitness$Cohort <- ifelse(age.fitness$BirdID==7145,
+                               2013,
+                             age.fitness$Cohort)
 
-# Getting BirdID and eventSW as separate variables
-
-fledg.recruits$BirdID <- factor(substr(fledg.recruits$BirdID_eventSW, 1, 4)) 
-fledg.recruits$eventSW <- as.numeric(substr(fledg.recruits$BirdID_eventSW, 6, 9))
-
-
-# adding cohort to estimate age
-
-age.fledg.recruits <- merge(fledg.recruits,ccbirdidcohort3,
-                            by="BirdID",all.x=TRUE)
+age.fitness$Cohort <- ifelse(age.fitness$BirdID==9038,
+                               2015,
+                             age.fitness$Cohort)
 
 
-age.fledg.recruits$age <- age.fledg.recruits$eventSW - age.fledg.recruits$Cohort
+age.fitness$age <- age.fitness$year - age.fitness$Cohort
+
+
+names(age.fitness) <- c("BirdID","BirdID_eventSW","year",
+                        "gen.fledg.12d","gen.recruits",
+                        "soc.fledg.12d", "soc.recruits",
+                        "cohort","cohortEstimated","age")
+
 
 
 # I'm saving this file for the following scripts
 
-write.csv(age.fledg.recruits,"age.fledg.recruits.csv",row.names=FALSE)
+write.csv(age.fitness,"finaldatabases/age.fitness.csv",row.names=FALSE)
