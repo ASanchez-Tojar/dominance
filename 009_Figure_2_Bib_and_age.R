@@ -30,7 +30,6 @@ rm(list=ls())
 
 rank.TLandM.VB.fitness <- read.table("finaldatabases/rank.TLandM.VB.fitness.csv",header=TRUE,sep=",")
 VB.TLandM.age.fitness <- read.table("finaldatabases/VB.TLandM.age.fitness.csv",header=TRUE,sep=",")
-age.fitness <- read.table("finaldatabases/age.fitness.csv",header=TRUE,sep=",")
 
 
 # males subset (females and unknown excluded)
