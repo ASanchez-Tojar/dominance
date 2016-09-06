@@ -172,11 +172,7 @@ rgbing <- c(255,255,255)
 
 # few colours in rb
 
-lightblue <- c(166,206,227)/rgbing
-darkblue <- c(31,120,180)/rgbing
-#turquoise <- c(28,144,153)/rgbing
 turquoise <- c(49,163,84)/rgbing
-#blue <- c(166,189,219)/rgbing
 blue <- c(44,127,184)/rgbing
 
 
