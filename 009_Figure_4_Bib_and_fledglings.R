@@ -39,6 +39,12 @@ VB.TLandM.age.fitness.2 <- VB.TLandM.age.fitness[VB.TLandM.age.fitness$soc.fledg
 # SOCIAL FLEDGLINGS MODEL
 ################################################################
 
+
+data.plot6 <- VB.TLandM.age.fitness.2[!(is.na(VB.TLandM.age.fitness.2$age)) &
+                                        !(is.na(VB.TLandM.age.fitness.2$tarsus)) &
+                                        !(is.na(VB.TLandM.age.fitness.2$bib)),]
+
+
 mod.soc.fledg.bib <- lmer(soc.fledg.12d~
                             bib+
                             age+
@@ -46,14 +52,11 @@ mod.soc.fledg.bib <- lmer(soc.fledg.12d~
                             tarsus+
                             eventSW+
                             (1|BirdID),
-                          data=VB.TLandM.age.fitness.2)
+                          data=data.plot6)
 
 
 # subsetting only the necessary for the plotting of each model. 
 
-data.plot6 <- VB.TLandM.age.fitness.2[!(is.na(VB.TLandM.age.fitness.2$age)) &
-                                        !(is.na(VB.TLandM.age.fitness.2$tarsus)) &
-                                        !(is.na(VB.TLandM.age.fitness.2$bib)),]
 
 
 #simulating a posterior distribution with 5000 draws
@@ -154,6 +157,13 @@ VB.TLandM.age.fitness.4$gen.fledg.12d <- ifelse((VB.TLandM.age.fitness.4$BirdID_
 VB.TLandM.age.fitness.5 <- VB.TLandM.age.fitness.4[!(is.na(VB.TLandM.age.fitness.4$gen.fledg.12d)),]
 
 
+# subsetting only the necessary for the plotting of each model. 
+
+data.plot7 <- VB.TLandM.age.fitness.5[!(is.na(VB.TLandM.age.fitness.5$age)) &
+                                        !(is.na(VB.TLandM.age.fitness.5$tarsus)) &
+                                        !(is.na(VB.TLandM.age.fitness.5$bib)),]
+
+
 # model
 
 mod.gen.fledg.bib <- lm(gen.fledg.12d~
@@ -162,14 +172,8 @@ mod.gen.fledg.bib <- lm(gen.fledg.12d~
                           I(age^2)+
                           tarsus+
                           eventSW,                        
-                        data=VB.TLandM.age.fitness.5)
+                        data=data.plot7)
 
-
-# subsetting only the necessary for the plotting of each model. 
-
-data.plot7 <- VB.TLandM.age.fitness.5[!(is.na(VB.TLandM.age.fitness.5$age)) &
-                                        !(is.na(VB.TLandM.age.fitness.5$tarsus)) &
-                                        !(is.na(VB.TLandM.age.fitness.5$bib)),]
 
 
 
@@ -306,6 +310,74 @@ legend(57.5,14,
              rgb(blue[1],blue[2],blue[3],0.8)),
        pt.cex=1.9,
        cex=1.1)
+
+
+dev.off()
+
+
+
+
+################################################################
+# PLOTTING ONLY GENETIC
+################################################################
+
+# vector needed to obtain the final rgb colours
+
+rgbing <- c(255,255,255)
+
+
+# few colours in rgb
+
+turquoise <- c(49,163,84)/rgbing
+blue <- c(44,127,184)/rgbing
+
+
+# PLOT saved as .tiff
+
+tiff("plots/Figure4_Bib_and_geneticfledglings.tiff", height=20, width=20,
+     units='cm', compression="lzw", res=300)
+
+par(mar=c(5, 5, 1, 1))
+
+plot(data.plot7$bib, 
+     data.plot7$gen.fledg.12d, 
+     type="n",
+     xlab="Bib length (mm)",
+     ylab= "Annual number of fledglings",
+     cex.lab=1.7,
+     xaxt="n",yaxt="n",xlim=c(44,58),ylim=c(0,14),
+     family="serif",
+     frame.plot = FALSE)
+
+
+axis(1,at=seq(44,58,by=2),
+     las=1,
+     cex.axis=1.3,
+     family="serif") 
+
+axis(2,at=seq(0,14,by=1),
+     cex.axis=1.3,
+     las=2,
+     family="serif")
+
+
+points(data.plot7$bib, 
+       jitter(data.plot7$gen.fledg.12d,0.65),
+       pch = 19, col=rgb(blue[1],blue[2],blue[3],0.4),       
+       cex = 2.0)
+
+polygon(c(newdat.8$bib,rev(newdat.8$bib)),
+        c(newdat.8$lower,rev(newdat.8$upper)),
+        border=NA,col=rgb(blue[1],blue[2],blue[3], 0.15))
+
+lines(newdat.8$bib, newdat.8$fit, lwd=3.5,
+      col=rgb(blue[1],blue[2],blue[3],0.8))
+
+lines(newdat.8$bib, newdat.8$lower, lty=2, lwd=2,
+      col=rgb(blue[1],blue[2],blue[3],0.65))
+
+lines(newdat.8$bib, newdat.8$upper, lty=2, lwd=2,
+      col=rgb(blue[1],blue[2],blue[3],0.65))
 
 
 dev.off()
