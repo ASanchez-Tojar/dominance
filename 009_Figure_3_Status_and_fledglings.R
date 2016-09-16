@@ -54,6 +54,7 @@ mod.soc.fledg.nobib <- lmer(soc.fledg.12d~
 # subsetting only the necessary for the plotting of each model. 
 
 data.plot5 <- rank.TLandM.VB.fitness.m[!(is.na(rank.TLandM.VB.fitness.m$age)) &
+                                         !(is.na(rank.TLandM.VB.fitness.m$soc.fledg.12d)) &
                                          !(is.na(rank.TLandM.VB.fitness.m$tarsus)),]
 
 
@@ -105,6 +106,10 @@ newdat.5$upper<-apply(fitmatboth.5, 1, quantile, prob= 0.975)
 # GENETIC FLEDGLINGS MODEL
 ################################################################
 
+data.plot6 <- rank.TLandM.VB.fitness.m[!(is.na(rank.TLandM.VB.fitness.m$age)) &
+                                         !(is.na(rank.TLandM.VB.fitness.m$gen.fledg.12d)) &
+                                         !(is.na(rank.TLandM.VB.fitness.m$tarsus)),]
+
 mod.gen.fledg.nobib <- lmer(gen.fledg.12d~
                               StElo+
                               age+
@@ -112,7 +117,7 @@ mod.gen.fledg.nobib <- lmer(gen.fledg.12d~
                               tarsus+
                               eventSW+
                               (1|BirdID),
-                            data=rank.TLandM.VB.fitness.m)
+                            data=data.plot6)
 
 
 #simulating a posterior distribution with 5000 draws
@@ -124,11 +129,11 @@ smod.gen.fledg.nobib<-sim(mod.gen.fledg.nobib,5000)
 # calculated and presented in the plot correspond to those for a mean value
 # of tarsus (from this database)
 
-newdat.6<-expand.grid(StElo=seq(min(data.plot5$StElo,na.rm = TRUE),
-                                max(data.plot5$StElo,na.rm = TRUE),
+newdat.6<-expand.grid(StElo=seq(min(data.plot6$StElo,na.rm = TRUE),
+                                max(data.plot6$StElo,na.rm = TRUE),
                                 0.001), 
-                      age = mean(data.plot5$age,na.rm = TRUE),
-                      tarsus = mean(data.plot5$tarsus,na.rm = TRUE),
+                      age = mean(data.plot6$age,na.rm = TRUE),
+                      tarsus = mean(data.plot6$tarsus,na.rm = TRUE),
                       eventSW = 2014)
 
 
@@ -210,8 +215,8 @@ points(data.plot5$StElo,
        pch = 19, col=rgb(turquoise[1], turquoise[2], turquoise[3],0.4),
        cex = 2.0)
 
-points(data.plot5$StElo, 
-       jitter(data.plot5$gen.fledg.12d,0.65),
+points(data.plot6$StElo, 
+       jitter(data.plot6$gen.fledg.12d,0.65),
        pch = 19, col=rgb(blue[1],blue[2],blue[3],0.4),       
        cex = 2.0)
 
@@ -254,3 +259,74 @@ legend(0.8,10.2,
 
 
 dev.off()
+
+
+
+
+
+################################################################
+# PLOTTING ONLY GENETICS
+################################################################
+
+
+# vector needed to obtain the final rgb colours
+
+rgbing <- c(255,255,255)
+
+
+# few colours in rb
+
+turquoise <- c(49,163,84)/rgbing
+blue <- c(44,127,184)/rgbing
+
+
+# PLOT saved as .tiff
+
+tiff("plots/Figure3_Status_and_geneticfledglings.tiff", height=20, width=20,
+     units='cm', compression="lzw", res=300)
+
+par(mar=c(5, 5, 1, 1))
+
+plot(data.plot6$StElo, 
+     data.plot6$gen.fledg.12d, 
+     type="n",
+     xlab="Standardized Elo-rating",
+     ylab= "Annual number of fledglings",
+     cex.lab=1.7,
+     xaxt="n",yaxt="n",xlim=c(0,1),ylim=c(0,10),
+     family="serif",
+     frame.plot = FALSE)
+
+
+axis(1,at=seq(0,1,by=0.2),
+     las=1,
+     cex.axis=1.3,
+     family="serif") 
+
+axis(2,at=seq(0,10,by=1),
+     cex.axis=1.3,
+     las=2,
+     family="serif")
+
+points(data.plot6$StElo, 
+       jitter(data.plot6$gen.fledg.12d,0.65),
+       pch = 19, col=rgb(blue[1],blue[2],blue[3],0.4),       
+       cex = 2.0)
+
+
+polygon(c(newdat.6$StElo,rev(newdat.6$StElo)),
+        c(newdat.6$lower,rev(newdat.6$upper)),
+        border=NA,col=rgb(blue[1],blue[2],blue[3], 0.15))
+
+lines(newdat.6$StElo, newdat.6$fit, lwd=3.5,
+      col=rgb(blue[1],blue[2],blue[3],0.8))
+
+lines(newdat.6$StElo, newdat.6$lower, lty=2, lwd=2,
+      col=rgb(blue[1],blue[2],blue[3],0.65))
+
+lines(newdat.6$StElo, newdat.6$upper, lty=2, lwd=2,
+      col=rgb(blue[1],blue[2],blue[3],0.65))
+
+
+dev.off()
+
