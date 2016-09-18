@@ -351,20 +351,20 @@ plot(data.plot7$bib,
      xlab="",
      ylab="",
      cex.lab=1.7,
-     xaxt="n",yaxt="n",xlim=c(44,58),ylim=c(0,14),
+     xaxt="n",yaxt="n",xlim=c(43,61),ylim=c(0,14),
      family="serif",
      frame.plot = FALSE)
 
 #title(xlab="Bib length (mm)", line=4, cex.lab=2.5, family="serif")
 title(ylab="fledglings", line=4.5, cex.lab=3.2, family="serif")
 
-axis(1,at=seq(44,58,by=2),
+axis(1,at=seq(43,61,by=3),
      las=1,
      #cex.axis=1.3,
      cex.axis=1.8,
      family="serif") 
 
-axis(2,at=seq(0,14,by=1),
+axis(2,at=seq(0,14,by=2),
      #cex.axis=1.3,
      cex.axis=1.8,
      las=2,
