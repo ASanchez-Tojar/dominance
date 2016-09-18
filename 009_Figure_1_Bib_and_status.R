@@ -119,8 +119,9 @@ newdat$upper<-apply(fitmatboth, 1, quantile, prob= 0.975)
 data.plot2 <- final.cap.db.3[!(is.na(final.cap.db.3$age2014.mean)) &
                                !(is.na(final.cap.db.3$TarsusLength)) &
                                !(is.na(final.cap.db.3$meanVB.mean10)) &
-                               final.cap.db.3$meanVB.mean10>41
-                             ,]
+                               #final.cap.db.3$age2014.mean<5&
+                               final.cap.db.3$meanVB.mean10>41,
+                             ]
 
 mod.rank.bib.capt <- lmer(StElo~age2014.mean+
                             TarsusLength+
@@ -194,6 +195,9 @@ chocolate1 <- c(255,127,36)/rgbing
 
 tiff("plots/talks/Figure1_Status_and_Bib_talk.tiff", height=20, width=20,
      units='cm', compression="lzw", res=300)
+
+# tiff("plots/talks/Figure1_Status_and_Bib_talk_noelderly.tiff", height=20, width=20,
+#      units='cm', compression="lzw", res=300)
 
 #par(mar=c(5, 5, 1, 1))
 par(mar=c(6, 7, 1, 1))
