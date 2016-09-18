@@ -189,28 +189,41 @@ chocolate1 <- c(255,127,36)/rgbing
 
 # PLOT saved as .tiff
 
-tiff("plots/Figure1_Status_and_Bib.tiff", height=20, width=20,
+# tiff("plots/Figure1_Status_and_Bib.tiff", height=20, width=20,
+#      units='cm', compression="lzw", res=300)
+
+tiff("plots/talks/Figure1_Status_and_Bib_talk.tiff", height=20, width=20,
      units='cm', compression="lzw", res=300)
 
-par(mar=c(5, 5, 1, 1))
+#par(mar=c(5, 5, 1, 1))
+par(mar=c(6, 7, 1, 1))
+
 
 plot(data.plot1$bib, 
      data.plot1$StElo, 
      type="n",
-     xlab="Bib length (mm)",
-     ylab= "Standardized Elo-rating",
-     cex.lab=1.7,
+#      xlab="Bib length (mm)",
+#      ylab= "Standardized Elo-rating",
+     xlab="",
+     ylab="",
+     #cex.lab=1.7,
+     cex.lab=2.4,
      xaxt="n",yaxt="n",xlim=c(43,59),ylim=c(0,1),
      family="serif",
      frame.plot = FALSE)
 
+title(xlab="Bib length (mm)", line=4, cex.lab=2.5, family="serif")
+title(ylab="Standardized Elo-rating", line=5, cex.lab=2.5, family="serif")
+
 axis(1,at=seq(43,59,by=2),
-     cex.axis=1.3,
+     #cex.axis=1.3,
+     cex.axis=1.8,
      family="serif")
 
 axis(2,at=seq(0,1,by=0.2),
      las=2,
-     cex.axis=1.3,
+     #cex.axis=1.3,
+     cex.axis=1.8,
      family="serif") 
 
 points(data.plot2$meanVB.mean10, 
@@ -250,16 +263,16 @@ lines(newdat$bib, newdat$lower, lty=2, lwd=2,
 lines(newdat$bib, newdat$upper, lty=2, lwd=2,
       col=rgb(darkblue[1],darkblue[2],darkblue[3],0.65))
 
-op <- par(family = "serif")
+# op <- par(family = "serif")
 #par(op)
 
-legend(57,1.02,
-       legend=c("captive","wild"),
-       pch=19,
-       col=c(rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.8),
-             rgb(darkblue[1],darkblue[2],darkblue[3],0.8)),
-       pt.cex=1.9,
-       cex=1.1)
+# legend(57,1.02,
+#        legend=c("captive","wild"),
+#        pch=19,
+#        col=c(rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.8),
+#              rgb(darkblue[1],darkblue[2],darkblue[3],0.8)),
+#        pt.cex=1.9,
+#        cex=1.1)
 
 
 dev.off()
