@@ -299,7 +299,7 @@ plot(data.plot6$StElo,
      xlab="",
      ylab="",
      cex.lab=1.7,
-     xaxt="n",yaxt="n",xlim=c(0,1),ylim=c(0,10),
+     xaxt="n",yaxt="n",xlim=c(0,1),ylim=c(0,14),
      family="serif",
      frame.plot = FALSE)
 
@@ -312,7 +312,7 @@ axis(1,at=seq(0,1,by=0.2),
      cex.axis=1.8,
      family="serif") 
 
-axis(2,at=seq(0,10,by=1),
+axis(2,at=seq(0,14,by=2),
      #cex.axis=1.3,
      cex.axis=1.8,
      las=2,
