@@ -119,7 +119,7 @@ newdat$upper<-apply(fitmatboth, 1, quantile, prob= 0.975)
 data.plot2 <- final.cap.db.3[!(is.na(final.cap.db.3$age2014.mean)) &
                                !(is.na(final.cap.db.3$TarsusLength)) &
                                !(is.na(final.cap.db.3$meanVB.mean10)) &
-                               final.cap.db.3$age2014.mean<5&
+                               #final.cap.db.3$age2014.mean<5&
                                final.cap.db.3$meanVB.mean10>41,
                              ]
 
@@ -193,11 +193,11 @@ chocolate1 <- c(255,127,36)/rgbing
 # tiff("plots/Figure1_Status_and_Bib.tiff", height=20, width=20,
 #      units='cm', compression="lzw", res=300)
 
-# tiff("plots/talks/Figure1_Status_and_Bib_talk.tiff", height=20, width=20,
-#      units='cm', compression="lzw", res=300)
-
-tiff("plots/talks/Figure1_Status_and_Bib_talk_noelderly.tiff", height=20, width=20,
+tiff("plots/talks/Figure1_Status_and_Bib_talk.tiff", height=20, width=20,
      units='cm', compression="lzw", res=300)
+
+# tiff("plots/talks/Figure1_Status_and_Bib_talk_noelderly.tiff", height=20, width=20,
+#      units='cm', compression="lzw", res=300)
 
 #par(mar=c(5, 5, 1, 1))
 par(mar=c(6, 7, 1, 1))
@@ -212,14 +212,14 @@ plot(data.plot1$bib,
      ylab="",
      #cex.lab=1.7,
      cex.lab=2.4,
-     xaxt="n",yaxt="n",xlim=c(43,59),ylim=c(0,1),
+     xaxt="n",yaxt="n",xlim=c(43,61),ylim=c(0,1),
      family="serif",
      frame.plot = FALSE)
 
 title(xlab="Bib length (mm)", line=4, cex.lab=3.0, family="serif")
 title(ylab="Standardized Elo-rating", line=4.5, cex.lab=3.0, family="serif")
 
-axis(1,at=seq(43,59,by=2),
+axis(1,at=seq(43,61,by=3),
      #cex.axis=1.3,
      cex.axis=1.8,
      family="serif")
