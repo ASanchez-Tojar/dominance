@@ -324,29 +324,40 @@ blue <- c(44,127,184)/rgbing
 
 # PLOT saved as .tiff
 
-tiff("plots/Figure5_Status_and_geneticrecruits.tiff", height=20, width=20,
+# tiff("plots/Figure5_Status_and_geneticrecruits.tiff", height=20, width=20,
+#      units='cm', compression="lzw", res=300)
+
+tiff("plots/talks/Figure5_Status_and_geneticrecruits_talk.tiff", height=20, width=20,
      units='cm', compression="lzw", res=300)
 
-par(mar=c(5, 5, 1, 1))
+#par(mar=c(5, 5, 1, 1))
+par(mar=c(6, 7, 1, 1))
 
 plot(rank.TLandM.VB.fitness.m.5$StElo, 
      rank.TLandM.VB.fitness.m.5$gen.recruits, 
      type="n",
-     xlab="Standardized Elo-rating",
-     ylab= "Annual number of recruits",
+#      xlab="Standardized Elo-rating",
+#      ylab= "Annual number of recruits",
+     xlab="",
+     ylab="",
      cex.lab=1.7,
      xaxt="n",yaxt="n",xlim=c(0,1),ylim=c(0,4),
      family="serif",
      frame.plot = FALSE)
 
+#title(xlab="Standardized Elo-rating", line=4, cex.lab=2.5, family="serif")
+title(ylab="recruits", line=4, cex.lab=3.2, family="serif")
+
 
 axis(1,at=seq(0,1,by=0.2),
      las=1,
-     cex.axis=1.3,
+     #cex.axis=1.3,
+     cex.axis=1.8,
      family="serif") 
 
 axis(2,at=seq(0,4,by=1),
-     cex.axis=1.3,
+     #cex.axis=1.3,
+     cex.axis=1.8,
      las=2,
      family="serif")
 
