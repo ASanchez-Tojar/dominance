@@ -282,29 +282,39 @@ blue <- c(44,127,184)/rgbing
 
 # PLOT saved as .tiff
 
-tiff("plots/Figure3_Status_and_geneticfledglings.tiff", height=20, width=20,
+# tiff("plots/Figure3_Status_and_geneticfledglings.tiff", height=20, width=20,
+#      units='cm', compression="lzw", res=300)
+
+tiff("plots/talks/Figure3_Status_and_geneticfledglings_talk.tiff", height=20, width=20,
      units='cm', compression="lzw", res=300)
 
-par(mar=c(5, 5, 1, 1))
+#par(mar=c(5, 5, 1, 1))
+par(mar=c(6, 7, 1, 1))
 
 plot(data.plot6$StElo, 
      data.plot6$gen.fledg.12d, 
      type="n",
-     xlab="Standardized Elo-rating",
-     ylab= "Annual number of fledglings",
+#      xlab="Standardized Elo-rating",
+#      ylab= "Annual number of fledglings",
+     xlab="",
+     ylab="",
      cex.lab=1.7,
      xaxt="n",yaxt="n",xlim=c(0,1),ylim=c(0,10),
      family="serif",
      frame.plot = FALSE)
 
+title(xlab="Standardized Elo-rating", line=4, cex.lab=2.5, family="serif")
+title(ylab="Annual number of fledglings", line=5, cex.lab=2.5, family="serif")
 
 axis(1,at=seq(0,1,by=0.2),
      las=1,
-     cex.axis=1.3,
+     #cex.axis=1.3,
+     cex.axis=1.8,
      family="serif") 
 
 axis(2,at=seq(0,10,by=1),
-     cex.axis=1.3,
+     #cex.axis=1.3,
+     cex.axis=1.8,
      las=2,
      family="serif")
 
