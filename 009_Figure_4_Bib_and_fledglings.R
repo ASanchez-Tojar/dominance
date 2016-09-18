@@ -355,9 +355,8 @@ plot(data.plot7$bib,
      family="serif",
      frame.plot = FALSE)
 
-title(xlab="Bib length (mm)", line=4, cex.lab=2.5, family="serif")
-title(ylab="Annual number of fledglings", line=5, cex.lab=2.5, family="serif")
-
+#title(xlab="Bib length (mm)", line=4, cex.lab=2.5, family="serif")
+title(ylab="fledglings", line=4.5, cex.lab=2.8, family="serif")
 
 axis(1,at=seq(44,58,by=2),
      las=1,
