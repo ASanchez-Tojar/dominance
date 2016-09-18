@@ -297,7 +297,7 @@ plot(VB.TLandM.age.fitness.7$bib,
      xlab="",
      ylab="",
      cex.lab=1.7,
-     xaxt="n",yaxt="n",xlim=c(44,62),ylim=c(0,4),
+     xaxt="n",yaxt="n",xlim=c(43,61),ylim=c(0,4),
      family="serif",
      frame.plot = FALSE)
 
@@ -305,13 +305,15 @@ plot(VB.TLandM.age.fitness.7$bib,
 title(ylab="recruits", line=4, cex.lab=3.2, family="serif")
 
 
-axis(1,at=seq(44,62,by=2),
+axis(1,at=seq(43,61,by=3),
      las=1,
-     cex.axis=1.3,
+     #cex.axis=1.3,
+     cex.axis=1.8,
      family="serif") 
 
 axis(2,at=seq(0,4,by=1),
-     cex.axis=1.3,
+     #cex.axis=1.3,
+     cex.axis=1.8,
      las=2,
      family="serif")
 
