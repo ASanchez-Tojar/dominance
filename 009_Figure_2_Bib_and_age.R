@@ -178,29 +178,41 @@ chocolate1 <- c(255,127,36)/rgbing
 
 # PLOT saved as .tiff
 
-tiff("plots/Figure2_Bib_and_age.tiff", height=20, width=20,
+# tiff("plots/Figure2_Bib_and_age.tiff", height=20, width=20,
+#      units='cm', compression="lzw", res=300)
+
+tiff("plots/talks/Figure2_Bib_and_age_talk.tiff", height=20, width=20,
      units='cm', compression="lzw", res=300)
 
-par(mar=c(5, 5, 1, 1))
+#par(mar=c(5, 5, 1, 1))
+par(mar=c(6, 7, 1, 1))
 
 plot(data.plot3$age, 
      data.plot3$bib, 
      type="n",
-     xlab="Age",
-     ylab= "Bib length (mm)",
+#      xlab="Age",
+#      ylab= "Bib length (mm)",
+     xlab="",
+     ylab="",
      cex.lab=1.7,
      xaxt="n",yaxt="n",xlim=c(0.5,9.5),ylim=c(40,60),
      family="serif",
      frame.plot = FALSE)
 
 
+#title(xlab="Standardized Elo-rating", line=4, cex.lab=2.5, family="serif")
+title(ylab="Bib length (mm)", line=4, cex.lab=3.2, family="serif")
+
+
 axis(1,at=seq(0.5,9.5,by=1),
      las=1,
-     cex.axis=1.3,
+     #cex.axis=1.3,
+     cex.axis=1.8,
      family="serif") 
 
 axis(2,at=seq(40,60,by=2),
-     cex.axis=1.3,
+     #cex.axis=1.3,
+     cex.axis=1.8,
      las=2,
      family="serif")
 
