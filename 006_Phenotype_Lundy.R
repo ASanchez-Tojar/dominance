@@ -45,6 +45,7 @@ elo_scores_all_events <- read.table("elo_scores_all_events.csv",header=TRUE,sep=
 birdsex.1 <- read.table("birdsex.1.csv",header=TRUE,sep=",")
 morethan8pereventSW <- read.table("morethan8pereventSW.csv",header=TRUE,sep=",")
 fitness.full <- read.table("fledglings12/fitness.full.csv",header=TRUE,sep=",")
+fitness.full.both <- read.table("fledglings12/fitness.full.both.csv",header=TRUE,sep=",")
 
 
 #########################################################################################################
@@ -105,13 +106,13 @@ elo_scores_all_events_age$age <- elo_scores_all_events_age$eventSW - elo_scores_
 elo_scores_all_events_age$BirdID_eventSW <- factor(paste(elo_scores_all_events_age$BirdID,
                                                          elo_scores_all_events_age$eventSW,sep="_"))
 
-
-# the mean value of StElos per individual for the whole study period: 
-
-numberofStEloperbird <- 
-  as.numeric(table(as.factor(elo_scores_all_events_age$BirdID)))
-
-summary(numberofStEloperbird[numberofStEloperbird!=0])
+ 
+# # the mean value of StElos per individual for the whole study period: 
+# 
+# numberofStEloperbird <- 
+#   as.numeric(table(as.factor(elo_scores_all_events_age$BirdID)))
+# 
+# summary(numberofStEloperbird[numberofStEloperbird!=0])
 
 
 #########################################################################################################
@@ -123,11 +124,11 @@ summary(numberofStEloperbird[numberofStEloperbird!=0])
 tarsuslengthandMass <- read.table("BirdID-Tarsus-Mass.csv",header=TRUE,sep=",")
 
 
-# the mean value of tarsus measurements per individual is: 
-
-numberofTLmeasurements <- as.numeric(table(as.factor(tarsuslengthandMass$BirdID)))
-
-summary(numberofTLmeasurements[numberofTLmeasurements!=0])
+# # the mean value of tarsus measurements per individual is: 
+# 
+# numberofTLmeasurements <- as.numeric(table(as.factor(tarsuslengthandMass$BirdID)))
+# 
+# summary(numberofTLmeasurements[numberofTLmeasurements!=0])
 
 
 # loading the database with Visible Badge
@@ -181,11 +182,11 @@ visibleBadge.AST <- subset(visibleBadge,visibleBadge$Observer=="AST")
 # This is to exclude a clear outlier from following analyses
 visibleBadge.AST <- subset(visibleBadge.AST,visibleBadge.AST$AvgOfEstimate!=34)
 
-# the mean value of bib measurements per individual is: 
-
-numberofBibmeasurements <- as.numeric(table(as.factor(visibleBadge.AST$BirdID)))
-
-summary(numberofBibmeasurements[numberofBibmeasurements!=0])
+# # the mean value of bib measurements per individual is: 
+# 
+# numberofBibmeasurements <- as.numeric(table(as.factor(visibleBadge.AST$BirdID)))
+# 
+# summary(numberofBibmeasurements[numberofBibmeasurements!=0])
 
 
 # Just want to create new variables with year and month so that I can do my subsetting later on
@@ -247,11 +248,11 @@ ind.event.VB<-summaryBy(AvgOfEstimate ~ BirdID_eventSW, data = visibleBadge.AST,
                         FUN = list(mean),na.rm=TRUE)
 
 
-# the mean value of bib measurements per individual per event is: 
-
-numberofBibmeasurementsperevent <- as.numeric(table(as.factor(visibleBadge.AST$BirdID_eventSW)))
-
-summary(numberofBibmeasurementsperevent[numberofBibmeasurementsperevent!=0])
+# # the mean value of bib measurements per individual per event is: 
+# 
+# numberofBibmeasurementsperevent <- as.numeric(table(as.factor(visibleBadge.AST$BirdID_eventSW)))
+# 
+# summary(numberofBibmeasurementsperevent[numberofBibmeasurementsperevent!=0])
 
 
 # Excluding those with no value
@@ -364,11 +365,11 @@ rank.TLandM.VB <- merge(rank.TLandM.VB.2,
 
 # reducing fitness database before merging
 
-fitness.full.2 <- fitness.full[,c("BirdID_eventSW","gen.fledg.12d",
-                                  "gen.recruits","soc.fledg.12d",
-                                  "soc.recruits")]
+fitness.full.both.2 <- fitness.full.both[,c("BirdID_eventSW","gen.fledg.12d",
+                                            "gen.recruits","soc.fledg.12d",
+                                            "soc.recruits")]
 
-rank.TLandM.VB.fitness <- merge(rank.TLandM.VB,fitness.full.2,
+rank.TLandM.VB.fitness <- merge(rank.TLandM.VB,fitness.full.both.2,
                                 by="BirdID_eventSW",all.x=TRUE)
 
 names(rank.TLandM.VB.fitness) <- c("BirdID_eventSW","BirdID","colourrings",
