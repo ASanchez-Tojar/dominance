@@ -44,7 +44,7 @@ rm(list=ls())
 elo_scores_all_events <- read.table("elo_scores_all_events.csv",header=TRUE,sep=",")
 birdsex.1 <- read.table("birdsex.1.csv",header=TRUE,sep=",")
 morethan8pereventSW <- read.table("morethan8pereventSW.csv",header=TRUE,sep=",")
-fitness.full <- read.table("fledglings12/fitness.full.csv",header=TRUE,sep=",")
+#fitness.full <- read.table("fledglings12/fitness.full.csv",header=TRUE,sep=",")
 fitness.full.both <- read.table("fledglings12/fitness.full.both.csv",header=TRUE,sep=",")
 
 
@@ -450,12 +450,12 @@ VB.TLandM.age$Cohort <- ifelse(is.na(VB.TLandM.age$Cohort),
                                VB.TLandM.age$Cohort)
 
 
-# the mean value of bib measurements per individual for the whole study period: 
-
-numberofBibmeasurementsperstudyperido <- 
-  as.numeric(table(VB.TLandM.age$BirdID))
-
-summary(numberofBibmeasurementsperstudyperido[numberofBibmeasurementsperstudyperido!=0])
+# # the mean value of bib measurements per individual for the whole study period: 
+# 
+# numberofBibmeasurementsperstudyperido <- 
+#   as.numeric(table(VB.TLandM.age$BirdID))
+# 
+# summary(numberofBibmeasurementsperstudyperido[numberofBibmeasurementsperstudyperido!=0])
 
 
 # Now I can estimate age
@@ -483,7 +483,7 @@ VB.TLandM.age.2 <- do.call("rbind", as.list(
 
 # First we add fledglings
 
-VB.TLandM.age.fitness <- merge(VB.TLandM.age.2, fitness.full.2,
+VB.TLandM.age.fitness <- merge(VB.TLandM.age.2, fitness.full.both.2,
                                by="BirdID_eventSW",all.x=TRUE)
 
 
@@ -507,7 +507,7 @@ write.csv(VB.TLandM.age.fitness,
 # # 10.3. AGE and FITNESS database containing all the neccessary information
 #########################################################################################################
 
-age.fitness <- merge(fitness.full,ccbirdidcohort2,
+age.fitness <- merge(fitness.full.both,ccbirdidcohort2,
                      by="BirdID",all.x=TRUE)
 
 # the 2 birds with missing Cohort is due to duplicated colour rings in the first place
