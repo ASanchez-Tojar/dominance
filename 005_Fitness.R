@@ -215,6 +215,29 @@ fledglings6 <- merge(fledglings5,SocialDads,
 
 
 ##########################################################################
+# Assigning social mums to each BirdID
+##########################################################################
+
+# Now, I will add the ID of the Social Mum that took care of the individual 
+# from day 2 on. 
+
+
+# First, load the database with BroodRef and SocialMumID (updated from script 003aa)
+
+SocialMums <- read.table("BroodRef_SocialMumID_IDCertain_2014-2016_Updated.csv",
+                         header=TRUE,sep=",")
+
+
+# merging it in relation to twodaysonBroodRef so that I assign to each bird
+# the mum that took care of him at least from day 2 on.
+
+fledglings6 <- merge(fledglings6,SocialMums,
+                     by.x="twodaysonBroodRef",
+                     by.y="BroodRef",
+                     all.x=TRUE)
+
+
+##########################################################################
 # Assigning genetic dads to each BirdID
 ##########################################################################
 
@@ -233,6 +256,21 @@ names(pedigree.red) <- c("BirdID","GeneticDadID")
 fledglings6.ped <- merge(fledglings6,pedigree.red,
                            by="BirdID",
                            all.x=TRUE)
+
+
+##########################################################################
+# Assigning genetic mums to each BirdID
+##########################################################################
+
+# reducing database before merging
+
+pedigree.f.red <- pedigree[,c("id","dam")]
+names(pedigree.f.red) <- c("BirdID","GeneticMumID")
+
+
+fledglings6.ped <- merge(fledglings6.ped,pedigree.f.red,
+                         by="BirdID",
+                         all.x=TRUE)
 
 
 ##########################################################################
@@ -354,6 +392,10 @@ offspring.12d.ped <- subset(fledglings6.ped,
 ##########################################################################
 
 ##########################################################################
+# MALES
+##########################################################################
+
+##########################################################################
 # Annual number of social fledglings reaching day 12 after hatching
 ##########################################################################
 
@@ -414,7 +456,7 @@ social.per.Dad.2$BirdID_eventSW <- factor(paste(social.per.Dad.2$SocialDadID,
                                                 sep="_"))
 
 
-# I need to check all those socialdads that coudl potentially be assigned 
+# I need to check all those socialdads that could potentially be assigned 
 # with 0 fitness. This is because I need to check if I can really say that.
 
 # sort(setdiff(SocialDads.year$BirdID_eventSW,
@@ -653,7 +695,7 @@ genetic.per.Dad.3 <- rbind(genetic.per.Dad.2,males.breeding.year.0)
 
 names(genetic.per.Dad.3) <- c("GeneticDadID","year","gen.fledg.12d","BirdID_eventSW")
 
-# hist(genetic.per.Dad.3$freq,breaks=24,right=FALSE)
+# hist(genetic.per.Dad.3$gen.fledg.12d,breaks=24,right=FALSE)
 
 
 
@@ -780,68 +822,501 @@ row.names(fitness.full) <- NULL
 #                     "soc.recruits")],use="complete.obs")
 
 
-write.csv(fitness.full,"fledglings12/fitness.full.csv",row.names=FALSE)
+
+##########################################################################
+# FEMALES
+##########################################################################
+
+##########################################################################
+# Annual number of social fledglings reaching day 12 after hatching
+##########################################################################
+
+# Now I can count the annual number of social offspring reaching the age
+# of 12 days per social mum. I just need to count the number of times each 
+# SocialMumID shows up in each year. 
+
+social.per.Mum <- count(offspring.12d.ped,c("SocialMumID","Cohort"))
+
+# Getting ridd off the counts for SocialMumID==NA
+social.per.Mum.2 <- social.per.Mum[!(is.na(social.per.Mum$SocialMumID)),]
 
 
-# Saving some histograms
-
-p1 <- ggplot(fitness.full, aes(x=gen.fledg.12d, fill=as.factor(year))) +
-  geom_histogram(binwidth=1, alpha=.5, position="identity")
-
-p2 <- ggplot(fitness.full, aes(x=gen.recruits, fill=as.factor(year))) +
-  geom_histogram(binwidth=1, alpha=.5, position="identity")
-
-p3 <- ggplot(fitness.full, aes(x=soc.fledg.12d, fill=as.factor(year))) +
-  geom_histogram(binwidth=1, alpha=.5, position="identity")
-
-p4 <- ggplot(fitness.full, aes(x=soc.recruits, fill=as.factor(year))) +
-  geom_histogram(binwidth=1, alpha=.5, position="identity")
-
-multiplot(p1,p3,p2,p4, cols=2)
+# To include birds with 0 fitness, I need to check all social breeders each 
+# year to assigned them 0 if they are not in social.per.Mum.2
 
 
-# Multiple plot function, from: http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)/
-#
-# ggplot objects can be passed in ..., or to plotlist (as a list of ggplot objects)
-# - cols:   Number of columns in layout
-# - layout: A matrix specifying the layout. If present, 'cols' is ignored.
-#
-# If the layout is something like matrix(c(1,2,3,3), nrow=2, byrow=TRUE),
-# then plot 1 will go in the upper left, 2 will go in the upper right, and
-# 3 will go all the way across the bottom.
-#
-multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
-  library(grid)
-  
-  # Make a list from the ... arguments and plotlist
-  plots <- c(list(...), plotlist)
-  
-  numPlots = length(plots)
-  
-  # If layout is NULL, then use 'cols' to determine layout
-  if (is.null(layout)) {
-    # Make the panel
-    # ncol: Number of columns of plots
-    # nrow: Number of rows needed, calculated from # of cols
-    layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
-                     ncol = cols, nrow = ceiling(numPlots/cols))
-  }
-  
-  if (numPlots==1) {
-    print(plots[[1]])
-    
-  } else {
-    # Set up the page
-    grid.newpage()
-    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
-    
-    # Make each plot, in the correct location
-    for (i in 1:numPlots) {
-      # Get the i,j matrix positions of the regions that contain this subplot
-      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
-      
-      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
-                                      layout.pos.col = matchidx$col))
-    }
-  }
-}
+# First, load a database with BroodRef and BroodName to get year for each
+# BroodRef in SocialMums, which is the full list of social breeders. DONE ABOVE
+# 
+# # SELECT tblBroods.BroodRef, tblBroods.BroodName
+# # FROM tblBroods;
+# 
+# BroodName <- read.table("BroodRef_BroodName.csv",
+#                         header=TRUE,sep=",")
+
+
+# Merge with SocialDads to get the Name and, subsequently, the year
+
+SocialMums.year <- merge(SocialMums,BroodName,
+                         by="BroodRef",all.x=TRUE)
+
+
+# getting the year Code and then the year
+
+SocialMums.year$yearCode <- factor(substr(SocialMums.year$BroodName, 1, 1))
+
+SocialMums.year$year <- ifelse(SocialMums.year$yearCode=="N",
+                               2014,
+                               ifelse(SocialMums.year$yearCode=="O",
+                                      2015,2016))
+
+
+# Creating an identifier bird_year to subset later on
+
+SocialMums.year$BirdID_eventSW <- as.factor(ifelse(!(is.na(SocialMums.year$SocialMumID)),
+                                                   paste(SocialMums.year$SocialMumID,
+                                                         SocialMums.year$year,
+                                                         sep="_"),
+                                                   NA))
+
+
+# I also create an identifier for social.per.Mum.2, the social fledgling 
+# fitness database that I need to add 0's to
+
+social.per.Mum.2$BirdID_eventSW <- factor(paste(social.per.Mum.2$SocialMumID,
+                                                social.per.Mum.2$Cohort,
+                                                sep="_"))
+
+
+# I need to check all those socialmums that could potentially be assigned 
+# with 0 fitness. This is because I need to check if I can really say that.
+
+# sort(setdiff(SocialMums.year$BirdID_eventSW,
+#         social.per.Mum.2$BirdID_eventSW))
+
+
+# This is the list of supposedly 0 fitness birds, but most are birds for which
+# we cannot be sure. I've checked them in the database:
+
+# This is the list for which fitness=0 is uncertain
+
+# 4898_2014: 1 inaccessible wild nest
+# 5136_2014: 1 inaccessible wild nest
+# 5589_2015: NOT EXCLUDED, only nestbox nest failed
+# 6245_2014: 1 inaccessible wild nest
+# 6267_2015: 1 inaccessible wild nest
+# 6269_2015: 3 inaccessible wild nests
+# 6392_2015: 1 inaccessible wild nest
+# 6415_2014: 1 inaccessible wild nest
+# 6421_2014: 1 inaccessible wild nest
+# 6472_2015: 2 inaccessible wild nests
+# 6508_2014: NOT EXCLUDED, only nestbox nest failed
+# 6526_2014: NOT EXCLUDED, only nestbox nests that failed
+# 6544_2014: 2 inaccessible wild nests
+# 6640_2014: it had 2 genetic offspring in 2014
+# 6724_2014: NOT EXCLUDED, only nestbox nest failed
+# 6755_2015: 1 inaccessible wild nest
+# 6772_2014: it had 4 genetic offspring in 2014
+# 6848_2015: 1 endoscope counting on day ca. 10 = 2 chicks
+# 6884_2014: NOT EXCLUDED, only wild nest failed
+# 6925_2014: it had 5 genetic offspring in 2014
+# 6931_2014: 1 inaccessible wild nest
+# 6952_2014: NOT EXCLUDED, 2 wild nests that failed
+# 6952_2016: NOT EXCLUDED, 2 nestbox nests that failed
+# 6985_2014: 1 inaccessible wild nest
+# 7011_2015: 1 endoscope counting on day ca. 12 = 1 chicks
+# 7114_2014: NOT EXCLUDED, only wild nest failed
+# 7276_2015: 1 nestbox nest abandoned because of human reasons?
+# 7894_2015: it had 3 genetic offspring in 2015
+# 8354_2016: 1 inaccessible wild nest
+# 8384_2016: 1 inaccessible wild nest
+# 8413_2016: chicks ringed before day 12
+# 8555_2016: chicks ringed before day 12
+# 8627_2016: NOT EXCLUDED, only wild nest failed
+
+
+# After all, the list of birds for which I'm confident enough that they
+# have 0 social fitness is:
+
+certain.f <- c("5589_2015","6508_2014","6526_2014",
+             "6724_2014","6884_2014","6952_2014",
+             "6952_2016","7114_2014","8627_2016")
+
+# subsetting those that we can assign a 0 fitness from the SocialDads.year database
+
+social.fitness.f.0 <-unique(SocialMums.year[!(is.na(SocialMums.year$SocialMumID)) &
+                                              SocialMums.year$SocialMumCertain==TRUE &
+                                            (SocialMums.year$BirdID_eventSW %in% certain.f),
+                                          c("SocialMumID","year","BirdID_eventSW")])
+
+# Setting their fitness to 0
+
+social.fitness.f.0$freq <- 0
+
+
+# Changing the order of the variables for rbinding later on
+
+social.fitness.f.0 <- social.fitness.f.0[,c("SocialMumID","year","freq","BirdID_eventSW")]
+
+
+# FINAL DATABASE
+
+# rbinding both database
+
+names(social.per.Mum.2) <- c("SocialMumID","year","freq","BirdID_eventSW")
+
+social.per.Mum.3 <- rbind(social.per.Mum.2,social.fitness.f.0)
+
+names(social.per.Mum.3) <- c("SocialMumID","year","soc.fledg.12d","BirdID_eventSW")
+
+# hist(social.per.Mum.3$soc.fledg.12d,breaks=12)
+
+
+
+##########################################################################
+# Annual number of social recruits
+##########################################################################
+
+# I can just count the number of recruits per SocialMum when recruited=1
+# after that, I'll put it together with the previous database and assign
+# 0 to those in social.per.Mum.3 that did not leave any
+
+social.recruits.per.Mum <- count(offspring.12d.ped[offspring.12d.ped$recruited==1 & 
+                                                     (!(is.na(offspring.12d.ped$recruited))),],
+                                 c("SocialMumID","Cohort"))
+
+
+# Getting ridd off the counts for SocialMumID==NA
+
+social.recruits.per.Mum.2 <- social.recruits.per.Mum[!(is.na(social.recruits.per.Mum$SocialMumID)),]
+
+
+# identifier to merge both databases
+
+social.recruits.per.Mum.2$BirdID_eventSW <- factor(paste(social.recruits.per.Mum.2$SocialMumID,
+                                                         social.recruits.per.Mum.2$Cohort,
+                                                         sep="_"))
+
+
+social.recruits.per.Mum.3 <- social.recruits.per.Mum.2[,c("BirdID_eventSW","freq")]
+
+names(social.recruits.per.Mum.3) <- c("BirdID_eventSW","soc.recruits")
+
+
+##########################################################################
+# Final social fitness database
+##########################################################################
+
+# merging fledglings and recruits
+
+social.fitness.f <- merge(social.per.Mum.3,
+                          social.recruits.per.Mum.3,
+                          by="BirdID_eventSW",
+                          all.x=TRUE)
+
+# assigning 0 recruits to those social mums with soc.recruits==NA that 
+# bred in 2014 and 2015. 2016 excluded because we don't know yet.
+
+social.fitness.f$soc.recruits <- ifelse(social.fitness.f$year!=2016,
+                                      ifelse(is.na(social.fitness.f$soc.recruits),
+                                             0,
+                                             social.fitness.f$soc.recruits),
+                                      social.fitness.f$soc.recruits)
+
+# hist(social.fitness.f$soc.recruits,breaks=3,right=FALSE)
+
+
+
+##########################################################################
+# Annual number of genetic fledglings reaching day 12 after hatching
+##########################################################################
+
+# Now I can count the annual number of genetic offspring reaching the age
+# of 12 days per genetic mum. I just need to count the number of times each 
+# GeneticMumID shows up in each year. 
+
+genetic.per.Mum <- count(offspring.12d.ped,c("GeneticMumID","Cohort"))
+
+
+# Getting ridd off the counts for GeneticMumID==NA
+
+genetic.per.Mum.2 <- genetic.per.Mum[!(is.na(genetic.per.Mum$GeneticMumID)),]
+
+
+# creating a BirdID_year identifier for later on
+
+genetic.per.Mum.2$BirdID_eventSW <- factor(paste(genetic.per.Mum.2$GeneticMumID,
+                                                 genetic.per.Mum.2$Cohort,
+                                                 sep="_"))
+
+
+# Now I need to add those that had 0 genetic fledglings. For this, I'm going
+# to use the full list of breeders, i.e. social and genetic. 
+
+# I need to create a list of all the breeders and the year, I will start with 
+# the genetic ones as that is very easy
+
+genetic.females.breeding.year <- unique(pedigree[pedigree$Cohort>2013 & 
+                                                 !(is.na(pedigree$dam)),
+                                               c("dam","Cohort")])
+
+
+# creating a BirdID_year identifier for later on
+
+genetic.females.breeding.year$BirdID_eventSW <- factor(paste(genetic.females.breeding.year$dam,
+                                                             genetic.females.breeding.year$Cohort,
+                                                           sep="_"))
+
+
+names(genetic.females.breeding.year) <- c("Mum","year","BirdID_eventSW")
+
+
+# Now I need the same for the social list cleaned above. I exclude 2016 
+# because we don't have the pedigree yet
+
+social.females.breeding.year <- unique(SocialMums.year[!(is.na(SocialMums.year$SocialMumID)) &
+                                                         SocialMums.year$SocialMumCertain==TRUE &                                                       
+                                                         SocialMums.year$year!=2016,
+                                                     c("SocialMumID",
+                                                       "year","BirdID_eventSW")])
+
+
+names(social.females.breeding.year) <- c("Mum","year","BirdID_eventSW")
+
+
+# Now I can put both together to generate the full list of breeders per year
+
+females.breeding.year <- unique(rbind(genetic.females.breeding.year,
+                                    social.females.breeding.year))
+
+
+# Now I can check which ones from that list aren't in the genetic.per.Mum.2
+# database and assign them a 0 fitness
+
+females.breeding.year$freq <- ifelse((females.breeding.year$BirdID_eventSW %in%
+                                      setdiff(females.breeding.year$BirdID_eventSW,
+                                              genetic.per.Mum.2$BirdID_eventSW)),
+                                     0,
+                                     NA)
+
+
+# selecting only those few with 0 fitness
+
+females.breeding.year.0 <- females.breeding.year[!(is.na(females.breeding.year$freq)),
+                                                 c("Mum","year","freq","BirdID_eventSW")]
+
+
+names(females.breeding.year.0) <- c("GeneticMumID","Cohort","freq","BirdID_eventSW")
+
+
+# FINAL DATABASE
+
+# rbinding both database
+
+genetic.per.Mum.3 <- rbind(genetic.per.Mum.2,females.breeding.year.0)
+
+names(genetic.per.Mum.3) <- c("GeneticMumID","year","gen.fledg.12d","BirdID_eventSW")
+
+# hist(genetic.per.Mum.3$gen.fledg.12d,breaks=12,right=FALSE)
+
+
+
+##########################################################################
+# Annual number of genetic recruits
+##########################################################################
+
+# I can just count the number of recruits per GeneticMum when recruited=1
+# after that, I'll put it together with the previous database and assign
+# 0 to those in genetic.per.Mum.3 that did not leave any
+
+genetic.recruits.per.Mum <- count(offspring.12d.ped[offspring.12d.ped$recruited==1 & 
+                                                      (!(is.na(offspring.12d.ped$recruited))),],
+                                  c("GeneticMumID","Cohort"))
+
+genetic.recruits.per.Mum.2 <- genetic.recruits.per.Mum[!(is.na(genetic.recruits.per.Mum$GeneticMumID)),]
+
+
+# identifier to merge both databases
+
+genetic.recruits.per.Mum.2$BirdID_eventSW <- factor(paste(genetic.recruits.per.Mum.2$GeneticMumID,
+                                                          genetic.recruits.per.Mum.2$Cohort,
+                                                          sep="_"))
+
+
+genetic.recruits.per.Mum.3 <- genetic.recruits.per.Mum.2[,c("BirdID_eventSW","freq")]
+
+names(genetic.recruits.per.Mum.3) <- c("BirdID_eventSW","gen.recruits")
+
+
+
+##########################################################################
+# Final genetic fitness database
+##########################################################################
+
+# merging fledglings and recruits
+
+genetic.fitness.f <- merge(genetic.per.Mum.3,
+                           genetic.recruits.per.Mum.3,
+                         by="BirdID_eventSW",
+                         all.x=TRUE)
+
+# assigning 0 recruits to those social that breed in 2014 and 2015
+
+genetic.fitness.f$gen.recruits <- ifelse(genetic.fitness.f$year!=2016,
+                                       ifelse(is.na(genetic.fitness.f$gen.recruits),
+                                              0,
+                                              genetic.fitness.f$gen.recruits),
+                                       genetic.fitness.f$gen.recruits)
+
+
+# names(genetic.fitness) <- c("BirdID_eventSW","GeneticDadID",
+#                             "year","gen.fledg.12d","gen.recruits")
+
+# hist(genetic.fitness$gen.recruits,breaks=4,right=FALSE)
+
+
+##########################################################################
+# FINAL FITNESS DATABASE
+##########################################################################
+
+# # There are quite a few individuals_year in the genetic.fitness database
+# # that don't show up in the social.fitness
+# 
+# setdiff(genetic.fitness.f$BirdID_eventSW,
+#         social.fitness.f$BirdID_eventSW)
+# 
+# # However, All the ones showing up in social.fitness but not in 
+# # genetic.fitness correspond to 2016, when there is no pedigree available.
+# 
+# setdiff(social.fitness.f$BirdID_eventSW,
+#         genetic.fitness.f$BirdID_eventSW)
+
+social.fitness.f.red <- social.fitness.f[,c("BirdID_eventSW",
+                                            "soc.fledg.12d",
+                                            "soc.recruits")]
+
+
+fitness.f <- merge(genetic.fitness.f,
+                 social.fitness.f.red,
+                 by="BirdID_eventSW",
+                 all.x=TRUE)
+
+
+# Now I have to add the ones from 2016, which are still missing after that merge()
+
+social.fitness.f.2016 <- social.fitness.f[social.fitness.f$year==2016,]
+
+social.fitness.f.2016$gen.fledg.12d <- NA
+
+social.fitness.f.2016$gen.recruits <- NA
+
+social.fitness.f.2016 <- social.fitness.f.2016[,c("BirdID_eventSW","SocialMumID",
+                                                  "year","gen.fledg.12d",
+                                                  "gen.recruits","soc.fledg.12d",
+                                                  "soc.recruits")]
+
+names(social.fitness.f.2016) <- c("BirdID_eventSW","GeneticMumID",
+                                  "year","gen.fledg.12d",
+                                  "gen.recruits","soc.fledg.12d",
+                                  "soc.recruits")
+
+
+
+##########################################################################
+# FINAL FITNESS DATABASE (for real)
+##########################################################################
+
+fitness.f.full <- rbind(fitness.f,social.fitness.f.2016)
+
+
+names(fitness.f.full) <- c("BirdID_eventSW","BirdID",
+                           "year","gen.fledg.12d",
+                           "gen.recruits","soc.fledg.12d",
+                           "soc.recruits")
+
+fitness.f.full <- fitness.f.full[order(fitness.f.full$BirdID,
+                                       fitness.f.full$year),]
+
+row.names(fitness.f.full) <- NULL
+
+# cor(fitness.f.full[,c("gen.fledg.12d",
+#                     "gen.recruits","soc.fledg.12d",
+#                     "soc.recruits")],use="complete.obs")
+
+
+##########################################################################
+# FINAL DATABASE with BOTH SEXES
+##########################################################################
+
+# rbinding both databases
+
+fitness.full.both <- rbind(fitness.full,fitness.f.full)
+
+
+write.csv(fitness.full.both,"fledglings12/fitness.full.both.csv",row.names=FALSE)
+
+
+
+
+# # Saving some histograms
+# 
+# p1 <- ggplot(fitness.full, aes(x=gen.fledg.12d, fill=as.factor(year))) +
+#   geom_histogram(binwidth=1, alpha=.5, position="identity")
+# 
+# p2 <- ggplot(fitness.full, aes(x=gen.recruits, fill=as.factor(year))) +
+#   geom_histogram(binwidth=1, alpha=.5, position="identity")
+# 
+# p3 <- ggplot(fitness.full, aes(x=soc.fledg.12d, fill=as.factor(year))) +
+#   geom_histogram(binwidth=1, alpha=.5, position="identity")
+# 
+# p4 <- ggplot(fitness.full, aes(x=soc.recruits, fill=as.factor(year))) +
+#   geom_histogram(binwidth=1, alpha=.5, position="identity")
+# 
+# multiplot(p1,p3,p2,p4, cols=2)
+# 
+# 
+# # Multiple plot function, from: http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)/
+# #
+# # ggplot objects can be passed in ..., or to plotlist (as a list of ggplot objects)
+# # - cols:   Number of columns in layout
+# # - layout: A matrix specifying the layout. If present, 'cols' is ignored.
+# #
+# # If the layout is something like matrix(c(1,2,3,3), nrow=2, byrow=TRUE),
+# # then plot 1 will go in the upper left, 2 will go in the upper right, and
+# # 3 will go all the way across the bottom.
+# #
+# multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+#   library(grid)
+#   
+#   # Make a list from the ... arguments and plotlist
+#   plots <- c(list(...), plotlist)
+#   
+#   numPlots = length(plots)
+#   
+#   # If layout is NULL, then use 'cols' to determine layout
+#   if (is.null(layout)) {
+#     # Make the panel
+#     # ncol: Number of columns of plots
+#     # nrow: Number of rows needed, calculated from # of cols
+#     layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+#                      ncol = cols, nrow = ceiling(numPlots/cols))
+#   }
+#   
+#   if (numPlots==1) {
+#     print(plots[[1]])
+#     
+#   } else {
+#     # Set up the page
+#     grid.newpage()
+#     pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+#     
+#     # Make each plot, in the correct location
+#     for (i in 1:numPlots) {
+#       # Get the i,j matrix positions of the regions that contain this subplot
+#       matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+#       
+#       print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+#                                       layout.pos.col = matchidx$col))
+#     }
+#   }
+# }
