@@ -194,14 +194,13 @@ rgbing <- c(255,255,255)
 
 # few colours in rb
 
-lightblue <- c(166,206,227)/rgbing
 darkblue <- c(31,120,180)/rgbing
 chocolate1 <- c(255,127,36)/rgbing
 
 
 # PLOT saved as .tiff
 
-tiff("plots/talks/Figure8_Status_and_fledglings_both_sexes.tiff", height=20, width=20,
+tiff("plots/talks/Figure8_Status_and_fledglings_both_sexes_2015.tiff", height=20, width=20,
      units='cm', compression="lzw", res=300)
 
 #par(mar=c(5, 5, 1, 1))
@@ -246,13 +245,13 @@ points(data.plotf$StElo,
        pch = 19, col=rgb(chocolate1[1],chocolate1[2],chocolate1[3],0.4),       
        cex = 2.0)
 
-index.1<-newdat.6$eventSW=="2014" # only calls the plot but not the points yet
+index.1<-newdat.6$eventSW=="2015" # only calls the plot but not the points yet
 
 polygon(c(newdat.6$StElo[index.1],rev(newdat.6$StElo[index.1])),
         c(newdat.6$lower[index.1],rev(newdat.6$upper[index.1])),
         border=NA,col=rgb(darkblue[1], darkblue[2], darkblue[3], 0.15))
 
-index.2<-newdat.f$eventSW=="2014" # only calls the plot but not the points yet
+index.2<-newdat.f$eventSW=="2015" # only calls the plot but not the points yet
 
 polygon(c(newdat.f$StElo[index.2],rev(newdat.f$StElo[index.2])),
         c(newdat.f$lower[index.2],rev(newdat.f$upper[index.2])),
