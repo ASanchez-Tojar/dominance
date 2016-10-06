@@ -7,7 +7,7 @@
 # Description of script and Instructions
 ########################################################################################################
 
-# This script is to plot the results on dominance status and age.
+# This script is to plot the results on dominance status and tarsus
 
 
 ########################################################################################################
