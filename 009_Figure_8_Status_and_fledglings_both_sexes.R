@@ -220,7 +220,7 @@ plot(data.plot6$StElo,
      frame.plot = FALSE)
 
 title(xlab="Standardized Elo-rating", line=4, cex.lab=3.2, family="serif")
-title(ylab="fledglings", line=4, cex.lab=3.2, family="serif")
+title(ylab="genetic fledglings", line=4, cex.lab=3.2, family="serif")
 
 
 axis(1,at=seq(0,1,by=0.2),
