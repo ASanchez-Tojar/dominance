@@ -31,6 +31,22 @@ rm(list=ls())
 survival <- read.table("survival/survival_all.csv",header=TRUE,sep=",")
 
 
+# Subsetting the database to only those that interacted more than 8 times per event
+
+morethan8pereventSW <- read.table("morethan8pereventSW.csv",header=TRUE,sep=",")
+
+intpereventSW <- morethan8pereventSW[,c("indevent","freqppereventSW")]
+
+names(intpereventSW)<-c("ind_eventSW","freqppereventSW")
+
+survival$ind_eventSW <- factor(paste(survival$individual,
+                                     survival$eventSW,sep="_"))
+
+survival.9int <- merge(survival,intpereventSW,
+                       by="ind_eventSW",all.y=TRUE)
+
+survival <- survival.9int[!(is.na(survival.9int$BirdID)),]
+
 ################################################################
 # MODEL
 ################################################################
@@ -110,7 +126,10 @@ survival.f <- survival.2[survival.2$SexEstimate==0,]
 
 # PLOT saved as .tiff
 
-tiff("plots/talks/Figure14_Status_and_Survival_old.tiff", height=20, width=20,
+# tiff("plots/talks/Figure14_Status_and_Survival_old.tiff", height=20, width=20,
+#      units='cm', compression="lzw", res=300)
+
+tiff("plots/talks/9interactions/Figure14_Status_and_Survival_old_9int.tiff", height=20, width=20,
      units='cm', compression="lzw", res=300)
 
 #par(mar=c(5, 5, 1, 1))
