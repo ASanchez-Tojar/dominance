@@ -28,7 +28,9 @@ rm(list=ls())
 
 # loading the clean databases from Lundy with all the data needed
 
-rank.TLandM.VB.fitness <- read.table("finaldatabases/rank.TLandM.VB.fitness.csv",header=TRUE,sep=",")
+#rank.TLandM.VB.fitness <- read.table("finaldatabases/rank.TLandM.VB.fitness.csv",header=TRUE,sep=",")
+rank.TLandM.VB.fitness <- read.table("finaldatabases/rank.TLandM.VB.fitness.9int.csv",header=TRUE,sep=",")
+
 VB.TLandM.age.fitness <- read.table("finaldatabases/VB.TLandM.age.fitness.csv",header=TRUE,sep=",")
 
 
@@ -126,7 +128,10 @@ data.plot1.f <- data.plot1[data.plot1$sex==0,]
 
 # PLOT saved as .tiff
 
-tiff("plots/talks/Figure11_Status_and_tarsus_both_sexes.tiff", height=20, width=20,
+# tiff("plots/talks/Figure11_Status_and_tarsus_both_sexes.tiff", height=20, width=20,
+#      units='cm', compression="lzw", res=300)
+
+tiff("plots/talks/9interactions/Figure11_Status_and_tarsus_both_sexes_9int.tiff", height=20, width=20,
      units='cm', compression="lzw", res=300)
 
 #par(mar=c(5, 5, 1, 1))
