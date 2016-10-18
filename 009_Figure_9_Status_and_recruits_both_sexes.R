@@ -29,7 +29,8 @@ rm(list=ls())
 
 # loading the clean databases from Lundy with all the data needed
 
-rank.TLandM.VB.fitness <- read.table("finaldatabases/rank.TLandM.VB.fitness.csv",header=TRUE,sep=",")
+#rank.TLandM.VB.fitness <- read.table("finaldatabases/rank.TLandM.VB.fitness.csv",header=TRUE,sep=",")
+rank.TLandM.VB.fitness <- read.table("finaldatabases/rank.TLandM.VB.fitness.9int.csv",header=TRUE,sep=",")
 
 # subset (unknown excluded)
 
@@ -197,8 +198,12 @@ chocolate1 <- c(255,127,36)/rgbing
 
 # PLOT saved as .tiff
 
-tiff("plots/talks/Figure9_Status_and_recruits_both_sexes_2015.tiff", height=20, width=20,
+# tiff("plots/talks/Figure9_Status_and_recruits_both_sexes_2015.tiff", height=20, width=20,
+#      units='cm', compression="lzw", res=300)
+
+tiff("plots/talks/9interactions/Figure9_Status_and_recruits_both_sexes_2014_9int.tiff", height=20, width=20,
      units='cm', compression="lzw", res=300)
+
 
 #par(mar=c(5, 5, 1, 1))
 par(mar=c(6, 7, 1, 1))
@@ -242,13 +247,13 @@ points(rank.TLandM.VB.fitness.f.2$StElo,
        pch = 19, col=rgb(chocolate1[1],chocolate1[2],chocolate1[3],0.4),       
        cex = 2.0)
 
-index.1<-newdat.m$eventSW=="2015" # only calls the plot but not the points yet
+index.1<-newdat.m$eventSW=="2014" # only calls the plot but not the points yet
 
 polygon(c(newdat.m$StElo[index.1],rev(newdat.m$StElo[index.1])),
         c(newdat.m$lower[index.1],rev(newdat.m$upper[index.1])),
         border=NA,col=rgb(darkblue[1], darkblue[2], darkblue[3], 0.15))
 
-index.2<-newdat.f$eventSW=="2015" # only calls the plot but not the points yet
+index.2<-newdat.f$eventSW=="2014" # only calls the plot but not the points yet
 
 polygon(c(newdat.f$StElo[index.2],rev(newdat.f$StElo[index.2])),
         c(newdat.f$lower[index.2],rev(newdat.f$upper[index.2])),
