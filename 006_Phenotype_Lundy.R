@@ -398,7 +398,7 @@ intpereventSW <- morethan8pereventSW[,c("indevent","freqppereventSW")]
 
 names(intpereventSW)<-c("ind_eventSW","freqppereventSW")
 
-rank.TLandM.VB.fitness$ind_eventSW <- factor(paste(rank.TLandM.VB.fitness$individual,
+rank.TLandM.VB.fitness$ind_eventSW <- factor(paste(rank.TLandM.VB.fitness$colourrings,
                                                    rank.TLandM.VB.fitness$eventSW,sep="_"))
 
 rank.TLandM.VB.fitness.9int <- merge(rank.TLandM.VB.fitness,intpereventSW,
