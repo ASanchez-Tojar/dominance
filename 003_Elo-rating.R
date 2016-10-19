@@ -45,7 +45,19 @@ rm(list=ls())
 
 # loading the clean database to estimate the ratings
 
-dom.final.v2 <- read.table("dom.final.v2.csv",header=TRUE,sep=",")
+dom.final.v2 <- read.table("dom.final.v2_realtime.csv",header=TRUE,sep=",")
+
+
+# sorting by date and time
+
+dom.final.v2 <- dom.final.v2[order(dom.final.v2$date,
+                                   dom.final.v2$realtime2),]
+
+
+dom.final.v2$date.ELO2.2 <- as.factor(paste(dom.final.v2$year,
+                                            dom.final.v2$month,
+                                            dom.final.v2$day,
+                                            sep="-"))
 
 
 ########################################################################################################
