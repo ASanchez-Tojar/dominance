@@ -54,6 +54,8 @@ dom.final.v2 <- dom.final.v2[order(dom.final.v2$date,
                                    dom.final.v2$realtime2),]
 
 
+# Creating date as require by EloRating
+
 dom.final.v2$date.ELO2.2 <- as.factor(paste(dom.final.v2$year,
                                             dom.final.v2$month,
                                             dom.final.v2$day,
