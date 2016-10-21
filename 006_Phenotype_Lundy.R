@@ -42,10 +42,16 @@ rm(list=ls())
 # loading the clean database to estimate the ratings
 
 elo_scores_all_events <- read.table("elo_scores_all_events.csv",header=TRUE,sep=",")
+elo_scores_all_events_sim <- read.table("Elo-Rating_robustness/elo_scores_all_events_sim.csv",header=TRUE,sep=",")
 birdsex.1 <- read.table("birdsex.1.csv",header=TRUE,sep=",")
 morethan8pereventSW <- read.table("morethan8pereventSW.csv",header=TRUE,sep=",")
 #fitness.full <- read.table("fledglings12/fitness.full.csv",header=TRUE,sep=",")
 fitness.full.both <- read.table("fledglings12/fitness.full.both.csv",header=TRUE,sep=",")
+
+# # to avoid making changes to the code, let's call elo_scores_all_events_sim
+# # as elo_scores_all_events
+# 
+# elo_scores_all_events <- elo_scores_all_events_sim #simulated values
 
 
 #########################################################################################################
@@ -385,6 +391,7 @@ names(rank.TLandM.VB.fitness) <- c("BirdID_eventSW","BirdID","colourrings",
 
 write.csv(rank.TLandM.VB.fitness,
           "finaldatabases/rank.TLandM.VB.fitness.csv",
+          #"finaldatabases/rank.TLandM.VB.fitness_sim.csv",
           row.names=FALSE)
 
 
@@ -409,6 +416,7 @@ rank.TLandM.VB.fitness.9int <- merge(rank.TLandM.VB.fitness,intpereventSW,
 
 write.csv(rank.TLandM.VB.fitness.9int,
           "finaldatabases/rank.TLandM.VB.fitness.9int.csv",
+          #"finaldatabases/rank.TLandM.VB.fitness.9int_sim.csv",
           row.names=FALSE)
 
 
