@@ -31,6 +31,8 @@ rm(list=ls())
 
 #rank.TLandM.VB.fitness <- read.table("finaldatabases/rank.TLandM.VB.fitness.csv",header=TRUE,sep=",")
 rank.TLandM.VB.fitness <- read.table("finaldatabases/rank.TLandM.VB.fitness.9int.csv",header=TRUE,sep=",")
+#rank.TLandM.VB.fitness <- read.table("finaldatabases/rank.TLandM.VB.fitness_sim.csv",header=TRUE,sep=",")
+#rank.TLandM.VB.fitness <- read.table("finaldatabases/rank.TLandM.VB.fitness.9int_sim.csv",header=TRUE,sep=",")
 
 # subset (unknown excluded)
 
@@ -204,8 +206,15 @@ chocolate1 <- c(255,127,36)/rgbing
 # tiff("plots/talks/Figure8_Status_and_fledglings_both_sexes_2015.tiff", height=20, width=20,
 #      units='cm', compression="lzw", res=300)
 
-tiff("plots/talks/9interactions/Figure8_Status_and_fledglings_both_sexes_2015_9int.tiff", height=20, width=20,
+# tiff("plots/talks/9interactions/Figure8_Status_and_fledglings_both_sexes_2015_9int.tiff", height=20, width=20,
+#      units='cm', compression="lzw", res=300)
+
+# tiff("plots/talks/Figure9_Status_and_fledglings_both_sexes_2015_sim.tiff", height=20, width=20,
+#      units='cm', compression="lzw", res=300)
+
+tiff("plots/talks/9interactions/Figure9_Status_and_fledglings_both_sexes_2015_9int_sim.tiff", height=20, width=20,
      units='cm', compression="lzw", res=300)
+
 
 #par(mar=c(5, 5, 1, 1))
 par(mar=c(6, 7, 1, 1))
