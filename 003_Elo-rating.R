@@ -37,6 +37,8 @@
 library(EloRating)
 library(statnet)
 library(rptR)
+library(plyr)
+
 
 # Clear memory and get to know where you are
 rm(list=ls())
@@ -94,6 +96,9 @@ for(i in levels(dom.final.v2$eventSW)){
   print(summary(y))
   w<-extract.elo(y,standardize = TRUE)
   assign(paste0("elo_scores.",counter),y)
+  traj <- y$logtable
+  traj$eventSW <- counter
+  assign(paste0("elo_trajectories_",counter),traj)
   assign(paste0("elo_scores_ind.",counter),w)
   rownames <- seq(1,length(w),
                   1)
@@ -120,13 +125,130 @@ elo_scores_all_events <- rbind(elo_scores_ind.db.1,
                                elo_scores_ind.db.5,
                                elo_scores_ind.db.6)
 
-# I'm saving this file so that I don't have to run it again unless new data is added
+# # I'm saving this file so that I don't have to run it again unless new data is added
+# 
+# write.csv(elo_scores_all_events,"elo_scores_all_events.csv",row.names=FALSE)
 
-write.csv(elo_scores_all_events,"elo_scores_all_events.csv",row.names=FALSE)
+
+# also, saving all individual trajectories
+
+elo_trajectories_all_events <- rbind(elo_trajectories_1,
+                                     elo_trajectories_2,
+                                     elo_trajectories_3,
+                                     elo_trajectories_4,
+                                     elo_trajectories_5,
+                                     elo_trajectories_6)
+
+
+# ########################################################################################################
+# # # 9.A.3. Plotting individual trajectories interaction by interaction
+# ########################################################################################################
+# 
+# # primitive code!
+# 
+# # re-organizing dataset so that there is a row per individual
+# 
+# # first creating a new empty data set to be filled by the following
+# # for loop
+# 
+# db <- data.frame(Date=integer(),
+#                  id=factor(),
+#                  PreElo=integer(),
+#                  PostElo=integer(),
+#                  eventSW=integer(),
+#                  order=integer(),
+#                  stringsAsFactors=FALSE)
+# 
+# # very inefficient for loop!
+# 
+# for (i in 1:nrow(elo_trajectories_all_events)){
+#   
+#   winner <- elo_trajectories_all_events[i,c("Date","winner","Apre","Apost","eventSW")]
+#   names(winner) <- c("Date","id","PreElo","PostElo","eventSW")
+#   winner$order <- i
+#   loser <- elo_trajectories_all_events[i,c("Date","loser","Bpre","Bpost","eventSW")]
+#   names(loser) <- c("Date","id","PreElo","PostElo","eventSW")
+#   loser$order <- i+0.5
+#   db <- rbind(db,winner)
+#   db <- rbind(db,loser)
+#   
+# }
+# 
+# 
+# # we can count the number of interactions per individual to
+# # later on subset and plot less individuals
+# 
+# counts <- count(db,"id")
+# 
+# db <- merge(db,counts,by="id",all.x=TRUE)
+# 
+# db.1 <- db[db$freq>200,]
+# 
+# db.1 <- db.1[order(db.1$eventSW,db.1$Date, db.1$id,db.1$order),]
+# 
+# ids <- factor(unique(db.1$id))
+# 
+# plot(c(1,nrow(db)),
+#      db$Elo, 
+#      xlab="interaction",
+#      ylab="Elo",
+#      cex.lab=1.6,
+#      xlim=c(0,450),ylim=c(500,1700),
+#      family="serif",
+#      type="n")
+# 
+# rgbing <- c(255,255,255)
+# chocolate1 <- c(255,127,36)/rgbing
+# darkblue <- c(31,120,180)/rgbing
+# antiquewhite <- c(250,235,215)/rgbing
+# antiquewhite3 <- c(205,192,176)/rgbing
+# aquamarine <- c(127,255,212)/rgbing
+# azure4 <- c(131,139,139)/rgbing
+# black <- c(0,0,0)/rgbing
+# blue <- c(0,0,255)/rgbing
+# blueviolet <- c(138,43,226)/rgbing
+# brown1 <- c(165,42,42)/rgbing
+# brown4 <- c(139,35,35)/rgbing
+# cadetblue1 <- c(152,245,255)/rgbing
+# chartreuse <- c(127,255,0)/rgbing
+# chartreuse4 <- c(69,139,0)/rgbing
+# darkmagenta <- c(139,0,139)/rgbing
+# gold <- c(255,215,0)/rgbing
+# gray70 <- c(179,179,179)/rgbing
+# 
+# colours <- list(chocolate1,darkblue,antiquewhite,antiquewhite3,aquamarine,azure4,
+#                 black,blue,blueviolet,brown1,brown4,cadetblue1,chartreuse,chartreuse4,
+#                 darkmagenta,gold,gray70)
+# 
+# counter <- 0
+# 
+# counter2 <-1
+# 
+# for (bird in levels(ids)){
+#   
+#   for(i in 1:nrow(db.1)){
+#     
+#     if(bird==db.1$id[i]){
+#       
+#       lines(c(counter,counter+1),c(db.1$PreElo[i],db.1$PostElo[i]),
+#             col=rgb(colours[[counter2]][1], colours[[counter2]][2], colours[[counter2]][3],0.6),
+#             lwd=2)
+#       #col=colours[counter2])
+#       counter <- counter + 1
+#       
+#     }
+#     
+#   }
+#   
+#   counter <-0
+#   
+#   counter2 <- counter2+1
+#   
+# }
 
 
 ########################################################################################################
-# # 9.A.3. Stability coefficient
+# # 9.A.4. Stability coefficient
 ########################################################################################################
 
 sink("summaries/stabilitycoefficient_Lundy.txt")
@@ -152,7 +274,7 @@ stab.elo(elo_scores.6)
 sink()
 
 ########################################################################################################
-# # 9.A.4. Proportion of unknown dyads
+# # 9.A.5. Proportion of unknown dyads
 ########################################################################################################
 
 sink("summaries/prop_unknown_dyads_Lundy.txt")
@@ -179,7 +301,7 @@ sink()
 
 
 ########################################################################################################
-# # 9.A.5.1. Estimating repeatability of StElo-rank using Shinichi's package
+# # 9.A.6. Estimating repeatability of StElo-rank using Shinichi's package
 ########################################################################################################
 
 # Estimating repeatability of dominance rank. I'm using MCMC method, see above for ANOVA and REML.
@@ -200,13 +322,6 @@ sink()
 
 # saving it as a csv file
 # write.csv(as.data.frame(EloR1.all.ext.scores),file="StElos2015.csv",sep=",",na="",dec = ".")
-
-
-########################################################################################################
-# # 9.A.6. Extracting individual trajectories (slopes), number of observations and period
-########################################################################################################
-
-# I'm not going into this, not for now at least
 
 
 ########################################################################################################
