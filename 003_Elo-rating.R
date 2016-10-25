@@ -67,7 +67,7 @@ dom.final.v2$date.ELO2.2 <- as.factor(paste(dom.final.v2$year,
 ########################################################################################################
 
 # This repeats the sections 9.B. and 9.C. (below) but for each of the events. 
-# Some explanations might be given below.
+# Some more detailed explanations might be given below.
 
 
 ########################################################################################################
@@ -92,9 +92,37 @@ for(i in levels(dom.final.v2$eventSW)){
              Date=x$date.ELO2.2, 
              draw=x$Draw)
   print(summary(y))
+  w<-extract.elo(y,standardize = TRUE)
   assign(paste0("elo_scores.",counter),y)
+  assign(paste0("elo_scores_ind.",counter),w)
+  rownames <- seq(1,length(w),
+                  1)
+  scores <- as.data.frame(w,
+                          row.names = as.character(rownames))
+  
+  z <- cbind(attributes(w),
+             scores)
+  
+  z$eventSW <- counter
+  
+  names(z) <- c("individual","StElo","eventSW")
+  
+  assign(paste0("elo_scores_ind.db.",counter),z)
   counter <- counter + 1
 }
+
+
+# creating a database with all these observations
+elo_scores_all_events <- rbind(elo_scores_ind.db.1,
+                               elo_scores_ind.db.2,
+                               elo_scores_ind.db.3,
+                               elo_scores_ind.db.4,
+                               elo_scores_ind.db.5,
+                               elo_scores_ind.db.6)
+
+# I'm saving this file so that I don't have to run it again unless new data is added
+
+write.csv(elo_scores_all_events,"elo_scores_all_events.csv",row.names=FALSE)
 
 
 ########################################################################################################
@@ -148,74 +176,6 @@ cat("\nEvent 2016\n")
 prunk(elo_scores.6)
 
 sink()
-
-
-########################################################################################################
-# # 9.A.5. Extracting elo-ratings per individual
-########################################################################################################
-
-# this can be probably included in the for loop of line 2758
-
-elo_scores_ind.1 <- extract.elo(elo_scores.1,standardize = TRUE)
-elo_scores_ind.2 <- extract.elo(elo_scores.2,standardize = TRUE)
-elo_scores_ind.3 <- extract.elo(elo_scores.3,standardize = TRUE)
-elo_scores_ind.4 <- extract.elo(elo_scores.4,standardize = TRUE)
-elo_scores_ind.5 <- extract.elo(elo_scores.5,standardize = TRUE)
-elo_scores_ind.6 <- extract.elo(elo_scores.6,standardize = TRUE)
-
-
-#     This code is to make a dataframe out of those individuals scores, please, change the number for the
-# event you want!
-
-# creating the name of the rows, basically from 1 to total number of individuals
-
-
-# Creating a database with elo_scores per event
-
-counter <- 1
-
-for(i in levels(dom.final.v2$eventSW)){
-  
-  x<-subset(dom.final.v2, dom.final.v2$eventSW==i)
-  y<-elo.seq(winner=x$Winner, 
-             loser=x$Loser, 
-             Date=x$date.ELO2.2, 
-             draw=x$Draw)
-  
-  w<-extract.elo(y,standardize = TRUE)
-  
-  rownames <- seq(1,length(w),
-                  1)
-  
-  # making a data.frame with the elo-ratings
-  scores <- as.data.frame(w,
-                          row.names = as.character(rownames))
-  
-  z <- cbind(attributes(w),
-             scores)
-  
-  z$eventSW <- counter
-  
-  names(z) <- c("individual","StElo","eventSW")
-  
-  assign(paste0("elo_scores_ind.db.",counter),z)
-  
-  counter <- counter + 1
-  
-}
-
-
-# creating a database with all these observations
-elo_scores_all_events <- rbind(elo_scores_ind.db.1,
-                               elo_scores_ind.db.2,
-                               elo_scores_ind.db.3,
-                               elo_scores_ind.db.4,
-                               elo_scores_ind.db.5,
-                               elo_scores_ind.db.6)
-
-# I'm saving this file so that I don't have to run it again unless new data is added
-
-write.csv(elo_scores_all_events,"elo_scores_all_events.csv",row.names=FALSE)
 
 
 ########################################################################################################
