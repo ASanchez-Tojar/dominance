@@ -197,6 +197,7 @@ elo_trajectories_all_events <- rbind(elo_trajectories_1,
 # db_3.2 <- db_3[db_3$freq>22,]
 # db_4.2 <- db_4[db_4$freq>30 & db_4$id!="dmcv",] #11
 # db_5.2 <- db_5[db_5$freq>50,]
+db_5.2 <- db_5[db_5$freq>75,]
 # db_6.2 <- db_6[db_6$freq>75,]
 # 
 # 
@@ -387,14 +388,14 @@ elo_trajectories_all_events <- rbind(elo_trajectories_1,
 #   counter2 <- counter2+1
 #   
 # }
-# 
-# 
+ 
+
 # plot(c(1,nrow(db)),
 #      db_5.2$Elo, 
 #      xlab="interaction",
-#      ylab="Elo",
+#      ylab="Elo-rating",
 #      cex.lab=1.6,
-#      xlim=c(0,125),ylim=c(600,1600),
+#      xlim=c(0,160),ylim=c(600,1600),
 #      family="serif",
 #      type="n")
 # 
@@ -424,6 +425,20 @@ elo_trajectories_all_events <- rbind(elo_trajectories_1,
 #   
 # }
 # 
+# # lines(c(54,54),c(580,640),lty=3, lwd=3)
+# arrows(54,580,54,640,code=2,lty=1, lwd=4,col="red")
+# text(55,600,"after 54 interactions",pos = 4) 
+# arrows(86,1320,86,1390,code=2,lty=1, lwd=4,col="red")
+# text(87,1290,"after 86 interactions")
+# points(0,
+#        1000, 
+#        pch = 19, col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.9),
+#        cex = 1.5)
+# points(86,
+#        1408, 
+#        pch = 19, col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.9),
+#        cex = 1.5)
+
 # 
 # plot(c(1,nrow(db)),
 #      db_6.2$Elo, 
