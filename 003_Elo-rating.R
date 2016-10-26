@@ -144,7 +144,8 @@ elo_trajectories_all_events <- rbind(elo_trajectories_1,
 # # # 9.A.3. Plotting individual trajectories interaction by interaction
 # ########################################################################################################
 # 
-# # primitive code!
+# # primitive code that could be place within previous for loop, but did not have the time to polish up!
+# # in fact, I doubt it should be called coding
 # 
 # # re-organizing dataset so that there is a row per individual
 # 
@@ -160,47 +161,66 @@ elo_trajectories_all_events <- rbind(elo_trajectories_1,
 #                  stringsAsFactors=FALSE)
 # 
 # # very inefficient for loop!
-# 
-# for (i in 1:nrow(elo_trajectories_all_events)){
+# for (j in 1:max(elo_trajectories_all_events$eventSW)){
 #   
-#   winner <- elo_trajectories_all_events[i,c("Date","winner","Apre","Apost","eventSW")]
-#   names(winner) <- c("Date","id","PreElo","PostElo","eventSW")
-#   winner$order <- i
-#   loser <- elo_trajectories_all_events[i,c("Date","loser","Bpre","Bpost","eventSW")]
-#   names(loser) <- c("Date","id","PreElo","PostElo","eventSW")
-#   loser$order <- i+0.5
-#   db <- rbind(db,winner)
-#   db <- rbind(db,loser)
+#   x <- subset(elo_trajectories_all_events,elo_trajectories_all_events$eventSW==j)
+#   
+#   for (i in 1:nrow(x)){
+#     
+#     winner <- x[i,c("Date","winner","Apre","Apost","eventSW")]
+#     names(winner) <- c("Date","id","PreElo","PostElo","eventSW")
+#     winner$order <- i
+#     loser <- x[i,c("Date","loser","Bpre","Bpost","eventSW")]
+#     names(loser) <- c("Date","id","PreElo","PostElo","eventSW")
+#     loser$order <- i+0.5
+#     db <- rbind(db,winner)
+#     db <- rbind(db,loser)
+#     counts <- count(db,"id")    
+#     db.counts <- merge(db,counts,by="id",all.x=TRUE)
+#     assign(paste0("db_",j),db.counts)
+#     
+#   }
+#   
+#   db <- data.frame(Date=integer(),
+#                    id=factor(),
+#                    PreElo=integer(),
+#                    PostElo=integer(),
+#                    eventSW=integer(),
+#                    order=integer(),
+#                    stringsAsFactors=FALSE)
 #   
 # }
 # 
 # 
-# # we can count the number of interactions per individual to
-# # later on subset and plot less individuals
+# db_1.2 <- db_1[db_1$freq>48,]
+# db_2.2 <- db_2[db_2$freq>62,]
+# db_3.2 <- db_3[db_3$freq>22,]
+# db_4.2 <- db_4[db_4$freq>30 & db_4$id!="dmcv",] #11
+# db_5.2 <- db_5[db_5$freq>50,]
+# db_6.2 <- db_6[db_6$freq>75,]
 # 
-# counts <- count(db,"id")
 # 
-# db <- merge(db,counts,by="id",all.x=TRUE)
 # 
-# db.1 <- db[db$freq>200,]
+# db_1.2 <- db_1.2[order(db_1.2$order),]
+# db_2.2 <- db_2.2[order(db_2.2$order),]
+# db_3.2 <- db_3.2[order(db_3.2$order),]
+# db_4.2 <- db_4.2[order(db_4.2$order),]
+# db_5.2 <- db_5.2[order(db_5.2$order),]
+# db_6.2 <- db_6.2[order(db_6.2$order),]
 # 
-# db.1 <- db.1[order(db.1$eventSW,db.1$Date, db.1$id,db.1$order),]
 # 
-# ids <- factor(unique(db.1$id))
+# ids1 <- factor(unique(db_1.2$id))
+# ids2 <- factor(unique(db_2.2$id))
+# ids3 <- factor(unique(db_3.2$id))
+# ids4 <- factor(unique(db_4.2$id))
+# ids5 <- factor(unique(db_5.2$id))
+# ids6 <- factor(unique(db_6.2$id))
 # 
-# plot(c(1,nrow(db)),
-#      db$Elo, 
-#      xlab="interaction",
-#      ylab="Elo",
-#      cex.lab=1.6,
-#      xlim=c(0,450),ylim=c(500,1700),
-#      family="serif",
-#      type="n")
 # 
 # rgbing <- c(255,255,255)
 # chocolate1 <- c(255,127,36)/rgbing
 # darkblue <- c(31,120,180)/rgbing
-# antiquewhite <- c(250,235,215)/rgbing
+# #antiquewhite <- c(250,235,215)/rgbing
 # antiquewhite3 <- c(205,192,176)/rgbing
 # aquamarine <- c(127,255,212)/rgbing
 # azure4 <- c(131,139,139)/rgbing
@@ -209,28 +229,43 @@ elo_trajectories_all_events <- rbind(elo_trajectories_1,
 # blueviolet <- c(138,43,226)/rgbing
 # brown1 <- c(165,42,42)/rgbing
 # brown4 <- c(139,35,35)/rgbing
-# cadetblue1 <- c(152,245,255)/rgbing
-# chartreuse <- c(127,255,0)/rgbing
-# chartreuse4 <- c(69,139,0)/rgbing
-# darkmagenta <- c(139,0,139)/rgbing
-# gold <- c(255,215,0)/rgbing
-# gray70 <- c(179,179,179)/rgbing
+# # cadetblue1 <- c(152,245,255)/rgbing
+# # #chartreuse <- c(127,255,0)/rgbing
+# # chartreuse4 <- c(69,139,0)/rgbing
+# # darkmagenta <- c(139,0,139)/rgbing
+# # gold <- c(255,215,0)/rgbing
+# # gray70 <- c(179,179,179)/rgbing
 # 
-# colours <- list(chocolate1,darkblue,antiquewhite,antiquewhite3,aquamarine,azure4,
-#                 black,blue,blueviolet,brown1,brown4,cadetblue1,chartreuse,chartreuse4,
-#                 darkmagenta,gold,gray70)
+# # colours <- list(chocolate1,darkblue,antiquewhite,antiquewhite3,aquamarine,azure4,
+# #                 black,blue,blueviolet,brown1,brown4,cadetblue1,chartreuse,chartreuse4,
+# #                 darkmagenta,gold,gray70)
+# 
+# colours <- list(chocolate1,darkblue,antiquewhite3,aquamarine,azure4,
+#                 black,blue,blueviolet,brown1,brown4)
+# 
+# 
+# par(mfrow=c(3,2))
+# 
+# plot(c(1,nrow(db)),
+#      db_1.2$Elo, 
+#      xlab="interaction",
+#      ylab="Elo",
+#      cex.lab=1.6,
+#      xlim=c(0,125),ylim=c(600,1600),
+#      family="serif",
+#      type="n")
 # 
 # counter <- 0
 # 
 # counter2 <-1
 # 
-# for (bird in levels(ids)){
+# for (bird in levels(ids1)){
 #   
-#   for(i in 1:nrow(db.1)){
+#   for(i in 1:nrow(db_1.2)){
 #     
-#     if(bird==db.1$id[i]){
+#     if(bird==db_1.2$id[i]){
 #       
-#       lines(c(counter,counter+1),c(db.1$PreElo[i],db.1$PostElo[i]),
+#       lines(c(counter,counter+1),c(db_1.2$PreElo[i],db_1.2$PostElo[i]),
 #             col=rgb(colours[[counter2]][1], colours[[counter2]][2], colours[[counter2]][3],0.6),
 #             lwd=2)
 #       #col=colours[counter2])
@@ -245,7 +280,185 @@ elo_trajectories_all_events <- rbind(elo_trajectories_1,
 #   counter2 <- counter2+1
 #   
 # }
-
+# 
+# plot(c(1,nrow(db)),
+#      db_2.2$Elo, 
+#      xlab="interaction",
+#      ylab="Elo",
+#      cex.lab=1.6,
+#      xlim=c(0,125),ylim=c(600,1600),
+#      family="serif",
+#      type="n")
+# 
+# counter <- 0
+# 
+# counter2 <-1
+# 
+# for (bird in levels(ids2)){
+#   
+#   for(i in 1:nrow(db_2.2)){
+#     
+#     if(bird==db_2.2$id[i]){
+#       
+#       lines(c(counter,counter+1),c(db_2.2$PreElo[i],db_2.2$PostElo[i]),
+#             col=rgb(colours[[counter2]][1], colours[[counter2]][2], colours[[counter2]][3],0.6),
+#             lwd=2)
+#       #col=colours[counter2])
+#       counter <- counter + 1
+#       
+#     }
+#     
+#   }
+#   
+#   counter <-0
+#   
+#   counter2 <- counter2+1
+#   
+# }
+# 
+# 
+# plot(c(1,nrow(db)),
+#      db_3.2$Elo, 
+#      xlab="interaction",
+#      ylab="Elo",
+#      cex.lab=1.6,
+#      xlim=c(0,125),ylim=c(600,1600),
+#      family="serif",
+#      type="n")
+# 
+# counter <- 0
+# 
+# counter2 <-1
+# 
+# for (bird in levels(ids3)){
+#   
+#   for(i in 1:nrow(db_3.2)){
+#     
+#     if(bird==db_3.2$id[i]){
+#       
+#       lines(c(counter,counter+1),c(db_3.2$PreElo[i],db_3.2$PostElo[i]),
+#             col=rgb(colours[[counter2]][1], colours[[counter2]][2], colours[[counter2]][3],0.6),
+#             lwd=2)
+#       #col=colours[counter2])
+#       counter <- counter + 1
+#       
+#     }
+#     
+#   }
+#   
+#   counter <-0
+#   
+#   counter2 <- counter2+1
+#   
+# }
+# 
+# 
+# plot(c(1,nrow(db)),
+#      db_4.2$Elo, 
+#      xlab="interaction",
+#      ylab="Elo",
+#      cex.lab=1.6,
+#      xlim=c(0,125),ylim=c(600,1600),
+#      family="serif",
+#      type="n")
+# 
+# counter <- 0
+# 
+# counter2 <-1
+# 
+# for (bird in levels(ids4)){
+#   
+#   for(i in 1:nrow(db_4.2)){
+#     
+#     if(bird==db_4.2$id[i]){
+#       
+#       lines(c(counter,counter+1),c(db_4.2$PreElo[i],db_4.2$PostElo[i]),
+#             col=rgb(colours[[counter2]][1], colours[[counter2]][2], colours[[counter2]][3],0.6),
+#             lwd=2)
+#       #col=colours[counter2])
+#       counter <- counter + 1
+#       
+#     }
+#     
+#   }
+#   
+#   counter <-0
+#   
+#   counter2 <- counter2+1
+#   
+# }
+# 
+# 
+# plot(c(1,nrow(db)),
+#      db_5.2$Elo, 
+#      xlab="interaction",
+#      ylab="Elo",
+#      cex.lab=1.6,
+#      xlim=c(0,125),ylim=c(600,1600),
+#      family="serif",
+#      type="n")
+# 
+# counter <- 0
+# 
+# counter2 <-1
+# 
+# for (bird in levels(ids5)){
+#   
+#   for(i in 1:nrow(db_5.2)){
+#     
+#     if(bird==db_5.2$id[i]){
+#       
+#       lines(c(counter,counter+1),c(db_5.2$PreElo[i],db_5.2$PostElo[i]),
+#             col=rgb(colours[[counter2]][1], colours[[counter2]][2], colours[[counter2]][3],0.6),
+#             lwd=2)
+#       #col=colours[counter2])
+#       counter <- counter + 1
+#       
+#     }
+#     
+#   }
+#   
+#   counter <-0
+#   
+#   counter2 <- counter2+1
+#   
+# }
+# 
+# 
+# plot(c(1,nrow(db)),
+#      db_6.2$Elo, 
+#      xlab="interaction",
+#      ylab="Elo",
+#      cex.lab=1.6,
+#      xlim=c(0,125),ylim=c(600,1600),
+#      family="serif",
+#      type="n")
+# 
+# counter <- 0
+# 
+# counter2 <-1
+# 
+# for (bird in levels(ids6)){
+#   
+#   for(i in 1:nrow(db_6.2)){
+#     
+#     if(bird==db_6.2$id[i]){
+#       
+#       lines(c(counter,counter+1),c(db_6.2$PreElo[i],db_6.2$PostElo[i]),
+#             col=rgb(colours[[counter2]][1], colours[[counter2]][2], colours[[counter2]][3],0.6),
+#             lwd=2)
+#       #col=colours[counter2])
+#       counter <- counter + 1
+#       
+#     }
+#     
+#   }
+#   
+#   counter <-0
+#   
+#   counter2 <- counter2+1
+#   
+# }
 
 ########################################################################################################
 # # 9.A.4. Stability coefficient
