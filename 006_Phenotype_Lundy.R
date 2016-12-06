@@ -126,8 +126,11 @@ elo_scores_all_events_age$BirdID_eventSW <- factor(paste(elo_scores_all_events_a
 #########################################################################################################
 
 # loading the database with tarsus length and mass (Stage=3, so it doesn't include measures in nest)
+# SELECT tblCaptures.BirdID, tblCaptures.CaptureDate, tblCaptures.CaptureTime, tblMeasurements.Tarsus, tblMeasurements.Mass, tblCaptures.Observer, tblCaptures.CaptureRef
+# FROM tblCaptures INNER JOIN tblMeasurements ON tblCaptures.CaptureRef = tblMeasurements.CaptureRef
+# WHERE (((tblCaptures.Stage)=3));
 
-tarsuslengthandMass <- read.table("BirdID-Tarsus-Mass.csv",header=TRUE,sep=",")
+tarsuslengthandMass <- read.table("BirdID-Tarsus-Mass_Dec2016.csv",header=TRUE,sep=",")
 
 
 # # the mean value of tarsus measurements per individual is: 
@@ -138,8 +141,12 @@ tarsuslengthandMass <- read.table("BirdID-Tarsus-Mass.csv",header=TRUE,sep=",")
 
 
 # loading the database with Visible Badge
+# SELECT tblCaptures.BirdID, tblCaptures.CaptureDate, tblCaptures.CaptureTime, Avg(tblPlumage.Estimate) AS AvgOfEstimate, tblPlumage.Trait, tblCaptures.Observer, tblCaptures.CaptureRef
+# FROM tblCaptures INNER JOIN tblPlumage ON tblCaptures.CaptureRef = tblPlumage.CaptureRef
+# GROUP BY tblCaptures.BirdID, tblCaptures.CaptureDate, tblCaptures.CaptureTime, tblPlumage.Trait, tblCaptures.Observer, tblCaptures.CaptureRef
+# HAVING (((tblPlumage.Trait)='VB'));
 
-visibleBadge <-  read.table("BirdID-VisibleBadge.csv",header=TRUE,sep=",")
+visibleBadge <-  read.table("BirdID-VisibleBadge_Dec2016.csv",header=TRUE,sep=",")
 
 
 # #########################################################################################################
@@ -246,6 +253,25 @@ for(i in 1:nrow(visibleBadge.AST)){
 
 visibleBadge.AST$BirdID_eventSW <- factor(paste(visibleBadge.AST$BirdID,
                                                 visibleBadge.AST$eventSW,sep="_"))
+
+# hist per year
+
+par(mfrow=c(4,2))
+
+for (i in levels(as.factor(visibleBadge.AST$eventSW))){
+  
+  db <- visibleBadge.AST[visibleBadge.AST$eventSW==i,]
+  p <- paste(", N=",nrow(db))
+  x<-range(db$AvgOfEstimate)
+  ran<-round(x[[2]]-x[[1]],0)
+  hist(db$AvgOfEstimate,xlim = c(30,60),breaks=ran,
+       main=paste(i,p),col="grey75")
+  lines(c(mean(db$AvgOfEstimate),mean(db$AvgOfEstimate)),
+        c(0,35),col="red",lty=3,lwd=2.5)
+  
+  lines(c(mean(visibleBadge.AST$AvgOfEstimate),mean(visibleBadge.AST$AvgOfEstimate)),
+        c(0,35),col="blue",lty=3,lwd=2.5)
+}
 
 
 # Now we can finally estimate a mean visible badge per summer/winter
