@@ -264,13 +264,14 @@ for (i in levels(as.factor(visibleBadge.AST$eventSW))){
   p <- paste(", N=",nrow(db))
   x<-range(db$AvgOfEstimate)
   ran<-round(x[[2]]-x[[1]],0)
-  hist(db$AvgOfEstimate,xlim = c(30,60),breaks=ran,
+  hist(db$AvgOfEstimate,xlim = c(30,60),ylim=c(0,20),
+       breaks=ran,
        main=paste(i,p),col="grey75")
   lines(c(mean(db$AvgOfEstimate),mean(db$AvgOfEstimate)),
-        c(0,35),col="red",lty=3,lwd=2.5)
+        c(0,23),col="red",lty=3,lwd=2.5)
   
   lines(c(mean(visibleBadge.AST$AvgOfEstimate),mean(visibleBadge.AST$AvgOfEstimate)),
-        c(0,35),col="blue",lty=3,lwd=2.5)
+        c(0,23),col="blue",lty=3,lwd=2.5)
 }
 
 
