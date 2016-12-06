@@ -501,6 +501,16 @@ db.noNA.age.AST<-subset(db.noNA.age,db.noNA.age$Obs=="AST")
 id.meanVB.age <-summaryBy(meanVB + age2014 ~ Ring.ID, data = db.noNA.age.AST, 
                           FUN = list(mean))
 
+# plotting histogram
+p <- paste(", N=",nrow(id.meanVB.age))
+x<-range(id.meanVB.age$meanVB.mean)
+ran<-round(x[[2]]-x[[1]],0)
+hist(id.meanVB.age$meanVB.mean,xlim = c(30,60),ylim=c(0,25),
+     breaks=ran,
+     main=paste("Captivity",p),col="grey75")
+lines(c(mean(id.meanVB.age$meanVB.mean),mean(id.meanVB.age$meanVB.mean)),
+      c(0,28),col="blue",lty=3,lwd=2.5)
+
 
 id.tarsus <- subset(db.noNA.age.AST,!(is.na(db.noNA.age.AST$TarsusLength)))
 
