@@ -114,7 +114,7 @@ summary(time)
 # Loading dominance database
 ########################################################################################################
 
-dom <- read.table("MegaDataBase-v98-201311-201611-FY-Dominance_Lundy_20161227b.csv",header=TRUE,sep=',')
+dom <- read.table("MegaDataBase-v99-201311-201611-FY-Dominance_Lundy_20161227b.csv",header=TRUE,sep=',')
 
 
 ########################################################################################################
@@ -144,6 +144,14 @@ for(i in 1:nrow(dom)){
 }
 
 dom$event <- as.factor(dom$event)
+
+# Modifying year to make it based on season, so 2013 is actually 2014 winter, and 2016 winter is
+# actually 2017
+
+dom$year2 <- ifelse(dom$year==2013,2014,dom$year)
+dom$year2 <- ifelse(dom$event==201611,
+                    2017,
+                    dom$year2)
 
 
 ########################################################################################################
@@ -438,7 +446,7 @@ dom$Loser <- as.factor(sub("/","",dom$Loser))
 
 # Here you can choose whether you want to include displacements or not.
 
-dom <- subset(dom, dom$level!="1")
+#dom <- subset(dom, dom$level!="1")
 
 
 ########################################################################################################
@@ -714,8 +722,8 @@ counts.ind <- merge(counts.ind,superlist.num.date,by="individual")
 
 # Creating two data.frames with individual1 and the year, and indivual2 and the year
 
-list.ind1.year <- dom.final[,c(13,3)]
-list.ind2.year <- dom.final[,c(16,3)]
+list.ind1.year <- dom.final[,c(13,29)]
+list.ind2.year <- dom.final[,c(16,29)]
 
 
 # renaming the variables so that they have the same name for the rbind
@@ -729,11 +737,11 @@ names(list.ind2.year) <- c("individual","year")
 superlist.year <- rbind(list.ind1.year,list.ind2.year)
 
 
-# This is to collate together dates withing the same sparrow year (period = Oct-Sept), and because I 
-# know the sampling events in this particular dataset, I'm going to rename 2013 by 2014
-
-superlist.year$year <- ifelse(superlist.year$year==2013,2014,superlist.year$year)
-
+# # This is to collate together dates withing the same sparrow year (period = Oct-Sept), and because I 
+# # know the sampling events in this particular dataset, I'm going to rename 2013 by 2014
+# 
+# superlist.year$year <- ifelse(superlist.year$year==2013,2014,superlist.year$year)
+# 
 
 ########################################################################################################
 # # # # 3.8.5.2. Second, counting
@@ -754,9 +762,17 @@ ind.counts.year$indyear <- paste(ind.counts.year$individual,ind.counts.year$year
 
 counts.ind$year <- substr(counts.ind[,2], 1, 4)
 
-counts.ind$year <- ifelse(counts.ind$year==2013,2014,counts.ind$year)
+counts.ind$year2 <- ifelse(counts.ind$year==2013,2014,counts.ind$year)
+counts.ind$year2 <- ifelse(counts.ind$date==20161126,
+                    2017,
+                    counts.ind$year2)
+counts.ind$year2 <- ifelse(counts.ind$date==20161127,
+                           2017,
+                           counts.ind$year2)
 
-counts.ind$indyear <- paste(counts.ind$individual,counts.ind$year,sep="_")
+# counts.ind$year <- ifelse(counts.ind$year==2013,2014,counts.ind$year)
+
+counts.ind$indyear <- paste(counts.ind$individual,counts.ind$year2,sep="_")
 
 
 # Adding the individual number of interactions per year to the general count database
@@ -821,8 +837,8 @@ counts.ind$event <- as.factor(counts.ind$event)
 
 # Creating two data.frames: one with individual1 and the event, and another with indivual2 and the event
 
-list.ind1.event<-dom.final[,c(13,27)]
-list.ind2.event<-dom.final[,c(16,27)]
+list.ind1.event<-dom.final[,c(13,28)]
+list.ind2.event<-dom.final[,c(16,28)]
 
 
 # Renaming the variables so that they have the same name for the rbind
@@ -897,7 +913,7 @@ counts.ind <- merge(counts.ind,superlist.num.event,by="individual")
 
 # reordering the columns in the way I want
 
-counts.ind <- counts.ind[,c(1,6,4,5,7,11,2,12,13,8,3,9,10)]
+counts.ind <- counts.ind[,c(1,6,4,5,7,12,2,13,14,9,3,10,11)]
 names(counts.ind) <- c("individual","total.num.inter",
                        "date","intperdate","numberofdates",
                        "event","indevent","intperevent","numberofevents",
