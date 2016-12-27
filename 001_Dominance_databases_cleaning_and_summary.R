@@ -446,7 +446,7 @@ dom$Loser <- as.factor(sub("/","",dom$Loser))
 
 # Here you can choose whether you want to include displacements or not.
 
-#dom <- subset(dom, dom$level!="1")
+dom <- subset(dom, dom$level!="1")
 
 
 ########################################################################################################
@@ -2030,7 +2030,7 @@ hist(superlist.eventSW$freqppereventSW,breaks=max(superlist.eventSW$freqppereven
      main = "",
      xlab = "Number of interactions per event (summer/winter)",
      ylab = "",
-     ylim = c(0,70),
+     ylim = c(0,80),
      xlim = c(0,400),
      col="grey75",
      axes=FALSE,
@@ -2038,7 +2038,7 @@ hist(superlist.eventSW$freqppereventSW,breaks=max(superlist.eventSW$freqppereven
      right=FALSE)
 title(ylab="Number of individuals", line=2.2, cex.lab=1.75)
 axis(1,at = seq(0,400,by=50),lwd=1)
-axis(2,at = seq(0,70,by=10),lwd=1,line=-0.5, las=2)
+axis(2,at = seq(0,80,by=10),lwd=1,line=-0.5, las=2)
 
 dev.off()
 
@@ -2052,14 +2052,14 @@ hist(superlist.num.eventSW$freqofevents,breaks=6,
      main = "",
      xlab = "Number of events (summer/winter)",
      ylim = c(0,240),
-     xlim = c(1,6),
+     xlim = c(1,8),
      ylab = "",
      col="grey75",
      axes=FALSE,
      cex.lab=1.75,
      right=FALSE)
 title(ylab="Number of individuals", line=2.2, cex.lab=1.75)
-axis(1,at = seq(1,6,by=1),lwd=1)
+axis(1,at = seq(1,8,by=1),lwd=1)
 axis(2,at = seq(0,240,by=40),lwd=1,line=-0.75, las=2)
 
 dev.off()
@@ -2073,16 +2073,16 @@ tiff("plots/hist_dates_per_individual.tiff",
 hist(superlist.num.date$freqofdates,freq=TRUE,breaks=18,
      main = "",
      xlab = "Number of days",
-     ylim = c(0,125),
-     xlim = c(1,18),
+     ylim = c(0,160),
+     xlim = c(1,20),
      ylab = "",
      col="grey75",
      axes=FALSE,
      cex.lab=1.75,
      right=FALSE)
 title(ylab="Number of individuals", line=2.2, cex.lab=1.75)
-axis(1,at = seq(1,18,by=1),lwd=1)
-axis(2,at = seq(0,125,by=25),lwd=1,line=-0.75, las=2)
+axis(1,at = seq(1,20,by=1),lwd=1)
+axis(2,at = seq(0,160,by=20),lwd=1,line=-0.75, las=2)
 
 dev.off()
 
