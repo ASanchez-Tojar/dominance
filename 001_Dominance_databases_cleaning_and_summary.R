@@ -961,8 +961,20 @@ counts.ind$indyear <- as.factor(counts.ind$indyear)
 #birdsex <- read.table("BirdID-colour-rings_sex_cohort-last-time-seen-ringing-date-death-date-as-to-20160309.csv",
 #                      header=TRUE,sep=',')
 
+# the sql code is this + getting capture date for ringing date using CaptureRef:
+# SELECT tblBirdID.BirdID, tblAllCodes.Code, sys_SexEstimates.SexEstimate, tblBirdID.Cohort, tblBirdID.CohortEstimated, sys_LastSeenAlive.LastLiveRecord, tblBirdID.DeathDate, tblAllCodes.CaptureRef
+# FROM ((tblBirdID INNER JOIN tblAllCodes ON tblBirdID.BirdID = tblAllCodes.BirdID) LEFT JOIN sys_LastSeenAlive ON tblBirdID.BirdID = sys_LastSeenAlive.BirdID) LEFT JOIN sys_SexEstimates ON tblBirdID.BirdID = sys_SexEstimates.BirdID
+# WHERE (((tblAllCodes.CodeType)='R'));
 
-birdsex <- read.table("BirdID-colour-rings_sex_cohort-last-time-seen-ringing-date-death-date-as-to-20160606.csv",
+# +
+
+# SELECT Query1.BirdID, Query1.Code, Query1.SexEstimate, Query1.Cohort, Query1.CohortEstimated, Query1.LastLiveRecord, tblCaptures.CaptureDate, Query1.DeathDate
+# FROM Query1 LEFT JOIN tblCaptures ON Query1.CaptureRef = tblCaptures.CaptureRef;
+
+
+
+
+birdsex <- read.table("BirdID-colour-rings_sex_cohort-last-time-seen-ringing-date-death-date-as-to-20161227.csv",
                       header=TRUE,sep=',')
 
 birdsex$BirdID <- as.factor(birdsex$BirdID)
@@ -1054,11 +1066,8 @@ birdsex <- subset(birdsex,nchar(as.character(birdsex$Code))==4)
 # combination once (twice if last seen between them is less than 2.5 years appart).
 
 #     First thing I'm going to do to simplify everything is to exclude all those birds not seen since
-# the 1st of April 2007, this is more than 5.5 years before the first Dominance video recorded. So, 
-# that would mean that they should definitely be dead by November 2013. I should probably be more
-# restrictive and do it for 2010 (3.5 years before) but I've chosen to go back to 2008 because it does
-# not complicate the code, plus, it would include individuals that we could have ve missed for very
-# long and suddenly show up in the dominance videos
+# the 1st of April 2010, this is more than 3.5 years before the first Dominance video recorded. So, 
+# that would mean that they should definitely be dead by November 2013.
 
 # Decide the subset that you consider makes more sense
 
@@ -1794,9 +1803,12 @@ for(i in 1:nrow(dom.final.v2)){
   } else if(dom.final.v2$year[i] == 2016 & dom.final.v2$month[i] < 3){
     dom.final.v2$eventSW[i] <- as.numeric("2015.5")
     dom.final.v2$season[i] <- "winter"
-  } else if(dom.final.v2$year[i] == 2016 & dom.final.v2$month[i] > 3){
+  } else if(dom.final.v2$year[i] == 2016 & dom.final.v2$month[i] > 3 & dom.final.v2$month[i] < 11){
     dom.final.v2$eventSW[i] <- as.numeric("2016.0")
     dom.final.v2$season[i] <- "summer"
+  } else if(dom.final.v2$year[i] == 2016 & dom.final.v2$month[i] > 10){
+    dom.final.v2$eventSW[i] <- as.numeric("2016.5")
+    dom.final.v2$season[i] <- "winter"
   }
 }
 
@@ -1853,7 +1865,7 @@ names(superlist.num.eventSW) <- c("individual","freqofeventsSW")
 
 
 ######################################################################################################
-# # # 8.1.3 Showing the number of unique individuals per event = 6 events
+# # # 8.1.3 Showing the number of unique individuals per event = 7 events
 ########################################################################################################
 
 #     Creating a different database per event with this for loop and printing the number of unique
