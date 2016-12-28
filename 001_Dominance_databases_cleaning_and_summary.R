@@ -114,7 +114,7 @@ summary(time)
 # Loading dominance database
 ########################################################################################################
 
-dom <- read.table("MegaDataBase-v99-201311-201611-FY-Dominance_Lundy_20161227b.csv",header=TRUE,sep=',')
+dom <- read.table("MegaDataBase-v101-201311-201611-FY-Dominance_Lundy_20161228b.csv",header=TRUE,sep=',')
 
 
 ########################################################################################################
@@ -1877,6 +1877,7 @@ counter <- 1
 superlist.eventSW$eventSW <- as.factor(superlist.eventSW$eventSW)
 
 
+#sink("summaries/summary_interactions_per_individual_Lundy_displacements.txt")
 sink("summaries/summary_interactions_per_individual_Lundy.txt")
 
 for(i in levels(superlist.eventSW$eventSW)){
@@ -1951,6 +1952,7 @@ morethan1eventSW <- subset(superlist.num.eventSW,superlist.num.eventSW$freqofeve
 
 # Printing in a text file
 
+#sink("summaries/summary_interactions_Lundy_displacements.txt")
 sink("summaries/summary_interactions_Lundy.txt")
 
 cat(paste0("\nThe number of interactions with doubts is: ",
