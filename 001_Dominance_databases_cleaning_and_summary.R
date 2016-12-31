@@ -1923,14 +1923,16 @@ superlist.num.event <- subset(superlist.num.event,!(superlist.num.event$individu
 superlist.num.date <- subset(superlist.num.date,!(superlist.num.date$individual %in% birdsex.2.ID))
 
 
-# Printing the number of individuals that have more than 8 interactions in total
+# Printing the number of individuals that have more than 9 (before it was 8)
+# interactions in total
 
-morethan8 <- subset(ind.counts,ind.counts$totalfreq>8)
+morethan8 <- subset(ind.counts,ind.counts$totalfreq>9)
 length(unique(morethan8$individual))
 list_morethan8 <- factor(morethan8$individual)
 
-# Printing the number of individuals that have more than 8 interactions in total
-morethan8pereventSW <- subset(superlist.eventSW,superlist.eventSW$freqppereventSW>8)
+# Printing the number of individuals that have more than 9 (before it was 8)
+# interactions in total
+morethan8pereventSW <- subset(superlist.eventSW,superlist.eventSW$freqppereventSW>9)
 morethan8pereventSW$indevent <- factor(paste(morethan8pereventSW$individual,
                                              morethan8pereventSW$eventSW,
                                              sep="_"))
@@ -2006,7 +2008,7 @@ cat(paste0("\nThe number of interactions with doubts is: ",
            " interactions/individual/eventSW",
            "\n\n\t\t\t\t --> \t",
            length(unique(morethan8pereventSW$individual)),
-           " individuals with more than 8 interactions/eventSW (",
+           " individuals with more than 9 interactions/eventSW (",
            length(morethan8pereventSW$individual),
            " observations)",
            "\n\n\t\t\t\t --> \t",
@@ -2015,6 +2017,8 @@ cat(paste0("\nThe number of interactions with doubts is: ",
 
 sink()
 
+#mean(table(dom.final.v2$eventSW)/c(98,153,97,80,59,126,121))
+#sd(table(dom.final.v2$eventSW)/c(98,153,97,80,59,126,121))
 
 ######################################################################################################
 # # 8.3 Plotting some informative histograms
