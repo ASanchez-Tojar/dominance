@@ -2017,6 +2017,7 @@ cat(paste0("\nThe number of interactions with doubts is: ",
 
 sink()
 
+#round(table(dom.final.v2$eventSW)/c(98,153,97,80,59,126,121),1)
 #mean(table(dom.final.v2$eventSW)/c(98,153,97,80,59,126,121))
 #sd(table(dom.final.v2$eventSW)/c(98,153,97,80,59,126,121))
 
