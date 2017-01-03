@@ -2058,7 +2058,7 @@ tiff("plots/hist_events_per_individual.tiff",
 hist(superlist.num.eventSW$freqofevents,breaks=6,
      main = "",
      xlab = "Number of events (summer/winter)",
-     ylim = c(0,240),
+     ylim = c(0,280),
      xlim = c(1,8),
      ylab = "",
      col="grey75",
@@ -2067,7 +2067,7 @@ hist(superlist.num.eventSW$freqofevents,breaks=6,
      right=FALSE)
 title(ylab="Number of individuals", line=2.2, cex.lab=1.75)
 axis(1,at = seq(1,8,by=1),lwd=1)
-axis(2,at = seq(0,240,by=40),lwd=1,line=-0.75, las=2)
+axis(2,at = seq(0,280,by=40),lwd=1,line=-0.75, las=2)
 
 dev.off()
 
