@@ -30,7 +30,7 @@ library(doBy)
 
 # This version of the database is sorted by date,video,realtime (realtime from ealier to later)
 
-dom <- read.table("MegaDataBase-v97-201311-201606-FY-Dominance_Lundy_20160816b.csv",header=TRUE,sep=',')
+dom <- read.table("MegaDataBase-v105-201311-201611-FY-Dominance_Lundy_20170103b.csv",header=TRUE,sep=',')
 
 
 # reducing database variables to what I need for this
