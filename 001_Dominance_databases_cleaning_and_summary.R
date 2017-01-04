@@ -114,7 +114,7 @@ summary(time)
 # Loading dominance database
 ########################################################################################################
 
-dom <- read.table("MegaDataBase-v105-201311-201611-FY-Dominance_Lundy_20170103b.csv",header=TRUE,sep=',')
+dom <- read.table("MegaDataBase-v106-201311-201611-FY-Dominance_Lundy_20170103b.csv",header=TRUE,sep=',')
 
 
 ########################################################################################################
@@ -2017,9 +2017,9 @@ cat(paste0("\nThe number of interactions with doubts is: ",
 
 sink()
 
-#round(table(dom.final.v2$eventSW)/c(98,153,97,80,59,126,143),1)
-#mean(table(dom.final.v2$eventSW)/c(98,153,97,80,59,126,143))
-#sd(table(dom.final.v2$eventSW)/c(98,153,97,80,59,126,143))
+#round(table(dom.final.v2$eventSW)/c(98,153,106,80,59,126,143),1)
+#mean(table(dom.final.v2$eventSW)/c(98,153,106,80,59,126,143))
+#sd(table(dom.final.v2$eventSW)/c(98,153,106,80,59,126,143))
 
 ######################################################################################################
 # # 8.3 Plotting some informative histograms
