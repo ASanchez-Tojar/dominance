@@ -114,7 +114,7 @@ summary(time)
 # Loading dominance database
 ########################################################################################################
 
-dom <- read.table("MegaDataBase-v106-201311-201611-FY-Dominance_Lundy_20170103b.csv",header=TRUE,sep=',')
+dom <- read.table("MegaDataBase-v110-201311-201611-FY-Dominance_Lundy_20170106b.csv",header=TRUE,sep=',')
 
 
 ########################################################################################################
@@ -447,6 +447,8 @@ dom$Loser <- as.factor(sub("/","",dom$Loser))
 # Here you can choose whether you want to include displacements or not.
 
 dom <- subset(dom, dom$level!="1")
+
+#dom <- subset(dom, dom$Draw==FALSE)
 
 
 ########################################################################################################
@@ -1879,6 +1881,8 @@ superlist.eventSW$eventSW <- as.factor(superlist.eventSW$eventSW)
 
 #sink("summaries/summary_interactions_per_individual_Lundy_displacements.txt")
 sink("summaries/summary_interactions_per_individual_Lundy.txt")
+#sink("summaries/summary_interactions_per_individual_Lundy_noDraws.txt")
+
 
 for(i in levels(superlist.eventSW$eventSW)){
   
@@ -1956,6 +1960,8 @@ morethan1eventSW <- subset(superlist.num.eventSW,superlist.num.eventSW$freqofeve
 
 #sink("summaries/summary_interactions_Lundy_displacements.txt")
 sink("summaries/summary_interactions_Lundy.txt")
+#sink("summaries/summary_interactions_Lundy_noDraws.txt")
+
 
 cat(paste0("\nThe number of interactions with doubts is: ",
            doubts.with.int,
@@ -2017,9 +2023,9 @@ cat(paste0("\nThe number of interactions with doubts is: ",
 
 sink()
 
-#round(table(dom.final.v2$eventSW)/c(98,153,106,80,59,126,143),1)
-#mean(table(dom.final.v2$eventSW)/c(98,153,106,80,59,126,143))
-#sd(table(dom.final.v2$eventSW)/c(98,153,106,80,59,126,143))
+#round(table(dom.final.v2$eventSW)/c(98,153,113,80,59,126,143),1)
+#mean(table(dom.final.v2$eventSW)/c(98,153,113,80,59,126,143))
+#sd(table(dom.final.v2$eventSW)/c(98,153,113,80,59,126,143))
 
 ######################################################################################################
 # # 8.3 Plotting some informative histograms
