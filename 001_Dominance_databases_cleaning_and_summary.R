@@ -88,7 +88,7 @@ time<-read.table("timeperhouranalyzed.txt",sep=",",header=TRUE)
 
 # subsetting to obtain only the time when we were focus on recording only the interactions
 
-time <- subset(time,time$method=="quicker")
+time <- subset(time,time$method=="quicker"|time$method=="nodisplacements")
 
 
 # estimating how much time of video per time spent watching was used
@@ -114,7 +114,7 @@ summary(time)
 # Loading dominance database
 ########################################################################################################
 
-dom <- read.table("MegaDataBase-v110-201311-201611-FY-Dominance_Lundy_20170106b.csv",header=TRUE,sep=',')
+dom <- read.table("MegaDataBase-v111-201311-201611-FY-Dominance_Lundy_20170107b.csv",header=TRUE,sep=',')
 
 
 ########################################################################################################
@@ -446,7 +446,7 @@ dom$Loser <- as.factor(sub("/","",dom$Loser))
 
 # Here you can choose whether you want to include displacements or not.
 
-dom <- subset(dom, dom$level!="1")
+#dom <- subset(dom, dom$level!="1")
 
 #dom <- subset(dom, dom$Draw==FALSE)
 
@@ -1599,6 +1599,7 @@ for (i in 1:nrow(birdsex.1)){
 
 # GO AND CHECK IF NEEDED
 
+#dom[dom$individual1=="ynmd" & dom$sex1=="m",]
 
 ########################################################################################################
 # # 6.2. Checking if there are misssexed individuals
