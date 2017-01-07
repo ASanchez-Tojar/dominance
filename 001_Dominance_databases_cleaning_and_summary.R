@@ -114,7 +114,7 @@ summary(time)
 # Loading dominance database
 ########################################################################################################
 
-dom <- read.table("MegaDataBase-v111-201311-201611-FY-Dominance_Lundy_20170107b.csv",header=TRUE,sep=',')
+dom <- read.table("MegaDataBase-v112-201311-201611-FY-Dominance_Lundy_20170107b.csv",header=TRUE,sep=',')
 
 
 ########################################################################################################
@@ -446,7 +446,7 @@ dom$Loser <- as.factor(sub("/","",dom$Loser))
 
 # Here you can choose whether you want to include displacements or not.
 
-#dom <- subset(dom, dom$level!="1")
+dom <- subset(dom, dom$level!="1")
 
 #dom <- subset(dom, dom$Draw==FALSE)
 
