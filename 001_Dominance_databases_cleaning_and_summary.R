@@ -114,7 +114,7 @@ summary(time)
 # Loading dominance database
 ########################################################################################################
 
-dom <- read.table("MegaDataBase-v112-201311-201611-FY-Dominance_Lundy_20170107b.csv",header=TRUE,sep=',')
+dom <- read.table("MegaDataBase-v114-201311-201611-FY-Dominance_Lundy_20170108b.csv",header=TRUE,sep=',')
 
 
 ########################################################################################################
@@ -1599,7 +1599,7 @@ for (i in 1:nrow(birdsex.1)){
 
 # GO AND CHECK IF NEEDED
 
-#dom[dom$individual1=="ynmd" & dom$sex1=="m",]
+#dom[dom$individual2=="bwom" & dom$sex2=="m",]
 
 ########################################################################################################
 # # 6.2. Checking if there are misssexed individuals
@@ -1663,6 +1663,7 @@ for(i in 1:nrow(comp.sex.2)){
   
 }
 
+#dom[dom$individual1=="oymw" & dom$sex1=="m",]
 
 ########################################################################################################
 # 7. Checking that all colour combinations seen in the videos are real, i.e. are in the database
