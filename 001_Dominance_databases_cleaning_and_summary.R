@@ -107,14 +107,14 @@ summary(time)
 # summary(time[time$Observer=="AST",])
 # summary(time[time$Observer=="DM",])
 # 
-# sum(time$timespent.min.)/60
+# (sum(time$timespent.min.)/60)/8
 
 
 ########################################################################################################
 # Loading dominance database
 ########################################################################################################
 
-dom <- read.table("MegaDataBase-v114-201311-201611-FY-Dominance_Lundy_20170108b.csv",header=TRUE,sep=',')
+dom <- read.table("MegaDataBase-v115-201311-201611-FY-Dominance_Lundy_20170110b.csv",header=TRUE,sep=',')
 
 
 ########################################################################################################
@@ -448,7 +448,7 @@ dom$Loser <- as.factor(sub("/","",dom$Loser))
 
 dom <- subset(dom, dom$level!="1")
 
-#dom <- subset(dom, dom$Draw==FALSE)
+dom <- subset(dom, dom$Draw==FALSE)
 
 
 ########################################################################################################
@@ -1599,7 +1599,7 @@ for (i in 1:nrow(birdsex.1)){
 
 # GO AND CHECK IF NEEDED
 
-#dom[dom$individual2=="bwom" & dom$sex2=="m",]
+#dom[dom$individual1=="crmw" & dom$sex1=="f",]
 
 ########################################################################################################
 # # 6.2. Checking if there are misssexed individuals
@@ -1882,8 +1882,8 @@ superlist.eventSW$eventSW <- as.factor(superlist.eventSW$eventSW)
 
 
 #sink("summaries/summary_interactions_per_individual_Lundy_displacements.txt")
-sink("summaries/summary_interactions_per_individual_Lundy.txt")
-#sink("summaries/summary_interactions_per_individual_Lundy_noDraws.txt")
+#sink("summaries/summary_interactions_per_individual_Lundy.txt")
+sink("summaries/summary_interactions_per_individual_Lundy_noDraws.txt")
 
 
 for(i in levels(superlist.eventSW$eventSW)){
@@ -1961,8 +1961,8 @@ morethan1eventSW <- subset(superlist.num.eventSW,superlist.num.eventSW$freqofeve
 # Printing in a text file
 
 #sink("summaries/summary_interactions_Lundy_displacements.txt")
-sink("summaries/summary_interactions_Lundy.txt")
-#sink("summaries/summary_interactions_Lundy_noDraws.txt")
+#sink("summaries/summary_interactions_Lundy.txt")
+sink("summaries/summary_interactions_Lundy_noDraws.txt")
 
 
 cat(paste0("\nThe number of interactions with doubts is: ",
@@ -2025,9 +2025,9 @@ cat(paste0("\nThe number of interactions with doubts is: ",
 
 sink()
 
-#round(table(dom.final.v2$eventSW)/c(98,153,114,80,59,126,143),1)
-#mean(table(dom.final.v2$eventSW)/c(98,153,114,80,59,126,143))
-#sd(table(dom.final.v2$eventSW)/c(98,153,114,80,59,126,143))
+#round(table(dom.final.v2$eventSW)/c(98,153,116,80,59,126,143),1)
+#mean(table(dom.final.v2$eventSW)/c(98,153,116,80,59,126,143))
+#sd(table(dom.final.v2$eventSW)/c(98,153,116,80,59,126,143))
 
 ######################################################################################################
 # # 8.3 Plotting some informative histograms
