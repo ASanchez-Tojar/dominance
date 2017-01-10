@@ -193,7 +193,7 @@ chocolate1 <- c(255,127,36)/rgbing
 # tiff("plots/Figure1_Status_and_Bib.tiff", height=20, width=20,
 #      units='cm', compression="lzw", res=300)
 
-tiff("plots/talks/Figure1_Status_and_Bib_talk.tiff", height=20, width=20,
+tiff("plots/talks/Figure1_Status_and_Bib_talk_update.tiff", height=20, width=20,
      units='cm', compression="lzw", res=300)
 
 # tiff("plots/talks/Figure1_Status_and_Bib_talk_noelderly.tiff", height=20, width=20,
