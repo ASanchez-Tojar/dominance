@@ -30,7 +30,7 @@ library(doBy)
 
 # This version of the database is sorted by date,video,realtime (realtime from ealier to later)
 
-dom <- read.table("MegaDataBase-v105-201311-201611-FY-Dominance_Lundy_20170103b.csv",header=TRUE,sep=',')
+dom <- read.table("MegaDataBase-v115-201311-201611-FY-Dominance_Lundy_20170110b.csv",header=TRUE,sep=',')
 
 
 # reducing database variables to what I need for this
@@ -50,7 +50,7 @@ dom.earliest <- dom.2[!duplicated(dom.2$video),]
 # Now I need to create a database with the latest entry for each video. For this, I load a version
 # of the database that is sorted by date,video,realtime (realtime from later to earlier)
 
-dom.decrease <- read.table("MegaDataBase-v97-201311-201606-FY-Dominance_Lundy_20160816b-decreasingtime.csv",header=TRUE,sep=',')
+dom.decrease <- read.table("MegaDataBase-v115-201311-201611-FY-Dominance_Lundy_20170110b-decreasingtime.csv",header=TRUE,sep=',')
 
 # reducing database variables to what I need for this
 
