@@ -38,6 +38,7 @@ library(EloRating)
 library(statnet)
 library(rptR)
 library(plyr)
+library(EloChoice)
 
 
 # Clear memory and get to know where you are
@@ -47,13 +48,13 @@ rm(list=ls())
 
 # loading the clean database to estimate the ratings
 
-dom.final.v2 <- read.table("dom.final.v2_realtime.csv",header=TRUE,sep=",")
+dom.final.v2 <- read.table("dom.final.v2.csv",header=TRUE,sep=",")
 
 
-# sorting by date and time
-
-dom.final.v2 <- dom.final.v2[order(dom.final.v2$date,
-                                   dom.final.v2$realtime2),]
+# # sorting by date and time
+# 
+# dom.final.v2 <- dom.final.v2[order(dom.final.v2$date,
+#                                    dom.final.v2$realtime2),]
 
 
 # Creating date as require by EloRating
@@ -75,6 +76,11 @@ dom.final.v2$date.ELO2.2 <- as.factor(paste(dom.final.v2$year,
 ########################################################################################################
 # # 9.A.2. Obtaining the elo-scores for each individual
 ########################################################################################################
+
+ratings(elochoice(winner,loser,
+                  kval=200,startvalue=1000,
+                  normprob=TRUE,runs=1000),
+        drawplot=FALSE)
 
 # First, spliting the database by event
 
@@ -123,7 +129,8 @@ elo_scores_all_events <- rbind(elo_scores_ind.db.1,
                                elo_scores_ind.db.3,
                                elo_scores_ind.db.4,
                                elo_scores_ind.db.5,
-                               elo_scores_ind.db.6)
+                               elo_scores_ind.db.6,
+                               elo_scores_ind.db.7)
 
 # # I'm saving this file so that I don't have to run it again unless new data is added
 # 
@@ -137,7 +144,8 @@ elo_trajectories_all_events <- rbind(elo_trajectories_1,
                                      elo_trajectories_3,
                                      elo_trajectories_4,
                                      elo_trajectories_5,
-                                     elo_trajectories_6)
+                                     elo_trajectories_6,
+                                     elo_trajectories_7)
 
 
 # ########################################################################################################
@@ -197,7 +205,7 @@ elo_trajectories_all_events <- rbind(elo_trajectories_1,
 # db_3.2 <- db_3[db_3$freq>22,]
 # db_4.2 <- db_4[db_4$freq>30 & db_4$id!="dmcv",] #11
 # db_5.2 <- db_5[db_5$freq>50,]
-db_5.2 <- db_5[db_5$freq>75,]
+# db_5.2 <- db_5[db_5$freq>75,]
 # db_6.2 <- db_6[db_6$freq>75,]
 # 
 # 
@@ -499,6 +507,9 @@ stab.elo(elo_scores.5)
 cat("\nEvent 2016: ")
 stab.elo(elo_scores.6)
 
+cat("\nEvent 2016.5: ")
+stab.elo(elo_scores.7)
+
 sink()
 
 ########################################################################################################
@@ -524,6 +535,9 @@ prunk(elo_scores.5)
 
 cat("\nEvent 2016\n")
 prunk(elo_scores.6)
+
+cat("\nEvent 2016.5\n")
+prunk(elo_scores.7)
 
 sink()
 
@@ -605,6 +619,10 @@ dyad_matrix.6 <- creatematrix(elo_scores.6,
                               drawmethod="0.5",
                               daterange=c("2016-5-2","2016-6-1"))
 
+dyad_matrix.7 <- creatematrix(elo_scores.7, 
+                              drawmethod="0.5",
+                              daterange=c("2016-11-26","2016-11-27"))
+
 ########################################################################################################
 # # 9.A.9. Dominance hierarchy characteristics: Tri-transitivity
 ########################################################################################################
@@ -613,12 +631,13 @@ int.to.dom=function(x){((x>t(x)) & (x+t(x)>0))+0}
 
 
 # depending on the event you want to analyze, you've got to change m. I'll make a for loop late ron
-m<-int.to.dom(as.matrix(dyad_matrix.1))
-# m<-int.to.dom(as.matrix(dyad_matrix.2))
-# m<-int.to.dom(as.matrix(dyad_matrix.3))
-# m<-int.to.dom(as.matrix(dyad_matrix.4))
-# m<-int.to.dom(as.matrix(dyad_matrix.5))
-# m<-int.to.dom(as.matrix(dyad_matrix.6))
+#m<-int.to.dom(as.matrix(dyad_matrix.1))
+#m<-int.to.dom(as.matrix(dyad_matrix.2))
+#m<-int.to.dom(as.matrix(dyad_matrix.3))
+#m<-int.to.dom(as.matrix(dyad_matrix.4))
+#m<-int.to.dom(as.matrix(dyad_matrix.5))
+#m<-int.to.dom(as.matrix(dyad_matrix.6))
+m<-int.to.dom(as.matrix(dyad_matrix.7))
 
 g<-network(m,directed=TRUE)
 
