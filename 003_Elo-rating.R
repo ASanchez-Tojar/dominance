@@ -38,7 +38,6 @@ library(EloRating)
 library(statnet)
 library(rptR)
 library(plyr)
-library(EloChoice)
 
 
 # Clear memory and get to know where you are
@@ -76,11 +75,6 @@ dom.final.v2$date.ELO2.2 <- as.factor(paste(dom.final.v2$year,
 ########################################################################################################
 # # 9.A.2. Obtaining the elo-scores for each individual
 ########################################################################################################
-
-ratings(elochoice(winner,loser,
-                  kval=200,startvalue=1000,
-                  normprob=TRUE,runs=1000),
-        drawplot=FALSE)
 
 # First, spliting the database by event
 
