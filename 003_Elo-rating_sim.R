@@ -24,7 +24,6 @@ require(plyr)
 library(arm)
 library(rptR)
 
-
 # Clear memory and get to know where you are
 rm(list=ls())
 #getwd()
@@ -33,13 +32,13 @@ rm(list=ls())
 # loading the clean database to estimate the ratings. Same as the one
 # used in 003_Elo-rating.R
 
-dom.final.v2 <- read.table("dom.final.v2_realtime.csv",header=TRUE,sep=",")
+dom.final.v2 <- read.table("dom.final.v2.csv",header=TRUE,sep=",")
 
 
-# sorting by date and time
-
-dom.final.v2 <- dom.final.v2[order(dom.final.v2$date,
-                                   dom.final.v2$realtime2),]
+# # sorting by date and time
+# 
+# dom.final.v2 <- dom.final.v2[order(dom.final.v2$date,
+#                                    dom.final.v2$realtime2),]
 
 
 # Creating date as require by EloRating
@@ -53,13 +52,13 @@ dom.final.v2$eventSW <- as.factor(dom.final.v2$eventSW)
 
 
 ########################################################################################################
-# 1. Obtaining 1000 elo-scores for each individual
+# 1. Obtaining 1000 elo-scores for each individual (manual way)
 ########################################################################################################
-
-# This for loop does the thing, it takes about 1 hour, so I saved the
-# results and I can import then from now on (unless you wanna run it
-# again)
-
+# 
+# # This for loop does the thing, it takes about 1 hour, so I saved the
+# # results and I can import then from now on (unless you wanna run it
+# # again)
+# 
 # listofdb <- list()
 # 
 # for (sim in 1:1000){
