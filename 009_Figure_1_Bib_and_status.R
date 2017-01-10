@@ -48,6 +48,8 @@ final.cap.db.3 <- read.table("finaldatabases/final.cap.db.3.csv",header=TRUE,sep
 # WILD MODEL
 ################################################################
 
+# rank.TLandM.VB.fitness.m <- rank.TLandM.VB.fitness.m[rank.TLandM.VB.fitness.m$bib>35,]
+
 mod.rank.bib <- lmer(StElo~age+
                        tarsus+
                        bib+
@@ -219,7 +221,7 @@ plot(data.plot1$bib,
 title(xlab="Bib length (mm)", line=4, cex.lab=3.0, family="serif")
 title(ylab="Standardized Elo-rating", line=4.5, cex.lab=3.0, family="serif")
 
-axis(1,at=seq(43,61,by=3),
+axis(1,at=seq(41,61,by=3),
      #cex.axis=1.3,
      cex.axis=1.8,
      family="serif")
