@@ -1387,6 +1387,9 @@ for(i in 1:nrow(birdsex.2)){
     #     OWMW: BirdID 4768 was finally included because BirdID 4902 isn't seen since the nest in 
     #           summer 2010, plus both IDs have different sex. So far, the code does not show up in 
     #           the videos.
+    #     
+    
+    
     
     
     if(birdsex.2$Code2[i] %in% id2 == TRUE){
@@ -1394,9 +1397,20 @@ for(i in 1:nrow(birdsex.2)){
       
     } else {
       
-      id2 <- append(id2,birdsex.2$Code2[i])
-      birdsex.1 <- rbind(birdsex.1,birdsex.2[i,c(1:15)])
+      #     BNMY: BirdID 3764 was finally included because BirdID 9202 isn't seen so far but
+      #           3764 was since once in 2013.5
       
+      if(birdsex.2$BirdID[i]!=9202){
+        
+        id2 <- append(id2,birdsex.2$Code2[i])
+        birdsex.1 <- rbind(birdsex.1,birdsex.2[i,c(1:15)])
+        
+#       } else {
+#         
+#         id2 <- append(id2,birdsex.2$BirdID==3764)
+#         birdsex.1 <- rbind(birdsex.1,birdsex.2[birdsex.2$BirdID==3764,c(1:15)])
+        
+      }      
     }
   } 
 }
@@ -1407,7 +1421,8 @@ for(i in 1:nrow(birdsex.2)){
 birdsex.2 <- subset(birdsex.2, birdsex.2$diffyears<2 & birdsex.2$BirdID!=7570 &
                       birdsex.2$BirdID!=7439 & birdsex.2$BirdID!=7544 & birdsex.2$BirdID!=7478 &
                       birdsex.2$BirdID!=6530 & birdsex.2$BirdID!=4380 & birdsex.2$BirdID!=4975 &
-                      birdsex.2$BirdID!=4898 & birdsex.2$BirdID!=4768 & birdsex.2$BirdID!=4902)
+                      birdsex.2$BirdID!=4898 & birdsex.2$BirdID!=4768 & birdsex.2$BirdID!=4902 &
+                      birdsex.2$BirdID!=3764)
 
 # I've checked what's the problem with this colour combinations in a attempt of trying to rescue some.
 # This is what I found:
@@ -2025,9 +2040,9 @@ cat(paste0("\nThe number of interactions with doubts is: ",
 
 sink()
 
-#round(table(dom.final.v2$eventSW)/c(98,153,116,80,59,126,143),1)
-#mean(table(dom.final.v2$eventSW)/c(98,153,116,80,59,126,143))
-#sd(table(dom.final.v2$eventSW)/c(98,153,116,80,59,126,143))
+#round(table(dom.final.v2$eventSW)/c(98,152,116,80,59,126,143),1)
+#mean(table(dom.final.v2$eventSW)/c(98,152,116,80,59,126,143))
+#sd(table(dom.final.v2$eventSW)/c(98,152,116,80,59,126,143))
 
 ######################################################################################################
 # # 8.3 Plotting some informative histograms
