@@ -41,8 +41,8 @@ rm(list=ls())
 
 # loading the clean database to estimate the ratings
 
-elo_scores_all_events <- read.table("elo_scores_all_events.csv",header=TRUE,sep=",")
-elo_scores_all_events_sim <- read.table("Elo-Rating_robustness/elo_scores_all_events_sim.csv",header=TRUE,sep=",")
+#elo_scores_all_events <- read.table("elo_scores_all_events.csv",header=TRUE,sep=",")
+elo_scores_all_events_sim <- read.table("elo_scores_all_events_sim.csv",header=TRUE,sep=",")
 birdsex.1 <- read.table("birdsex.1.csv",header=TRUE,sep=",")
 morethan8pereventSW <- read.table("morethan8pereventSW.csv",header=TRUE,sep=",")
 #fitness.full <- read.table("fledglings12/fitness.full.csv",header=TRUE,sep=",")
@@ -51,7 +51,7 @@ fitness.full.both <- read.table("fledglings12/fitness.full.both.csv",header=TRUE
 # # to avoid making changes to the code, let's call elo_scores_all_events_sim
 # # as elo_scores_all_events
 # 
-# elo_scores_all_events <- elo_scores_all_events_sim #simulated values
+elo_scores_all_events <- elo_scores_all_events_sim #simulated values
 
 
 #########################################################################################################
@@ -82,6 +82,8 @@ for(i in 1:nrow(elo_scores_all_events)){
     elo_scores_all_events$eventSW[i]<-as.numeric(2015.5)
   } else if(elo_scores_all_events$eventSW[i]==6){
     elo_scores_all_events$eventSW[i]<-as.numeric(2016.0)
+  } else if(elo_scores_all_events$eventSW[i]==7){
+    elo_scores_all_events$eventSW[i]<-as.numeric(2016.5)
   }
 }
 
@@ -106,6 +108,7 @@ elo_scores_all_events_age <- merge(elo_scores_all_events,ccbirdidcohort,
 
 elo_scores_all_events_age$age <- elo_scores_all_events_age$eventSW - elo_scores_all_events_age$Cohort
 
+hist(elo_scores_all_events_age$age,right=FALSE)
 
 # individual identifier per event
 
@@ -256,6 +259,9 @@ visibleBadge.AST$BirdID_eventSW <- factor(paste(visibleBadge.AST$BirdID,
 
 # hist per year
 
+tiff("plots/hist_badge_measurements_per_event.tiff",
+     height=27, width=18,units='cm', compression="lzw", res=600) 
+
 par(mfrow=c(4,2))
 
 for (i in levels(as.factor(visibleBadge.AST$eventSW))){
@@ -274,6 +280,7 @@ for (i in levels(as.factor(visibleBadge.AST$eventSW))){
         c(0,28),col="blue",lty=3,lwd=2.5)
 }
 
+dev.off()
 
 # Now we can finally estimate a mean visible badge per summer/winter
 
@@ -343,6 +350,9 @@ for (i in 1:nrow(rank.TLandM.VB)){
     rank.TLandM.VB$season[i] <- 0
     
   } else if (rank.TLandM.VB$eventSW[i]==2015.5){    
+    rank.TLandM.VB$season[i] <- 0
+    
+  } else if (rank.TLandM.VB$eventSW[i]==2016.5){    
     rank.TLandM.VB$season[i] <- 0
     
   } else {    
