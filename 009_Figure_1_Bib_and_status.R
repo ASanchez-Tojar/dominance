@@ -234,12 +234,12 @@ axis(2,at=seq(0,1,by=0.2),
 
 points(data.plot2$meanVB.mean10, 
        data.plot2$StElo, 
-       pch = 19, col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.4),
+       pch = 19, col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.25),
        cex = 2.0)
 
 points(data.plot1$bib, 
        data.plot1$StElo, 
-       pch = 19, col=rgb(darkblue[1],darkblue[2],darkblue[3],0.4),
+       pch = 19, col=rgb(darkblue[1],darkblue[2],darkblue[3],0.25),
        cex = 2.0)
 
 polygon(c(newdat.2$meanVB.mean10,rev(newdat.2$meanVB.mean10)),
