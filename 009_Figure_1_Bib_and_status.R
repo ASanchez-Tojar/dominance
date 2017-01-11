@@ -48,7 +48,7 @@ final.cap.db.3 <- read.table("finaldatabases/final.cap.db.3.csv",header=TRUE,sep
 # WILD MODEL
 ################################################################
 
-# rank.TLandM.VB.fitness.m <- rank.TLandM.VB.fitness.m[rank.TLandM.VB.fitness.m$bib>35,]
+rank.TLandM.VB.fitness.m <- rank.TLandM.VB.fitness.m[rank.TLandM.VB.fitness.m$bib>35,]
 
 mod.rank.bib <- lmer(StElo~age+
                        tarsus+
