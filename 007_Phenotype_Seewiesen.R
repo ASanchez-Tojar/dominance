@@ -25,7 +25,6 @@ library(reshape)
 library(EloRating)
 library(statnet)
 library(plyr)
-library(rptR)
 
 
 # Clear memory and get to know where you are
