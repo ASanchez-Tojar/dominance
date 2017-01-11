@@ -630,4 +630,4 @@ final.cap.db.3 <- ddply(final.cap.db.2,
 
 # I'm saving this file for the following scripts
 
-write.csv(final.cap.db.3,"final.cap.db.3.csv",row.names=FALSE)
+write.csv(final.cap.db.3,"finaldatabases/final.cap.db.3.csv",row.names=FALSE)
