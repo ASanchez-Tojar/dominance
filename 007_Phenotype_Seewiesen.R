@@ -25,6 +25,7 @@ library(reshape)
 library(EloRating)
 library(statnet)
 library(plyr)
+library(EloChoice)
 
 
 # Clear memory and get to know where you are
@@ -312,146 +313,186 @@ axis(2,at = seq(0,70,by=10),lwd=1,line=-0.75, las=2)
 dev.off()
 
 
-########################################################################################################
-# # 13.3. Obtaining the elo-scores for each individual
-########################################################################################################
+# ########################################################################################################
+# # # 13.3. Obtaining the elo-scores for each individual
+# ########################################################################################################
+# 
+# ########################################################################################################
+# # # # 13.3.1. Analyzing each aviary
+# ########################################################################################################
+# 
+# counter <- 1
+# 
+# for(i in levels(final.dom.cap.3$Aviary)){
+#   
+#   x<-subset(final.dom.cap.3, final.dom.cap.3$Aviary==i)
+#   assign(paste0("final.com.cap",counter),x)
+#   y<-elo.seq(winner=x$Winner, 
+#              loser=x$Loser, 
+#              Date=x$Date, 
+#              draw=x$Draw)
+#   print(summary(y))
+#   assign(paste0("cap_elo_scores.",counter),y)
+#   counter <- counter + 1
+# }
+# 
+# 
+# ########################################################################################################
+# # # # 13.3.2. Stability coefficient
+# ########################################################################################################
+# 
+# sink("summaries/stabilitycoefficient_Seewiesen.txt")
+# 
+# cat("\nAviary 9: ")
+# stab.elo(cap_elo_scores.1)
+# 
+# cat("\nAviary 10: ")
+# stab.elo(cap_elo_scores.2)
+# 
+# cat("\nAviary 11: ")
+# stab.elo(cap_elo_scores.3)
+# 
+# cat("\nAviary 12: ")
+# stab.elo(cap_elo_scores.4)
+# 
+# sink()
+# 
+# ########################################################################################################
+# # # # 13.3.3. Proportion of unknown dyads
+# ########################################################################################################
+# 
+# # First I will create the matrixes for each Aviary, this is because I didn't manage
+# # to make prunk() work using cap_elo_scores.X (eventhough I did for the previous script)
+# 
+# cap_dyad_matrix.1 <- creatematrix(cap_elo_scores.1,
+#                               drawmethod="0.5") 
+# 
+# cap_dyad_matrix.2 <- creatematrix(cap_elo_scores.2, 
+#                               drawmethod="0.5") 
+# 
+# cap_dyad_matrix.3 <- creatematrix(cap_elo_scores.3, 
+#                               drawmethod="0.5") 
+# 
+# cap_dyad_matrix.4 <- creatematrix(cap_elo_scores.4, 
+#                               drawmethod="0.5") 
+# 
+# # And now I can run prunk and print the results in a .txt
+# 
+# sink("summaries/prop_unknown_dyads_Seewiesen.txt")
+# 
+# cat("\nAviary 9\n")
+# prunk(cap_dyad_matrix.1)
+# 
+# cat("\nAviary 10\n")
+# prunk(cap_dyad_matrix.2)
+# 
+# cat("\nAviary 11\n")
+# prunk(cap_dyad_matrix.3)
+# 
+# cat("\nAviary 12\n")
+# prunk(cap_dyad_matrix.4)
+# 
+# sink()
+# 
+# 
+# ########################################################################################################
+# # # # 13.3.4. Extracting elo-ratings per individual
+# ########################################################################################################
+# 
+# # this can be probably included in the for loop of line 2758
+# 
+# cap.elo_scores_ind.1 <- extract.elo(cap_elo_scores.1,standardize = TRUE)
+# cap.elo_scores_ind.2 <- extract.elo(cap_elo_scores.2,standardize = TRUE)
+# cap.elo_scores_ind.3 <- extract.elo(cap_elo_scores.3,standardize = TRUE)
+# cap.elo_scores_ind.4 <- extract.elo(cap_elo_scores.4,standardize = TRUE)
+# 
+# 
+# #     This code is to make a dataframe out of those individuals scores, please, change the number for the
+# # event you want!
+# 
+# # creating the name of the rows, basically from 1 to total number of individuals
+# 
+# # Creating a database with elo_scores per event
+# 
+# counter <- 1
+# 
+# for(i in levels(final.dom.cap.3$Aviary)){
+#   
+#   x<-subset(final.dom.cap.3, final.dom.cap.3$Aviary==i)
+#   y<-elo.seq(winner=x$Winner, 
+#              loser=x$Loser, 
+#              Date=x$Date, 
+#              draw=x$Draw)
+#   
+#   w<-extract.elo(y,standardize = TRUE)
+#   
+#   rownames <- seq(1,length(w),
+#                   1)
+#   
+#   # making a data.frame with the elo-ratings
+#   scores <- as.data.frame(w,
+#                           row.names = as.character(rownames))
+#   
+#   z <- cbind(attributes(w),
+#              scores)
+#   
+#   z$Aviary <- counter
+#   
+#   names(z) <- c("individual","StElo","Aviary")
+#   
+#   assign(paste0("cap_elo_scores_ind.db.",counter),z)
+#   
+#   counter <- counter + 1
+#   
+# }
+# 
+# 
+# # creating a database with all these observations
+# cap_elo_scores_all_events <- rbind(cap_elo_scores_ind.db.1,
+#                                    cap_elo_scores_ind.db.2,
+#                                    cap_elo_scores_ind.db.3,
+#                                    cap_elo_scores_ind.db.4)
+
 
 ########################################################################################################
-# # # 13.3.1. Analyzing each aviary
+# 1. Analyzing elo-random using EloChoice()
 ########################################################################################################
 
+#using elochoice() to quicly estimate randomized Elo-ratings
 counter <- 1
 
 for(i in levels(final.dom.cap.3$Aviary)){
   
   x<-subset(final.dom.cap.3, final.dom.cap.3$Aviary==i)
   assign(paste0("final.com.cap",counter),x)
-  y<-elo.seq(winner=x$Winner, 
-             loser=x$Loser, 
-             Date=x$Date, 
-             draw=x$Draw)
-  print(summary(y))
-  assign(paste0("cap_elo_scores.",counter),y)
-  counter <- counter + 1
-}
-
-
-########################################################################################################
-# # # 13.3.2. Stability coefficient
-########################################################################################################
-
-sink("summaries/stabilitycoefficient_Seewiesen.txt")
-
-cat("\nAviary 9: ")
-stab.elo(cap_elo_scores.1)
-
-cat("\nAviary 10: ")
-stab.elo(cap_elo_scores.2)
-
-cat("\nAviary 11: ")
-stab.elo(cap_elo_scores.3)
-
-cat("\nAviary 12: ")
-stab.elo(cap_elo_scores.4)
-
-sink()
-
-########################################################################################################
-# # # 13.3.3. Proportion of unknown dyads
-########################################################################################################
-
-# First I will create the matrixes for each Aviary, this is because I didn't manage
-# to make prunk() work using cap_elo_scores.X (eventhough I did for the previous script)
-
-cap_dyad_matrix.1 <- creatematrix(cap_elo_scores.1,
-                              drawmethod="0.5") 
-
-cap_dyad_matrix.2 <- creatematrix(cap_elo_scores.2, 
-                              drawmethod="0.5") 
-
-cap_dyad_matrix.3 <- creatematrix(cap_elo_scores.3, 
-                              drawmethod="0.5") 
-
-cap_dyad_matrix.4 <- creatematrix(cap_elo_scores.4, 
-                              drawmethod="0.5") 
-
-# And now I can run prunk and print the results in a .txt
-
-sink("summaries/prop_unknown_dyads_Seewiesen.txt")
-
-cat("\nAviary 9\n")
-prunk(cap_dyad_matrix.1)
-
-cat("\nAviary 10\n")
-prunk(cap_dyad_matrix.2)
-
-cat("\nAviary 11\n")
-prunk(cap_dyad_matrix.3)
-
-cat("\nAviary 12\n")
-prunk(cap_dyad_matrix.4)
-
-sink()
-
-
-########################################################################################################
-# # # 13.3.4. Extracting elo-ratings per individual
-########################################################################################################
-
-# this can be probably included in the for loop of line 2758
-
-cap.elo_scores_ind.1 <- extract.elo(cap_elo_scores.1,standardize = TRUE)
-cap.elo_scores_ind.2 <- extract.elo(cap_elo_scores.2,standardize = TRUE)
-cap.elo_scores_ind.3 <- extract.elo(cap_elo_scores.3,standardize = TRUE)
-cap.elo_scores_ind.4 <- extract.elo(cap_elo_scores.4,standardize = TRUE)
-
-
-#     This code is to make a dataframe out of those individuals scores, please, change the number for the
-# event you want!
-
-# creating the name of the rows, basically from 1 to total number of individuals
-
-# Creating a database with elo_scores per event
-
-counter <- 1
-
-for(i in levels(final.dom.cap.3$Aviary)){
-  
-  x<-subset(final.dom.cap.3, final.dom.cap.3$Aviary==i)
-  y<-elo.seq(winner=x$Winner, 
-             loser=x$Loser, 
-             Date=x$Date, 
-             draw=x$Draw)
-  
-  w<-extract.elo(y,standardize = TRUE)
-  
+  y<-ratings(elochoice(x$Winner,x$Loser,
+                       kval=200,startvalue=1000,
+                       normprob=TRUE,runs=1000),
+             drawplot=FALSE)
+  w<-scale.elo(y)
+  assign(paste0("cap_elo_scores.",counter),w)
   rownames <- seq(1,length(w),
                   1)
-  
-  # making a data.frame with the elo-ratings
   scores <- as.data.frame(w,
                           row.names = as.character(rownames))
   
   z <- cbind(attributes(w),
              scores)
   
-  z$Aviary <- counter
+  z$eventSW <- counter
   
   names(z) <- c("individual","StElo","Aviary")
   
-  assign(paste0("cap_elo_scores_ind.db.",counter),z)
-  
+  assign(paste0("cap.elo_scores_ind.",counter),z)
   counter <- counter + 1
-  
 }
 
 
 # creating a database with all these observations
-cap_elo_scores_all_events <- rbind(cap_elo_scores_ind.db.1,
-                                   cap_elo_scores_ind.db.2,
-                                   cap_elo_scores_ind.db.3,
-                                   cap_elo_scores_ind.db.4)
-
+cap_elo_scores_all_events <- rbind(cap.elo_scores_ind.1,
+                                   cap.elo_scores_ind.2,
+                                   cap.elo_scores_ind.3,
+                                   cap.elo_scores_ind.4)
 
 #########################################################################################################
 # # 13.4. Adding the phenotypic data to the StElo data
