@@ -47,6 +47,7 @@ final.cap.db.3 <- read.table("finaldatabases/final.cap.db.3.csv",header=TRUE,sep
 # WILD MODEL
 ################################################################
 
+VB.TLandM.age.fitness <- VB.TLandM.age.fitness[VB.TLandM.age.fitness$bib>35,]
 
 mod.bib.age <- lmer(bib~
                       age+
@@ -178,22 +179,22 @@ chocolate1 <- c(255,127,36)/rgbing
 
 # PLOT saved as .tiff
 
-# tiff("plots/Figure2_Bib_and_age.tiff", height=20, width=20,
-#      units='cm', compression="lzw", res=300)
-
-tiff("plots/talks/Figure2_Bib_and_age_talk.tiff", height=20, width=20,
+tiff("plots/Figure2_Bib_and_age_update.tiff", height=20, width=20,
      units='cm', compression="lzw", res=300)
 
-#par(mar=c(5, 5, 1, 1))
-par(mar=c(6, 7, 1, 1))
+# tiff("plots/talks/Figure2_Bib_and_age_talk.tiff", height=20, width=20,
+#      units='cm', compression="lzw", res=300)
+
+par(mar=c(5, 5, 1, 1))
+#par(mar=c(6, 7, 1, 1))
 
 plot(data.plot3$age, 
      data.plot3$bib, 
      type="n",
-#      xlab="Age",
-#      ylab= "Bib length (mm)",
-     xlab="",
-     ylab="",
+     xlab="Age",
+     ylab= "Bib length (mm)",
+#      xlab="",
+#      ylab="",
      cex.lab=1.7,
      xaxt="n",yaxt="n",xlim=c(0.5,9.5),ylim=c(40,60),
      family="serif",
@@ -201,31 +202,41 @@ plot(data.plot3$age,
 
 
 #title(xlab="Standardized Elo-rating", line=4, cex.lab=2.5, family="serif")
-title(ylab="Bib length (mm)", line=4, cex.lab=3.2, family="serif")
+#title(ylab="Bib length (mm)", line=4, cex.lab=3.2, family="serif")
 
 
 axis(1,at=seq(0.5,9.5,by=1),
      las=1,
-     #cex.axis=1.3,
-     cex.axis=1.8,
+     cex.axis=1.3,
+     #cex.axis=1.8,
      family="serif") 
 
 axis(2,at=seq(40,60,by=2),
-     #cex.axis=1.3,
-     cex.axis=1.8,
+     cex.axis=1.3,
+     #cex.axis=1.8,
      las=2,
      family="serif")
 
 
-points(jitter(data.plot4$age2014.mean,0.55), 
-       data.plot4$meanVB.mean10, 
-       pch = 19, col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.4),
-       cex = 2.0)
+# points(jitter(data.plot4$age2014.mean,0.55), 
+#        data.plot4$meanVB.mean10, 
+#        pch = 19, col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.25),
+#        cex = 2.0)
+# 
+# points(jitter(data.plot3$age,0.55), 
+#        data.plot3$bib,
+#        pch = 19, col=rgb(darkblue[1],darkblue[2],darkblue[3],0.25),       
+#        cex = 2.0)
 
-points(jitter(data.plot3$age,0.55), 
+points(data.plot4$age2014.mean+0.075, 
+       data.plot4$meanVB.mean10, 
+       pch = 19, col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.175),
+       cex = 1.65)
+
+points(data.plot3$age-0.075, 
        data.plot3$bib,
-       pch = 19, col=rgb(darkblue[1],darkblue[2],darkblue[3],0.4),       
-       cex = 2.0)
+       pch = 19, col=rgb(darkblue[1],darkblue[2],darkblue[3],0.175),       
+       cex = 1.65)
 
 polygon(c(newdat.4$age2014.mean,rev(newdat.4$age2014.mean)),
         c(newdat.4$lower,rev(newdat.4$upper)),
@@ -261,7 +272,7 @@ legend(7.5,44,
        pch=19,
        col=c(rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.8),
              rgb(darkblue[1],darkblue[2],darkblue[3],0.8)),
-       pt.cex=1.9,
+       pt.cex=1.65,
        cex=1.1)
 
 
