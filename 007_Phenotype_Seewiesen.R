@@ -25,6 +25,7 @@ library(reshape)
 library(EloRating)
 library(statnet)
 library(plyr)
+library(rptR)
 
 
 # Clear memory and get to know where you are
@@ -495,6 +496,29 @@ db.noNA.age<-merge(db.noNA,ID.age,by.x="Ring.ID",by.y="BTO",all.x=TRUE)
 
 db.noNA.age.AST<-subset(db.noNA.age,db.noNA.age$Obs=="AST")
 
+# mod.bib.age.rpt <- lmer(meanVB~
+#                           #scale(age2014)+
+#                           (1|Ring.ID)+
+#                           (1|weeknumber2),
+#                         data=db.noNA.age.AST)
+# 
+# smod.bib.age.rpt<-sim(mod.bib.age.rpt,5000)
+# 
+# round(apply(smod.bib.age.rpt@fixef,2, mean),3)
+# round(apply(smod.bib.age.rpt@fixef,2, quantile, c(0.025, 0.975)),3)
+# 
+# ID <- round(mean(apply(smod.bib.age.rpt@ranef$Ring.ID,1, var)),3)
+# round(quantile(apply(smod.bib.age.rpt@ranef$Ring.ID,1, var),
+#                c(0.025, 0.975)),3)
+# 
+# Event <- round(mean(apply(smod.bib.age.rpt@ranef$weeknumber2,1, var)),3)
+# round(quantile(apply(smod.bib.age.rpt@ranef$weeknumber2,1, var),
+#                c(0.025, 0.975)),3)
+# 
+# resid <- round(mean(smod.bib.age.rpt@sigma),3)
+# round(quantile(smod.bib.age.rpt@sigma,c(0.025, 0.975)),3)
+# 
+# repeatability <- ID/(ID+Event+resid)
 
 # mean VB and age, and then adding tarsus
 
