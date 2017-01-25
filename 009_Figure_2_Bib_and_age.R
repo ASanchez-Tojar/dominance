@@ -277,3 +277,173 @@ legend(7.5,44,
 
 
 dev.off()
+
+
+
+############################
+# MULTI-PANNEL FIGURE
+############################
+
+# data needed for second plot comes from script Figure_7_StElo_and_age
+
+# PLOT saved as .tiff
+
+tiff("plots/Figure2_Bib_dominance_and_age.tiff", height=20, width=40,
+     units='cm', compression="lzw", res=300)
+
+
+par(mfrow = c(1,2),
+    mar=c(5, 5, 1, 1))
+
+plot(data.plot3$age, 
+     data.plot3$bib, 
+     type="n",
+     xlab="Age",
+     ylab= "Bib length (mm)",
+     cex.lab=1.7,
+     xaxt="n",yaxt="n",xlim=c(0.5,9.5),ylim=c(40,60),
+     family="serif",
+     frame.plot = FALSE)
+
+
+axis(1,at=seq(0.5,9.5,by=1),
+     las=1,
+     cex.axis=1.3,
+     #cex.axis=1.8,
+     family="serif") 
+
+axis(2,at=seq(40,60,by=2),
+     cex.axis=1.3,
+     #cex.axis=1.8,
+     las=2,
+     family="serif")
+
+
+points(data.plot4$age2014.mean+0.075, 
+       data.plot4$meanVB.mean10, 
+       pch = 19, col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.175),
+       cex = 1.65)
+
+points(data.plot3$age-0.075, 
+       data.plot3$bib,
+       pch = 19, col=rgb(darkblue[1],darkblue[2],darkblue[3],0.175),       
+       cex = 1.65)
+
+polygon(c(newdat.4$age2014.mean,rev(newdat.4$age2014.mean)),
+        c(newdat.4$lower,rev(newdat.4$upper)),
+        border=NA,col=rgb(chocolate1[1], chocolate1[2], chocolate1[3], 0.15))
+
+polygon(c(newdat.3$age,rev(newdat.3$age)),
+        c(newdat.3$lower,rev(newdat.3$upper)),
+        border=NA,col=rgb(darkblue[1],darkblue[2],darkblue[3], 0.15))
+
+lines(newdat.4$age2014.mean, newdat.4$fit, lwd=3.5,
+      col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.8))      
+
+lines(newdat.4$age2014.mean, newdat.4$lower, lty=2, lwd=2,
+      col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.65))
+
+lines(newdat.4$age2014.mean, newdat.4$upper, lty=2, lwd=2,
+      col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.65))
+
+lines(newdat.3$age, newdat.3$fit, lwd=3.5,
+      col=rgb(darkblue[1],darkblue[2],darkblue[3],0.8))
+
+lines(newdat.3$age, newdat.3$lower, lty=2, lwd=2,
+      col=rgb(darkblue[1],darkblue[2],darkblue[3],0.65))
+
+lines(newdat.3$age, newdat.3$upper, lty=2, lwd=2,
+      col=rgb(darkblue[1],darkblue[2],darkblue[3],0.65))
+
+op <- par(family = "serif")
+
+text(9,60,"(A)",adj = 0 ,cex=1.75)
+
+legend(7.5,44,
+       legend=c("captive","wild"),
+       pch=19,
+       col=c(rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.8),
+             rgb(darkblue[1],darkblue[2],darkblue[3],0.8)),
+       pt.cex=1.65,
+       cex=1.6)
+
+
+
+
+
+plot(data.plot1$age, 
+     data.plot1$StElo, 
+     type="n",
+     xlab="Age",
+     ylab= "Standardized Elo-rating",
+     #xlab="",
+     #ylab="",
+     cex.lab=1.7,
+     #cex.lab=2.4,
+     xaxt="n",yaxt="n",xlim=c(0.5,9.5),ylim=c(0,1),
+     family="serif",
+     frame.plot = FALSE)
+
+
+axis(1,at=seq(0.5,9.5,by=1),
+     cex.axis=1.3,
+     #cex.axis=1.8,
+     family="serif")
+
+axis(2,at=seq(0,1,by=0.2),
+     las=2,
+     cex.axis=1.3,
+     #cex.axis=1.8,
+     family="serif") 
+
+points(data.plot2$age2014.mean+0.075, 
+       data.plot2$StElo, 
+       pch = 19, col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.25),
+       cex = 1.65)
+
+points(data.plot1$age-0.075, 
+       data.plot1$StElo, 
+       pch = 19, col=rgb(darkblue[1],darkblue[2],darkblue[3],0.25),
+       cex = 1.65)
+
+polygon(c(newdat.2$age2014.mean,rev(newdat.2$age2014.mean)),
+        c(newdat.2$lower,rev(newdat.2$upper)),
+        border=NA,col=rgb(chocolate1[1], chocolate1[2], chocolate1[3], 0.15))
+
+polygon(c(newdat$age,rev(newdat$age)),
+        c(newdat$lower,rev(newdat$upper)),
+        border=NA,col=rgb(darkblue[1],darkblue[2],darkblue[3], 0.15))
+
+lines(newdat.2$age2014.mean, newdat.2$fit, lwd=3.5,
+      col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.8)) 
+
+lines(newdat.2$age2014.mean, newdat.2$lower, lty=2, lwd=2,
+      col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.65))
+
+lines(newdat.2$age2014.mean, newdat.2$upper, lty=2, lwd=2,
+      col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.65))
+
+
+lines(newdat$age, newdat$fit, lwd=3.5,
+      col=rgb(darkblue[1],darkblue[2],darkblue[3],0.8)) 
+
+lines(newdat$age, newdat$lower, lty=2, lwd=2,
+      col=rgb(darkblue[1],darkblue[2],darkblue[3],0.65))
+
+lines(newdat$age, newdat$upper, lty=2, lwd=2,
+      col=rgb(darkblue[1],darkblue[2],darkblue[3],0.65))
+
+text(9,1.0,"(B)",adj = 0 ,cex=1.75)
+
+# op <- par(family = "serif")
+# 
+# legend(5.5,1.02,
+#        legend=c("captive","wild"),
+#        pch=19,
+#        col=c(rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.8),
+#              rgb(darkblue[1],darkblue[2],darkblue[3],0.8)),
+#        pt.cex=1.9,
+#        cex=1.1)
+
+
+dev.off()

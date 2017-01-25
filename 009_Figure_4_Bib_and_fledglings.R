@@ -237,23 +237,23 @@ blue <- c(44,127,184)/rgbing
 
 # PLOT saved as .tiff
 
-tiff("plots/Figure4_Bib_and_fledglings.tiff", height=20, width=20,
+tiff("plots/Figure4_Bib_and_fledglings_update.tiff", height=20, width=20,
      units='cm', compression="lzw", res=300)
 
 par(mar=c(5, 5, 1, 1))
 
-plot(data.plot6$bib, 
-     data.plot6$soc.fledg.12d, 
+plot(data.plot7$bib, 
+     data.plot7$gen.fledg.12d, 
      type="n",
      xlab="Bib length (mm)",
      ylab= "Annual number of fledglings",
      cex.lab=1.7,
-     xaxt="n",yaxt="n",xlim=c(44,60),ylim=c(0,14),
+     xaxt="n",yaxt="n",xlim=c(44,58),ylim=c(0,14),
      family="serif",
      frame.plot = FALSE)
 
 
-axis(1,at=seq(44,60,by=2),
+axis(1,at=seq(44,58,by=2),
      las=1,
      cex.axis=1.3,
      family="serif") 
@@ -264,10 +264,10 @@ axis(2,at=seq(0,14,by=1),
      family="serif")
 
 
-points(data.plot6$bib, 
-       jitter(data.plot6$soc.fledg.12d,0.65), 
-       pch = 19, col=rgb(turquoise[1], turquoise[2], turquoise[3],0.4),
-       cex = 2.0)
+# points(data.plot6$bib, 
+#        jitter(data.plot6$soc.fledg.12d,0.65), 
+#        pch = 19, col=rgb(turquoise[1], turquoise[2], turquoise[3],0.4),
+#        cex = 2.0)
 
 points(data.plot7$bib, 
        jitter(data.plot7$gen.fledg.12d,0.65),
@@ -389,5 +389,118 @@ lines(newdat.8$bib, newdat.8$lower, lty=2, lwd=2,
 lines(newdat.8$bib, newdat.8$upper, lty=2, lwd=2,
       col=rgb(blue[1],blue[2],blue[3],0.65))
 
+
+dev.off()
+
+
+
+############################
+# MULTI-PANNEL FIGURE
+############################
+
+# data needed for second plot comes from script Figure_3_Status_and_fledglings
+
+# PLOT saved as .tiff
+
+tiff("plots/Figure4_Bib_dominance_and_geneticfledglings.tiff", height=20, width=40,
+     units='cm', compression="lzw", res=300)
+
+
+par(mfrow = c(1,2),
+    oma = c(1,6,1,1) + 0.1,
+    mar = c(5,2,0,0) + 0.1,
+    cex.lab=2,
+    family="serif")
+
+
+plot(data.plot7$bib, 
+     data.plot7$gen.fledg.12d, 
+     type="n",
+     xlab="Bib length (mm)",
+     ylab= "Annual number of fledglings",
+     cex.lab=2,
+     xaxt="n",yaxt="n",xlim=c(44,58),ylim=c(0,14),
+     family="serif",
+     frame.plot = FALSE)
+
+
+axis(1,at=seq(44,58,by=2),
+     las=1,
+     cex.axis=1.3,
+     family="serif") 
+
+axis(2,at=seq(0,14,by=2),
+     cex.axis=1.3,
+     las=2,
+     family="serif")
+
+
+points(data.plot7$bib, 
+       data.plot7$gen.fledg.12d,
+       pch = 19, col=rgb(blue[1],blue[2],blue[3],0.4),       
+       cex = 2.0)
+
+polygon(c(newdat.8$bib,rev(newdat.8$bib)),
+        c(newdat.8$lower,rev(newdat.8$upper)),
+        border=NA,col=rgb(blue[1],blue[2],blue[3], 0.15))
+
+lines(newdat.8$bib, newdat.8$fit, lwd=3.5,
+      col=rgb(blue[1],blue[2],blue[3],0.8))
+
+lines(newdat.8$bib, newdat.8$lower, lty=2, lwd=2,
+      col=rgb(blue[1],blue[2],blue[3],0.65))
+
+lines(newdat.8$bib, newdat.8$upper, lty=2, lwd=2,
+      col=rgb(blue[1],blue[2],blue[3],0.65))
+
+text(57,14,"(A)",adj = 0 ,cex=1.75)
+
+
+plot(data.plot6$StElo, 
+     data.plot6$gen.fledg.12d, 
+     type="n",
+     xlab="Standardized Elo-rating",
+     ylab= "",
+     cex.lab=2,
+     xaxt="n",yaxt="n",xlim=c(0,1),ylim=c(0,14),
+     family="serif",
+     frame.plot = FALSE)
+
+
+axis(1,at=seq(0,1,by=0.2),
+     las=1,
+     cex.axis=1.3,
+     family="serif") 
+
+axis(2,at=seq(0,14,by=2),
+     cex.axis=1.3,
+     las=2,
+     family="serif")
+
+
+points(data.plot6$StElo, 
+       data.plot6$gen.fledg.12d,
+       pch = 19, col=rgb(blue[1],blue[2],blue[3],0.4),       
+       cex = 2.0)
+
+
+polygon(c(newdat.6$StElo,rev(newdat.6$StElo)),
+        c(newdat.6$lower,rev(newdat.6$upper)),
+        border=NA,col=rgb(blue[1],blue[2],blue[3], 0.15))
+
+lines(newdat.6$StElo, newdat.6$fit, lwd=3.5,
+      col=rgb(blue[1],blue[2],blue[3],0.8))
+
+lines(newdat.6$StElo, newdat.6$lower, lty=2, lwd=2,
+      col=rgb(blue[1],blue[2],blue[3],0.65))
+
+lines(newdat.6$StElo, newdat.6$upper, lty=2, lwd=2,
+      col=rgb(blue[1],blue[2],blue[3],0.65))
+
+
+text(0.9,14,"(B)",adj = 0 ,cex=1.75)
+
+title(ylab = "       Annual number of fledlings",
+      outer = TRUE, line = 2)
 
 dev.off()
