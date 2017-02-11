@@ -447,3 +447,179 @@ text(9,1.0,"(B)",adj = 0 ,cex=1.75)
 
 
 dev.off()
+
+
+
+################################################################
+# CAPTIVE MODEL: AGE CATEGORICAL
+################################################################
+
+
+# categorical age
+
+data.plot4$age.cat <- as.factor(ifelse(data.plot4$age2014.mean==0.5,
+                                 0,ifelse(data.plot4$age2014.mean>6,
+                                          2,1)))
+
+# it doesn't affect the results in terms of the importance
+
+mod.rank.capt.cat <- lmer(StElo~age.cat+
+                            TarsusLength+
+                            (1|Aviary),
+                          data=data.plot4)
+
+
+#simulating a posterior distribution with 5000 draws
+smod.rank.capt.cat<-sim(mod.rank.capt.cat,5000)
+
+
+# Generating a database with what is run in the model. The model estimates
+# calculated and presented in the plot correspond to those for a mean value
+# of tarsus and age (from this database), and a mean fictious season of 0.5
+# (remember that season was coded as 0: non-breeding, and 1: breeding)
+
+newdat<-expand.grid(age.cat=levels(data.plot4$age.cat),
+                    TarsusLength = mean(data.plot4$TarsusLength,na.rm = TRUE))
+
+
+xmat<-model.matrix(~age.cat+
+                     TarsusLength, 
+                   data=newdat) 
+
+fitmatboth <- matrix(NA, 
+                     ncol = nrow(smod.rank.capt.cat@fixef),
+                     nrow = nrow(newdat))
+
+
+for(i in 1:nrow(smod.rank.capt.cat@fixef)) {
+  fitmatboth[,i] <- xmat%*%smod.rank.capt.cat@fixef[i,]
+}
+
+
+# finally estimating the mean and the credible intervals for each
+# value of bib length. This is what I will plot later on.
+
+newdat$fit<-apply(fitmatboth, 1, mean) # 1= row , 2 = colum
+newdat$lower<-apply(fitmatboth, 1, quantile, prob= 0.025)
+newdat$upper<-apply(fitmatboth, 1, quantile, prob= 0.975)
+
+
+
+################################################################
+# PLOTTING
+################################################################
+
+
+# vector needed to obtain the final rgb colours
+
+rgbing <- c(255,255,255)
+
+
+# few colours in rb
+
+chocolate1 <- c(255,127,36)/rgbing
+
+data.plot4.0 <- data.plot4[data.plot4$age.cat=="0",]
+data.plot4.1 <- data.plot4[data.plot4$age.cat=="1",]
+data.plot4.2 <- data.plot4[data.plot4$age.cat=="2",]
+
+
+# PLOT saved as .tiff
+
+tiff("plots/Figure4_Status_and_age_categorical.tiff", height=20, width=20,
+     units='cm', compression="lzw", res=300)
+
+par(mar=c(5, 5, 1, 1))
+#par(mar=c(6, 7, 1, 1))
+
+
+plot(as.numeric(data.plot4$age.cat), 
+     data.plot4$StElo, 
+     type="n",
+     #xlab="age categorical",
+     ylab= "Standardized Elo-rating",
+     xlab="",
+     # ylab="",
+     cex.lab=1.7,
+     #cex.lab=2.4,
+     xaxt="n",yaxt="n",
+     xlim=c(-0.25,2.25),ylim=c(0,1),
+     family="serif",
+     frame.plot = FALSE)
+
+# title(xlab="sex", line=4, cex.lab=3.0, family="serif")
+# title(ylab="Standardized Elo-rating", line=4.5, cex.lab=3.0, family="serif")
+
+axis(1,
+     at=c(0,1,2),
+     labels=c("young","middle-aged","old"),
+     cex.axis=1.3,
+     family="serif")
+
+# axis(1,at=seq(0,3,by=1),
+#      #cex.axis=1.3,
+#      cex.axis=1.8,
+#      family="serif")
+
+axis(2,at=seq(0,1,by=0.2),
+     las=2,
+     cex.axis=1.3,
+     #cex.axis=1.8,
+     family="serif") 
+
+points(rep(0,each=length(data.plot4.0$StElo)), 
+       data.plot4.0$StElo, 
+       pch = 19, col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.25),
+       cex = 1.2)
+
+points(rep(1,each=length(data.plot4.1$StElo)), 
+       data.plot4.1$StElo, 
+       pch = 19, col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.25),
+       cex = 1.2)
+
+points(rep(2,each=length(data.plot4.2$StElo)), 
+       data.plot4.2$StElo, 
+       pch = 19, col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.25),
+       cex = 1.2)
+
+index.0<-newdat$age.cat=="0"
+index.1<-newdat$age.cat=="1"
+index.2<-newdat$age.cat=="2"
+
+points(0, 
+       newdat$fit[index.0], 
+       pch = 19, col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.9),
+       cex = 2.5)
+
+points(1, 
+       newdat$fit[index.1], 
+       pch = 19, col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.9),
+       cex = 2.5)
+
+points(2, 
+       newdat$fit[index.2], 
+       pch = 19, col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.9),
+       cex = 2.5)
+
+
+arrows(0,newdat$lower[index.0],0,newdat$upper[index.0],angle=90,code=3,
+       col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],1),length = 0,lwd=6)
+
+arrows(1,newdat$lower[index.1],1,newdat$upper[index.1],angle=90,code=3,
+       col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],1),length = 0,lwd=6)
+
+arrows(2,newdat$lower[index.2],2,newdat$upper[index.2],angle=90,code=3,
+       col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],1),length = 0,lwd=6)
+
+arrows(-0.25,newdat$fit[index.0],0,newdat$fit[index.0],angle=90,code=3,
+       col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],1),length = 0,lwd=2, lty=3)
+
+arrows(-0.25,newdat$fit[index.1],1,newdat$fit[index.1],angle=90,code=3,
+       col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],1),length = 0,lwd=2, lty=3)
+
+arrows(-0.25,newdat$fit[index.2],2,newdat$fit[index.2],angle=90,code=3,
+       col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],1),length = 0,lwd=2, lty=3)
+
+
+
+dev.off()
