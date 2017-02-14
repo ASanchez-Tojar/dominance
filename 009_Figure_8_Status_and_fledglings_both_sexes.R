@@ -29,8 +29,8 @@ rm(list=ls())
 
 # loading the clean databases from Lundy with all the data needed
 
-#rank.TLandM.VB.fitness <- read.table("finaldatabases/rank.TLandM.VB.fitness.csv",header=TRUE,sep=",")
-rank.TLandM.VB.fitness <- read.table("finaldatabases/rank.TLandM.VB.fitness.9int.csv",header=TRUE,sep=",")
+rank.TLandM.VB.fitness <- read.table("finaldatabases/rank.TLandM.VB.fitness.csv",header=TRUE,sep=",")
+#rank.TLandM.VB.fitness <- read.table("finaldatabases/rank.TLandM.VB.fitness.9int.csv",header=TRUE,sep=",")
 #rank.TLandM.VB.fitness <- read.table("finaldatabases/rank.TLandM.VB.fitness_sim.csv",header=TRUE,sep=",")
 #rank.TLandM.VB.fitness <- read.table("finaldatabases/rank.TLandM.VB.fitness.9int_sim.csv",header=TRUE,sep=",")
 
@@ -209,11 +209,11 @@ chocolate1 <- c(255,127,36)/rgbing
 # tiff("plots/talks/9interactions/Figure8_Status_and_fledglings_both_sexes_2015_9int.tiff", height=20, width=20,
 #      units='cm', compression="lzw", res=300)
 
-# tiff("plots/talks/Figure9_Status_and_fledglings_both_sexes_2015_sim.tiff", height=20, width=20,
-#      units='cm', compression="lzw", res=300)
-
-tiff("plots/talks/9interactions/Figure9_Status_and_fledglings_both_sexes_2015_9int_sim.tiff", height=20, width=20,
+tiff("plots/talks/Figure9_Status_and_fledglings_both_sexes_2014_upd.tiff", height=20, width=20,
      units='cm', compression="lzw", res=300)
+
+# tiff("plots/talks/9interactions/Figure9_Status_and_fledglings_both_sexes_2015_9int_sim.tiff", height=20, width=20,
+#      units='cm', compression="lzw", res=300)
 
 
 #par(mar=c(5, 5, 1, 1))
@@ -258,7 +258,7 @@ points(data.plotf$StElo,
        pch = 19, col=rgb(chocolate1[1],chocolate1[2],chocolate1[3],0.4),       
        cex = 2.0)
 
-index.1<-newdat.6$eventSW=="2015" # only calls the plot but not the points yet
+index.1<-newdat.6$eventSW=="2014" # only calls the plot but not the points yet
 
 polygon(c(newdat.6$StElo[index.1],rev(newdat.6$StElo[index.1])),
         c(newdat.6$lower[index.1],rev(newdat.6$upper[index.1])),
