@@ -121,7 +121,7 @@ newdat$upper<-apply(fitmatboth, 1, quantile, prob= 0.975)
 data.plot2 <- final.cap.db.3[!(is.na(final.cap.db.3$age2014.mean)) &
                                !(is.na(final.cap.db.3$TarsusLength)) &
                                !(is.na(final.cap.db.3$meanVB.mean10)) &
-                               #final.cap.db.3$age2014.mean<5&
+                               final.cap.db.3$age2014.mean<5&
                                final.cap.db.3$meanVB.mean10>41,
                              ]
 
@@ -192,7 +192,7 @@ chocolate1 <- c(255,127,36)/rgbing
 
 # PLOT saved as .tiff
 
-tiff("plots/Figure1_Status_and_Bib_update.tiff", height=20, width=20,
+tiff("plots/Figure1_Status_and_Bib_update_noOld.tiff", height=20, width=20,
      units='cm', compression="lzw", res=300)
 
 # tiff("plots/talks/Figure1_Status_and_Bib_talk_update.tiff", height=20, width=20,
