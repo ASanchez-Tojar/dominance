@@ -42,7 +42,8 @@ rm(list=ls())
 # loading the clean database to estimate the ratings
 
 #elo_scores_all_events <- read.table("elo_scores_all_events.csv",header=TRUE,sep=",")
-elo_scores_all_events_sim <- read.table("elo_scores_all_events_sim.csv",header=TRUE,sep=",")
+#elo_scores_all_events_sim <- read.table("elo_scores_all_events_sim.csv",header=TRUE,sep=",")
+elo_scores_all_events_sim <- read.table("elo_scores_all_events_summer_aniDom.csv",header=TRUE,sep=",")
 birdsex.1 <- read.table("birdsex.1.csv",header=TRUE,sep=",")
 morethan8pereventSW <- read.table("morethan8pereventSW.csv",header=TRUE,sep=",")
 #fitness.full <- read.table("fledglings12/fitness.full.csv",header=TRUE,sep=",")
