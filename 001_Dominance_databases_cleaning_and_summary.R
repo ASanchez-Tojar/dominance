@@ -2045,6 +2045,10 @@ sink()
 #mean(table(dom.final.v2$eventSW)/c(98,152,116,86,59,126,143))
 #sd(table(dom.final.v2$eventSW)/c(98,152,116,86,59,126,143))
 
+sink("summaries/interactionsperdate.txt")
+table(dom.final.v2$date)
+sink()
+
 ######################################################################################################
 # # 8.3 Plotting some informative histograms
 ########################################################################################################
