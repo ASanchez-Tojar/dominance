@@ -115,7 +115,7 @@ summary(time)
 # Loading dominance database
 ########################################################################################################
 
-dom <- read.table("MegaDataBase-v115-201311-201611-FY-Dominance_Lundy_20170110b.csv",header=TRUE,sep=',')
+dom <- read.table("MegaDataBase-v117-201311-201611-FY-Dominance_Lundy_20170302b.csv",header=TRUE,sep=',')
 
 
 ########################################################################################################
@@ -1615,7 +1615,7 @@ for (i in 1:nrow(birdsex.1)){
 
 # GO AND CHECK IF NEEDED
 
-#dom[dom$individual1=="crmw" & dom$sex1=="f",]
+#dom[dom$individual2=="mrcc" & dom$sex2=="f",]
 
 ########################################################################################################
 # # 6.2. Checking if there are misssexed individuals
@@ -2041,9 +2041,9 @@ cat(paste0("\nThe number of interactions with doubts is: ",
 
 sink()
 
-#round(table(dom.final.v2$eventSW)/c(98,152,116,80,59,126,143),1)
-#mean(table(dom.final.v2$eventSW)/c(98,152,116,80,59,126,143))
-#sd(table(dom.final.v2$eventSW)/c(98,152,116,80,59,126,143))
+#round(table(dom.final.v2$eventSW)/c(98,152,116,86,59,126,143),1)
+#mean(table(dom.final.v2$eventSW)/c(98,152,116,86,59,126,143))
+#sd(table(dom.final.v2$eventSW)/c(98,152,116,86,59,126,143))
 
 ######################################################################################################
 # # 8.3 Plotting some informative histograms
