@@ -115,7 +115,7 @@ summary(time)
 # Loading dominance database
 ########################################################################################################
 
-dom <- read.table("MegaDataBase-v117-201311-201611-FY-Dominance_Lundy_20170302b.csv",header=TRUE,sep=',')
+dom <- read.table("MegaDataBase-v119-201311-201611-FY-Dominance_Lundy_20170304b.csv",header=TRUE,sep=',')
 
 
 ########################################################################################################
@@ -1615,7 +1615,7 @@ for (i in 1:nrow(birdsex.1)){
 
 # GO AND CHECK IF NEEDED
 
-#dom[dom$individual2=="mrcc" & dom$sex2=="f",]
+#dom[dom$individual1=="dmoc" & dom$sex1=="f",]
 
 ########################################################################################################
 # # 6.2. Checking if there are misssexed individuals
