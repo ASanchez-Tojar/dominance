@@ -2065,7 +2065,7 @@ hist(superlist.eventSW$freqppereventSW,breaks=max(superlist.eventSW$freqppereven
      main = "",
      xlab = "Number of interactions per event (summer/winter)",
      ylab = "",
-     ylim = c(0,80),
+     ylim = c(0,90),
      xlim = c(0,400),
      col="grey75",
      axes=FALSE,
@@ -2073,7 +2073,7 @@ hist(superlist.eventSW$freqppereventSW,breaks=max(superlist.eventSW$freqppereven
      right=FALSE)
 title(ylab="Number of individuals", line=2.2, cex.lab=1.75)
 axis(1,at = seq(0,400,by=50),lwd=1)
-axis(2,at = seq(0,80,by=10),lwd=1,line=-0.5, las=2)
+axis(2,at = seq(0,90,by=10),lwd=1,line=-0.5, las=2)
 
 dev.off()
 
