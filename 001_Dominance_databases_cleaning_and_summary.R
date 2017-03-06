@@ -115,7 +115,7 @@ summary(time)
 # Loading dominance database
 ########################################################################################################
 
-dom <- read.table("MegaDataBase-v121-201311-201611-FY-Dominance_Lundy_20170305b.csv",header=TRUE,sep=',')
+dom <- read.table("MegaDataBase-v123-201311-201611-FY-Dominance_Lundy_20170306b.csv",header=TRUE,sep=',')
 
 
 ########################################################################################################
@@ -2041,9 +2041,9 @@ cat(paste0("\nThe number of interactions with doubts is: ",
 
 sink()
 
-#round(table(dom.final.v2$eventSW)/c(98,152,116,88,59,126,143),1)
-#mean(table(dom.final.v2$eventSW)/c(98,152,116,88,59,126,143))
-#sd(table(dom.final.v2$eventSW)/c(98,152,116,88,59,126,143))
+#round(table(dom.final.v2$eventSW)/c(107,152,116,88,59,126,143),1)
+#mean(table(dom.final.v2$eventSW)/c(107,152,116,88,59,126,143))
+#sd(table(dom.final.v2$eventSW)/c(107,152,116,88,59,126,143))
 
 sink("summaries/interactionsperdate.txt")
 table(dom.final.v2$date)
