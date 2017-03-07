@@ -115,7 +115,7 @@ summary(time)
 # Loading dominance database
 ########################################################################################################
 
-dom <- read.table("MegaDataBase-v123-201311-201611-FY-Dominance_Lundy_20170306b.csv",header=TRUE,sep=',')
+dom <- read.table("MegaDataBase-v124-201311-201611-FY-Dominance_Lundy_20170307b.csv",header=TRUE,sep=',')
 
 
 ########################################################################################################
