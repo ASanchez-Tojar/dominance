@@ -43,7 +43,7 @@ rm(list=ls())
 
 #elo_scores_all_events <- read.table("elo_scores_all_events.csv",header=TRUE,sep=",")
 #elo_scores_all_events_sim <- read.table("elo_scores_all_events_sim.csv",header=TRUE,sep=",")
-elo_scores_all_events_sim <- read.table("elo_scores_all_events_summer_aniDom.csv",header=TRUE,sep=",")
+elo_scores_all_events_sim <- read.table("elo_scores_all_events_aniDom.csv",header=TRUE,sep=",")
 birdsex.1 <- read.table("birdsex.1.csv",header=TRUE,sep=",")
 morethan8pereventSW <- read.table("morethan8pereventSW.csv",header=TRUE,sep=",")
 #fitness.full <- read.table("fledglings12/fitness.full.csv",header=TRUE,sep=",")
@@ -150,7 +150,7 @@ tarsuslengthandMass <- read.table("BirdID-Tarsus-Mass_Dec2016.csv",header=TRUE,s
 # GROUP BY tblCaptures.BirdID, tblCaptures.CaptureDate, tblCaptures.CaptureTime, tblPlumage.Trait, tblCaptures.Observer, tblCaptures.CaptureRef
 # HAVING (((tblPlumage.Trait)='VB'));
 
-visibleBadge <-  read.table("BirdID-VisibleBadge_Dec2016.csv",header=TRUE,sep=",")
+visibleBadge <-  read.table("BirdID-VisibleBadge_Dec2016_sortedDate.csv",header=TRUE,sep=",")
 
 
 # #########################################################################################################
@@ -195,6 +195,7 @@ ind.TLandM <- summaryBy(Tarsus + Mass ~ BirdID, data = tarsuslengthandMass,
 #lifehistory.VB <- subset(visibleBadge,visibleBadge$Observer=="AST")
 visibleBadge.AST <- subset(visibleBadge,visibleBadge$Observer=="AST")
 
+visibleBadge.AST$order <- seq(1:nrow(visibleBadge.AST))
 
 # This is to exclude a clear outlier from following analyses
 #visibleBadge.AST <- subset(visibleBadge.AST,visibleBadge.AST$AvgOfEstimate!=34)
@@ -257,6 +258,23 @@ for(i in 1:nrow(visibleBadge.AST)){
 
 visibleBadge.AST$BirdID_eventSW <- factor(paste(visibleBadge.AST$BirdID,
                                                 visibleBadge.AST$eventSW,sep="_"))
+
+# #Autocorrelation #35,123,207,241,279,298
+# 
+# par(mfrow=c(1,2))
+# autmod <- lm(AvgOfEstimate~(1|BirdID),data=visibleBadge.AST)
+# acf(resid(autmod),lag.max=nrow(visibleBadge.AST))
+# acf(resid(autmod),type="p",lag.max=nrow(visibleBadge.AST))
+# 
+# autmod.2 <- lm(AvgOfEstimate~eventSW+(1|BirdID),data=visibleBadge.AST)
+# acf(resid(autmod.2),lag.max=nrow(visibleBadge.AST))
+# acf(resid(autmod.2),type="p",lag.max=nrow(visibleBadge.AST))
+# 
+# autmod.3 <- lm(AvgOfEstimate~order+(1|BirdID),data=visibleBadge.AST)
+# acf(resid(autmod.3),lag.max=nrow(visibleBadge.AST))
+# acf(resid(autmod.3),type="p",lag.max=nrow(visibleBadge.AST))
+
+#autmod.2 looks okish already, so I'll include eventSW'
 
 # hist per year
 
