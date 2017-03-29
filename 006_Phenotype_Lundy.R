@@ -415,6 +415,7 @@ rank.TLandM.VB.4 <- rank.TLandM.VB.4[,c("BirdID_eventSW",
 
 row.names(rank.TLandM.VB.2) <- NULL 
 
+
 rank.TLandM.VB <- merge(rank.TLandM.VB.2,
                         rank.TLandM.VB.4,
                         by="BirdID_eventSW",
@@ -434,13 +435,26 @@ fitness.full.both.2 <- fitness.full.both[,c("BirdID_eventSW","gen.fledg.12d",
 rank.TLandM.VB.fitness <- merge(rank.TLandM.VB,fitness.full.both.2,
                                 by="BirdID_eventSW",all.x=TRUE)
 
+rank.TLandM.VB.fitness$eventSW <- as.factor(rank.TLandM.VB.fitness$eventSW)
+
+# scaling Elo per season
+rank.TLandM.VB.fitness <- do.call("rbind", as.list(  
+  by(rank.TLandM.VB.fitness, rank.TLandM.VB.fitness["eventSW"], transform, elo.z.event=scale(StElo))))
+
+rank.TLandM.VB.fitness <- do.call("rbind", as.list(  
+  by(rank.TLandM.VB.fitness, rank.TLandM.VB.fitness["eventSW"], transform, bib.z.event=scale(AvgOfEstimate.mean))))
+
+
+row.names(rank.TLandM.VB.fitness) <- NULL 
+
 names(rank.TLandM.VB.fitness) <- c("BirdID_eventSW","BirdID","colourrings",
                                    "StElo","eventSW","sex","cohort",
                                    "cohortEstimated","age","tarsus",
                                    "mass","bib","season","meanage",
                                    "agewithin","bib.centred",
                                    "gen.fledg.12d","gen.recruits",
-                                   "soc.fledg.12d","soc.recruits")
+                                   "soc.fledg.12d","soc.recruits",
+                                   "elo.z.event","bib.z.event")
 
 
 # I'm saving this file for the following scripts
@@ -557,6 +571,12 @@ names(VB.TLandM.age.fitness) <- c("BirdID_eventSW","BirdID","bib",
                                   "age","meanage","agewithin",
                                   "gen.fledg.12d","gen.recruits",
                                   "soc.fledg.12d","soc.recruits")
+
+
+VB.TLandM.age.fitness <- do.call("rbind", as.list(  
+  by(VB.TLandM.age.fitness, VB.TLandM.age.fitness["eventSW"], transform, bib.z.event=scale(bib))))
+
+row.names(VB.TLandM.age.fitness) <- NULL 
 
 
 # I'm saving this file for the following scripts
