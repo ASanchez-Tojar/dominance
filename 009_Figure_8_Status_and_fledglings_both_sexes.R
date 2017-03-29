@@ -64,13 +64,14 @@ data.plot6 <- rank.TLandM.VB.fitness.m[!(is.na(rank.TLandM.VB.fitness.m$age)) &
 data.plot6$eventSW <- as.factor(data.plot6$eventSW)
 
 mod.gen.fledg.m <- lmer(gen.fledg.12d~
-                              StElo+
-                              age+
-                              I(age^2)+
-                              tarsus+
-                              eventSW+
-                              (1|BirdID),
-                            data=data.plot6)
+                          #StElo+
+                          elo.z.event+
+                          age+
+                          I(age^2)+
+                          tarsus+
+                          eventSW+
+                          (1|BirdID),
+                        data=data.plot6)
 
 
 #simulating a posterior distribution with 5000 draws
@@ -82,16 +83,20 @@ smod.gen.fledg.m<-sim(mod.gen.fledg.m,5000)
 # calculated and presented in the plot correspond to those for a mean value
 # of tarsus (from this database)
 
-newdat.6<-expand.grid(StElo=seq(min(data.plot6$StElo,na.rm = TRUE),
-                                max(data.plot6$StElo,na.rm = TRUE),
-                                1),
+newdat.6<-expand.grid(elo.z.event=seq(min(data.plot6$elo.z.event,na.rm = TRUE),
+                                max(data.plot6$elo.z.event,na.rm = TRUE),
+                                0.01),
                                 #0.001), 
+                      # StElo=seq(min(data.plot6$StElo,na.rm = TRUE),
+                      #           max(data.plot6$StElo,na.rm = TRUE),
+                      #           1),
                       age = mean(data.plot6$age,na.rm = TRUE),
                       tarsus = mean(data.plot6$tarsus,na.rm = TRUE),
                       eventSW = levels(data.plot6$eventSW))
 
 
-xmat.6<-model.matrix(~StElo+
+xmat.6<-model.matrix(~elo.z.event+
+                       #StElo+
                        age+
                        I(age^2)+
                        tarsus+
@@ -134,7 +139,8 @@ data.plotf$eventSW <- as.factor(data.plotf$eventSW)
 
 
 mod.gen.fledg.f <- lmer(gen.fledg.12d~
-                          StElo+
+                          #StElo+
+                          elo.z.event+
                           age+
                           I(age^2)+
                           tarsus+
@@ -152,16 +158,20 @@ smod.gen.fledg.f<-sim(mod.gen.fledg.f,5000)
 # calculated and presented in the plot correspond to those for a mean value
 # of tarsus (from this database)
 
-newdat.f<-expand.grid(StElo=seq(min(data.plotf$StElo,na.rm = TRUE),
-                                max(data.plotf$StElo,na.rm = TRUE),
-                                1), 
+newdat.f<-expand.grid(elo.z.event=seq(min(data.plotf$elo.z.event,na.rm = TRUE),
+                                max(data.plotf$elo.z.event,na.rm = TRUE),
+                                0.01), 
                                 #0.001), 
+                      # StElo=seq(min(data.plotf$StElo,na.rm = TRUE),
+                      #           max(data.plotf$StElo,na.rm = TRUE),
+                      #           1), 
                       age = mean(data.plotf$age,na.rm = TRUE),
                       tarsus = mean(data.plotf$tarsus,na.rm = TRUE),
                       eventSW = levels(data.plotf$eventSW))
 
 
-xmat.f<-model.matrix(~StElo+
+xmat.f<-model.matrix(~ elo.z.event+
+                       #StElo+
                        age+
                        I(age^2)+
                        tarsus+
@@ -224,7 +234,8 @@ tiff("plots/talks/Figure8_Status_and_fledglings_both_sexes_2014_notStElo.tiff", 
 #par(mar=c(5, 5, 1, 1))
 par(mar=c(6, 7, 1, 1))
 
-plot(data.plot6$StElo, 
+plot(#data.plot6$StElo, 
+     data.plot6$elo.z.event,
      data.plot6$gen.fledg.12d, 
      type="n",
      #xlab="Standardized Elo-rating",
@@ -234,7 +245,8 @@ plot(data.plot6$StElo,
      cex.lab=1.7,
      xaxt="n",yaxt="n",
      #xlim=c(0,1),
-     xlim=c(-500,900),
+     #xlim=c(-500,900),
+     xlim=c(-2.5,4),
      ylim=c(0,12),
      family="serif",
      frame.plot = FALSE)
@@ -245,7 +257,8 @@ title(ylab="genetic fledglings", line=4, cex.lab=3.2, family="serif")
 
 
 axis(#1,at=seq(0,1,by=0.2),
-     1,at=seq(-500,900,by=200),
+     #1,at=seq(-500,900,by=200),
+     1,at=seq(-2,4,by=1),
      las=1,
      #cex.axis=1.3,
      cex.axis=1.8,
@@ -258,13 +271,15 @@ axis(2,at=seq(0,12,by=1),
      family="serif")
 
 
-points(data.plot6$StElo, 
+points(data.plot6$elo.z.event, 
+       #data.plot6$StElo,
        jitter(data.plot6$gen.fledg.12d,0.65), 
        pch = 19, col=rgb(darkblue[1], darkblue[2], darkblue[3],0.4),
        cex = 1.5)
        #cex = 2.0)
 
-points(data.plotf$StElo, 
+points(data.plotf$elo.z.event, 
+       #data.plotf$StElo,
        jitter(data.plotf$gen.fledg.12d,0.65),
        pch = 19, col=rgb(chocolate1[1],chocolate1[2],chocolate1[3],0.4),
        cex = 1.5)
@@ -272,32 +287,34 @@ points(data.plotf$StElo,
 
 index.1<-newdat.6$eventSW=="2014" # only calls the plot but not the points yet
 
-polygon(c(newdat.6$StElo[index.1],rev(newdat.6$StElo[index.1])),
+polygon(c(newdat.6$elo.z.event[index.1],rev(newdat.6$elo.z.event[index.1])),
+        #c(newdat.6$StElo[index.1],rev(newdat.6$StElo[index.1])),
         c(newdat.6$lower[index.1],rev(newdat.6$upper[index.1])),
         border=NA,col=rgb(darkblue[1], darkblue[2], darkblue[3], 0.15))
 
 index.2<-newdat.f$eventSW=="2014" # only calls the plot but not the points yet
 
-polygon(c(newdat.f$StElo[index.2],rev(newdat.f$StElo[index.2])),
+polygon(c(newdat.f$elo.z.event[index.2],rev(newdat.f$elo.z.event[index.2])),
+        #c(newdat.f$StElo[index.2],rev(newdat.f$StElo[index.2])),
         c(newdat.f$lower[index.2],rev(newdat.f$upper[index.2])),
         border=NA,col=rgb(chocolate1[1],chocolate1[2],chocolate1[3], 0.15))
 
-lines(newdat.6$StElo[index.1], newdat.6$fit[index.1], lwd=3.5,
+lines(newdat.6$elo.z.event[index.1], newdat.6$fit[index.1], lwd=3.5,
       col=rgb(darkblue[1], darkblue[2], darkblue[3],0.8))      
 
-lines(newdat.6$StElo[index.1], newdat.6$lower[index.1], lty=2, lwd=2,
+lines(newdat.6$elo.z.event[index.1], newdat.6$lower[index.1], lty=2, lwd=2,
       col=rgb(darkblue[1], darkblue[2], darkblue[3],0.65))
 
-lines(newdat.6$StElo[index.1], newdat.6$upper[index.1], lty=2, lwd=2,
+lines(newdat.6$elo.z.event[index.1], newdat.6$upper[index.1], lty=2, lwd=2,
       col=rgb(darkblue[1], darkblue[2], darkblue[3],0.65))
 
-lines(newdat.f$StElo[index.2], newdat.f$fit[index.2], lwd=3.5,
+lines(newdat.f$elo.z.event[index.2], newdat.f$fit[index.2], lwd=3.5,
       col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.8))      
 
-lines(newdat.f$StElo[index.2], newdat.f$lower[index.2], lty=2, lwd=2,
+lines(newdat.f$elo.z.event[index.2], newdat.f$lower[index.2], lty=2, lwd=2,
       col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.65))
 
-lines(newdat.f$StElo[index.2], newdat.f$upper[index.2], lty=2, lwd=2,
+lines(newdat.f$elo.z.event[index.2], newdat.f$upper[index.2], lty=2, lwd=2,
       col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.65))
 
 # op <- par(family = "serif")
