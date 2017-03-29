@@ -84,7 +84,8 @@ smod.gen.fledg.m<-sim(mod.gen.fledg.m,5000)
 
 newdat.6<-expand.grid(StElo=seq(min(data.plot6$StElo,na.rm = TRUE),
                                 max(data.plot6$StElo,na.rm = TRUE),
-                                0.001), 
+                                1),
+                                #0.001), 
                       age = mean(data.plot6$age,na.rm = TRUE),
                       tarsus = mean(data.plot6$tarsus,na.rm = TRUE),
                       eventSW = levels(data.plot6$eventSW))
@@ -153,7 +154,8 @@ smod.gen.fledg.f<-sim(mod.gen.fledg.f,5000)
 
 newdat.f<-expand.grid(StElo=seq(min(data.plotf$StElo,na.rm = TRUE),
                                 max(data.plotf$StElo,na.rm = TRUE),
-                                0.001), 
+                                1), 
+                                #0.001), 
                       age = mean(data.plotf$age,na.rm = TRUE),
                       tarsus = mean(data.plotf$tarsus,na.rm = TRUE),
                       eventSW = levels(data.plotf$eventSW))
@@ -209,11 +211,14 @@ chocolate1 <- c(255,127,36)/rgbing
 # tiff("plots/talks/9interactions/Figure8_Status_and_fledglings_both_sexes_2015_9int.tiff", height=20, width=20,
 #      units='cm', compression="lzw", res=300)
 
-tiff("plots/talks/Figure9_Status_and_fledglings_both_sexes_2014_upd.tiff", height=20, width=20,
-     units='cm', compression="lzw", res=300)
+# tiff("plots/talks/Figure9_Status_and_fledglings_both_sexes_2014_upd.tiff", height=20, width=20,
+#      units='cm', compression="lzw", res=300)
 
 # tiff("plots/talks/9interactions/Figure9_Status_and_fledglings_both_sexes_2015_9int_sim.tiff", height=20, width=20,
 #      units='cm', compression="lzw", res=300)
+
+tiff("plots/talks/Figure8_Status_and_fledglings_both_sexes_2014_notStElo.tiff", height=20, width=20,
+     units='cm', compression="lzw", res=300)
 
 
 #par(mar=c(5, 5, 1, 1))
@@ -227,15 +232,20 @@ plot(data.plot6$StElo,
      xlab="",
      ylab="",
      cex.lab=1.7,
-     xaxt="n",yaxt="n",xlim=c(0,1),ylim=c(0,12),
+     xaxt="n",yaxt="n",
+     #xlim=c(0,1),
+     xlim=c(-500,900),
+     ylim=c(0,12),
      family="serif",
      frame.plot = FALSE)
 
-title(xlab="Standardized Elo-rating", line=4, cex.lab=3.2, family="serif")
+title(xlab="randomized Elo-rating", line=4, cex.lab=3.2, family="serif")
+#title(xlab="Standardized Elo-rating", line=4, cex.lab=3.2, family="serif")
 title(ylab="genetic fledglings", line=4, cex.lab=3.2, family="serif")
 
 
-axis(1,at=seq(0,1,by=0.2),
+axis(#1,at=seq(0,1,by=0.2),
+     1,at=seq(-500,900,by=200),
      las=1,
      #cex.axis=1.3,
      cex.axis=1.8,
@@ -251,12 +261,14 @@ axis(2,at=seq(0,12,by=1),
 points(data.plot6$StElo, 
        jitter(data.plot6$gen.fledg.12d,0.65), 
        pch = 19, col=rgb(darkblue[1], darkblue[2], darkblue[3],0.4),
-       cex = 2.0)
+       cex = 1.5)
+       #cex = 2.0)
 
 points(data.plotf$StElo, 
        jitter(data.plotf$gen.fledg.12d,0.65),
-       pch = 19, col=rgb(chocolate1[1],chocolate1[2],chocolate1[3],0.4),       
-       cex = 2.0)
+       pch = 19, col=rgb(chocolate1[1],chocolate1[2],chocolate1[3],0.4),
+       cex = 1.5)
+       #cex = 2.0)
 
 index.1<-newdat.6$eventSW=="2014" # only calls the plot but not the points yet
 
@@ -264,7 +276,7 @@ polygon(c(newdat.6$StElo[index.1],rev(newdat.6$StElo[index.1])),
         c(newdat.6$lower[index.1],rev(newdat.6$upper[index.1])),
         border=NA,col=rgb(darkblue[1], darkblue[2], darkblue[3], 0.15))
 
-index.2<-newdat.f$eventSW=="2015" # only calls the plot but not the points yet
+index.2<-newdat.f$eventSW=="2014" # only calls the plot but not the points yet
 
 polygon(c(newdat.f$StElo[index.2],rev(newdat.f$StElo[index.2])),
         c(newdat.f$lower[index.2],rev(newdat.f$upper[index.2])),
