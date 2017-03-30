@@ -20,7 +20,7 @@
 library(lme4)
 library(arm)
 library(blmeco)
-
+library(MCMCglmm)
 
 # Clear memory and get to know where you are
 rm(list=ls())
@@ -61,8 +61,10 @@ rank.TLandM.VB.fitness.m.2 <- rank.TLandM.VB.fitness.m[!(is.na(rank.TLandM.VB.fi
 
 rank.TLandM.VB.fitness.m.2$eventSW <- as.factor(rank.TLandM.VB.fitness.m.2$eventSW)
 
+rank.TLandM.VB.fitness.m.2$StElo.z <- scale(rank.TLandM.VB.fitness.m.2$StElo) 
+
 mod.gen.recruits.m <- glmer(gen.recruits~
-                              StElo+
+                              elo.z.event+
                               age+
                               I(age^2)+
                               tarsus+
@@ -70,6 +72,29 @@ mod.gen.recruits.m <- glmer(gen.recruits~
                               (1|BirdID),
                             data=rank.TLandM.VB.fitness.m.2,
                             family=poisson)
+
+
+######
+# MCMC
+######
+
+prior<-list(R = list(V = diag(2), nu = 0.002), 
+               G =list(G1 = list(V = diag(1), nu = 0.002)))
+
+model1.1 <- MCMCglmm(gen.recruits~trait-1+
+                       at.level(trait, 1):elo.z.event+
+                       at.level(trait, 1):age+
+                       at.level(trait, 1):I(age^2)+
+                       at.level(trait, 1):tarsus+
+                       at.level(trait, 1):eventSW,
+                     random = ~BirdID, 
+                     rcov = ~idh(trait):units,
+                     data = rank.TLandM.VB.fitness.m.2, 
+                     prior = prior,
+                     family="zipoisson",
+                     nitt = 5000000, thin = 4500, burnin = 500000, 
+                     verbose=FALSE)
+
 
 
 #simulating a posterior distribution with 5000 draws
@@ -81,20 +106,25 @@ smod.gen.recruits.m<-sim(mod.gen.recruits.m,5000)
 # calculated and presented in the plot correspond to those for a mean value
 # of tarsus (from this database)
 
-newdat.m<-expand.grid(StElo=seq(min(rank.TLandM.VB.fitness.m.2$StElo,na.rm = TRUE),
-                                 max(rank.TLandM.VB.fitness.m.2$StElo,na.rm = TRUE),
-                                 0.001), 
+newdat.m<-expand.grid(elo.z.event=seq(min(rank.TLandM.VB.fitness.m.2$elo.z.event,na.rm = TRUE),
+                                max(rank.TLandM.VB.fitness.m.2$elo.z.event,na.rm = TRUE),
+                                0.01),
+                                #0.001), 
                        age = mean(rank.TLandM.VB.fitness.m.2$age,na.rm = TRUE),
                        tarsus = mean(rank.TLandM.VB.fitness.m.2$tarsus,na.rm = TRUE),
                        eventSW = levels(rank.TLandM.VB.fitness.m.2$eventSW))
 
 
-xmat.m<-model.matrix(~StElo+
+#newdat.m$StElo.z <- (newdat.m$StElo - mean(newdat.m$StElo))/sd(newdat.m$StElo)
+
+
+xmat.m<-model.matrix(~elo.z.event+
                        age+
                        I(age^2)+
                        tarsus+
                        eventSW, 
                      data=newdat.m) 
+
 
 fitmatboth.m <- matrix(NA,
                         ncol = nrow(smod.gen.recruits.m@fixef),
@@ -127,8 +157,10 @@ rank.TLandM.VB.fitness.f.2 <- rank.TLandM.VB.fitness.f[!(is.na(rank.TLandM.VB.fi
 
 rank.TLandM.VB.fitness.f.2$eventSW <- as.factor(rank.TLandM.VB.fitness.f.2$eventSW)
 
+rank.TLandM.VB.fitness.f.2$StElo.z <- scale(rank.TLandM.VB.fitness.f.2$StElo) 
+
 mod.gen.recruits.f <- glmer(gen.recruits~
-                              StElo+
+                              elo.z.event+
                               age+
                               I(age^2)+
                               tarsus+
@@ -147,20 +179,24 @@ smod.gen.recruits.f<-sim(mod.gen.recruits.f,5000)
 # calculated and presented in the plot correspond to those for a mean value
 # of tarsus (from this database)
 
-newdat.f<-expand.grid(StElo=seq(min(rank.TLandM.VB.fitness.f.2$StElo,na.rm = TRUE),
-                                max(rank.TLandM.VB.fitness.f.2$StElo,na.rm = TRUE),
-                                0.001), 
+newdat.f<-expand.grid(elo.z.event=seq(min(rank.TLandM.VB.fitness.f.2$elo.z.event,na.rm = TRUE),
+                                max(rank.TLandM.VB.fitness.f.2$elo.z.event,na.rm = TRUE),
+                                0.01), 
+                                #0.001), 
                       age = mean(rank.TLandM.VB.fitness.f.2$age,na.rm = TRUE),
                       tarsus = mean(rank.TLandM.VB.fitness.f.2$tarsus,na.rm = TRUE),
                       eventSW = levels(rank.TLandM.VB.fitness.f.2$eventSW))
 
+#newdat.f$StElo.z <- (newdat.f$StElo - mean(newdat.f$StElo))/sd(newdat.f$StElo)
 
-xmat.f<-model.matrix(~StElo+
+
+xmat.f<-model.matrix(~elo.z.event+
                        age+
                        I(age^2)+
                        tarsus+
                        eventSW, 
                      data=newdat.f) 
+
 
 fitmatboth.f <- matrix(NA,
                        ncol = nrow(smod.gen.recruits.f@fixef),
@@ -206,17 +242,19 @@ chocolate1 <- c(255,127,36)/rgbing
 # tiff("plots/talks/9interactions/Figure9_Status_and_recruits_both_sexes_2014_9int.tiff", height=20, width=20,
 #      units='cm', compression="lzw", res=300)
 
-tiff("plots/talks/Figure9_Status_and_recruits_both_sexes_2014_sim_upd.tiff", height=20, width=20,
-     units='cm', compression="lzw", res=300)
+# tiff("plots/talks/Figure9_Status_and_recruits_both_sexes_2014_sim_upd.tiff", height=20, width=20,
+#      units='cm', compression="lzw", res=300)
 
 # tiff("plots/talks/9interactions/Figure9_Status_and_recruits_both_sexes_2015_9int_sim.tiff", height=20, width=20,
 #      units='cm', compression="lzw", res=300)
 
+tiff("plots/talks/Figure9_Status_and_recruits_both_sexes_2014_notStElo.tiff", height=20, width=20,
+     units='cm', compression="lzw", res=300)
 
 #par(mar=c(5, 5, 1, 1))
 par(mar=c(6, 7, 1, 1))
 
-plot(rank.TLandM.VB.fitness.m.2$StElo, 
+plot(rank.TLandM.VB.fitness.m.2$elo.z.event, 
      rank.TLandM.VB.fitness.m.2$gen.recruits, 
      type="n",
      #xlab="Standardized Elo-rating",
@@ -224,15 +262,22 @@ plot(rank.TLandM.VB.fitness.m.2$StElo,
      xlab="",
      ylab="",
      cex.lab=1.7,
-     xaxt="n",yaxt="n",xlim=c(0,1),ylim=c(0,4),
+     xaxt="n",yaxt="n",
+     #xlim=c(0,1),
+     #xlim=c(-500,900),
+     xlim=c(-2.5,4),
+     ylim=c(0,4),
      family="serif",
      frame.plot = FALSE)
 
-title(xlab="Standardized Elo-rating", line=4, cex.lab=3.2, family="serif")
+title(xlab="randomized Elo-rating", line=4, cex.lab=3.2, family="serif")
+#title(xlab="Standardized Elo-rating", line=4, cex.lab=3.2, family="serif")
 title(ylab="genetic recruits", line=4, cex.lab=3.2, family="serif")
 
 
-axis(1,at=seq(0,1,by=0.2),
+axis(#1,at=seq(0,1,by=0.2),
+     #1,at=seq(-500,900,by=200),
+     1,at=seq(-2,4,by=1),
      las=1,
      #cex.axis=1.3,
      cex.axis=1.8,
@@ -245,44 +290,44 @@ axis(2,at=seq(0,4,by=1),
      family="serif")
 
 
-points(rank.TLandM.VB.fitness.m.2$StElo, 
+points(rank.TLandM.VB.fitness.m.2$elo.z.event, 
        jitter(rank.TLandM.VB.fitness.m.2$gen.recruits,0.65), 
        pch = 19, col=rgb(darkblue[1], darkblue[2], darkblue[3],0.4),
-       cex = 2.0)
+       cex = 1.5)
 
-points(rank.TLandM.VB.fitness.f.2$StElo, 
+points(rank.TLandM.VB.fitness.f.2$elo.z.event, 
        jitter(rank.TLandM.VB.fitness.f.2$gen.recruits,0.65),
        pch = 19, col=rgb(chocolate1[1],chocolate1[2],chocolate1[3],0.4),       
-       cex = 2.0)
+       cex = 1.5)
 
 index.1<-newdat.m$eventSW=="2014" # only calls the plot but not the points yet
 
-polygon(c(newdat.m$StElo[index.1],rev(newdat.m$StElo[index.1])),
+polygon(c(newdat.m$elo.z.event[index.1],rev(newdat.m$elo.z.event[index.1])),
         c(newdat.m$lower[index.1],rev(newdat.m$upper[index.1])),
         border=NA,col=rgb(darkblue[1], darkblue[2], darkblue[3], 0.15))
 
-index.2<-newdat.f$eventSW=="2015" # only calls the plot but not the points yet
+index.2<-newdat.f$eventSW=="2014" # only calls the plot but not the points yet
 
-polygon(c(newdat.f$StElo[index.2],rev(newdat.f$StElo[index.2])),
+polygon(c(newdat.f$elo.z.event[index.2],rev(newdat.f$elo.z.event[index.2])),
         c(newdat.f$lower[index.2],rev(newdat.f$upper[index.2])),
         border=NA,col=rgb(chocolate1[1],chocolate1[2],chocolate1[3], 0.15))
 
-lines(newdat.m$StElo[index.1], newdat.m$fit[index.1], lwd=3.5,
+lines(newdat.m$elo.z.event[index.1], newdat.m$fit[index.1], lwd=3.5,
       col=rgb(darkblue[1], darkblue[2], darkblue[3],0.8))      
 
-lines(newdat.m$StElo[index.1], newdat.m$lower[index.1], lty=2, lwd=2,
+lines(newdat.m$elo.z.event[index.1], newdat.m$lower[index.1], lty=2, lwd=2,
       col=rgb(darkblue[1], darkblue[2], darkblue[3],0.65))
 
-lines(newdat.m$StElo[index.1], newdat.m$upper[index.1], lty=2, lwd=2,
+lines(newdat.m$elo.z.event[index.1], newdat.m$upper[index.1], lty=2, lwd=2,
       col=rgb(darkblue[1], darkblue[2], darkblue[3],0.65))
 
-lines(newdat.f$StElo[index.2], newdat.f$fit[index.2], lwd=3.5,
+lines(newdat.f$elo.z.event[index.2], newdat.f$fit[index.2], lwd=3.5,
       col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.8))      
 
-lines(newdat.f$StElo[index.2], newdat.f$lower[index.2], lty=2, lwd=2,
+lines(newdat.f$elo.z.event[index.2], newdat.f$lower[index.2], lty=2, lwd=2,
       col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.65))
 
-lines(newdat.f$StElo[index.2], newdat.f$upper[index.2], lty=2, lwd=2,
+lines(newdat.f$elo.z.event[index.2], newdat.f$upper[index.2], lty=2, lwd=2,
       col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.65))
 
 # op <- par(family = "serif")
