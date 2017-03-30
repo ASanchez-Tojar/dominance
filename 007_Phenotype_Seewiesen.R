@@ -26,6 +26,7 @@ library(EloRating)
 library(statnet)
 library(plyr)
 library(EloChoice)
+library(aniDom)
 
 
 # Clear memory and get to know where you are
@@ -465,18 +466,24 @@ for(i in levels(final.dom.cap.3$Aviary)){
   
   x<-subset(final.dom.cap.3, final.dom.cap.3$Aviary==i)
   assign(paste0("final.com.cap",counter),x)
-  y<-ratings(elochoice(x$Winner,x$Loser,
-                       kval=200,startvalue=1000,
-                       normprob=TRUE,runs=1000),
-             drawplot=FALSE)
-  w<-scale.elo(y)
-  assign(paste0("cap_elo_scores.",counter),w)
-  rownames <- seq(1,length(w),
+  # y<-ratings(elochoice(x$Winner,x$Loser,
+  #                      kval=200,startvalue=1000,
+  #                      normprob=TRUE,runs=1000),
+  #            drawplot=FALSE)
+  y<-elo_scores(as.character(x$Winner),
+                as.character(x$Loser),
+                identities = unique(c(as.character(x$Winner),as.character(x$Loser))),
+                randomise=TRUE)
+  mean.scores <- rowMeans(y)
+  # w<-scale.elo(y)
+  # assign(paste0("cap_elo_scores.",counter),w)
+  assign(paste0("cap_elo_scores.",counter),mean.scores)
+  rownames <- seq(1,length(mean.scores),
                   1)
-  scores <- as.data.frame(w,
+  scores <- as.data.frame(mean.scores,
                           row.names = as.character(rownames))
   
-  z <- cbind(attributes(w),
+  z <- cbind(attributes(mean.scores),
              scores)
   
   z$eventSW <- counter
@@ -626,6 +633,12 @@ final.cap.db.3 <- ddply(final.cap.db.2,
                         c("Aviary"), 
                         transform, 
                         meanVB.10centredAv = WithinIndCentr(meanVB.mean10))
+
+# scaling Elo and bib per season
+final.cap.db.3 <- do.call("rbind", as.list(  
+  by(final.cap.db.3, final.cap.db.3["Aviary"], transform, bib.z.Av=scale(meanVB.mean))))
+
+
 
 
 # I'm saving this file for the following scripts
