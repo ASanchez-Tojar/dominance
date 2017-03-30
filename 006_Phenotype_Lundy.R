@@ -437,7 +437,7 @@ rank.TLandM.VB.fitness <- merge(rank.TLandM.VB,fitness.full.both.2,
 
 rank.TLandM.VB.fitness$eventSW <- as.factor(rank.TLandM.VB.fitness$eventSW)
 
-# scaling Elo per season
+# scaling Elo and bib per season
 rank.TLandM.VB.fitness <- do.call("rbind", as.list(  
   by(rank.TLandM.VB.fitness, rank.TLandM.VB.fitness["eventSW"], transform, elo.z.event=scale(StElo))))
 
