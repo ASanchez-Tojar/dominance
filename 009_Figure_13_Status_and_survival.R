@@ -28,7 +28,11 @@ rm(list=ls())
 
 # loading the clean databases from Lundy with all the data needed
 
-survival <- read.table("survival/forsurv_jj.csv",header=TRUE,sep=",")
+#survival <- read.table("survival/forsurv_jj.csv",header=TRUE,sep=",")
+
+survival.full <- read.table("survival/forsurv.csv",header=TRUE,sep=",") #lastupdated20170330
+
+survival <- survival.full[survival.full$age==0.5,]
 
 
 # Repeating with simulated StElo
@@ -73,11 +77,12 @@ survival <- read.table("survival/forsurv_jj.csv",header=TRUE,sep=",")
 # MODEL
 ################################################################
 
-survival$SexEstimate <- as.factor(survival$SexEstimate)
+#survival$SexEstimate <- as.factor(survival$SexEstimate)
+survival$sex <- as.factor(survival$sex)
 
 survive <- glmer(Alive ~ 
-                   StElo*
-                   SexEstimate+
+                   elo.z.event*
+                   sex+
                    (1|eventSW),
                  data=survival,
                  family = binomial) 
@@ -91,14 +96,14 @@ ssurvive<-sim(survive,5000)
 # of tarsus and age (from this database), and a mean fictious season of 0.5
 # (remember that season was coded as 0: non-breeding, and 1: breeding)
 
-newdat<-expand.grid(StElo=seq(min(survival$StElo,na.rm = TRUE),
-                              max(survival$StElo,na.rm = TRUE),
+newdat<-expand.grid(elo.z.event=seq(min(survival$elo.z.event,na.rm = TRUE),
+                              max(survival$elo.z.event,na.rm = TRUE),
                               0.001),
-                    SexEstimate=levels(survival$SexEstimate))
+                    sex=levels(survival$sex))
 
 
-xmat<-model.matrix(~StElo*
-                     SexEstimate, 
+xmat<-model.matrix(~elo.z.event*
+                     sex, 
                    data=newdat) 
 
 fitmatboth <- matrix(NA, 
@@ -135,14 +140,14 @@ rgbing <- c(255,255,255)
 darkblue <- c(31,120,180)/rgbing
 chocolate1 <- c(255,127,36)/rgbing
 
-survival.m <- survival[survival$SexEstimate==1,]
-survival.f <- survival[survival$SexEstimate==0,]
+survival.m <- survival[survival$sex==1,]
+survival.f <- survival[survival$sex==0,]
 
 
 # PLOT saved as .tiff
 
-tiff("plots/talks/Figure13_Status_and_Survival.tiff", height=20, width=20,
-     units='cm', compression="lzw", res=300)
+# tiff("plots/talks/Figure13_Status_and_Survival.tiff", height=20, width=20,
+#      units='cm', compression="lzw", res=300)
 
 # tiff("plots/talks/9interactions/Figure13_Status_and_Survival_9int.tiff", height=20, width=20,
 #      units='cm', compression="lzw", res=300)
@@ -153,12 +158,15 @@ tiff("plots/talks/Figure13_Status_and_Survival.tiff", height=20, width=20,
 # tiff("plots/talks/9interactions/Figure13_Status_and_Survival_9int_sim.tiff", height=20, width=20,
 #      units='cm', compression="lzw", res=300)
 
+tiff("plots/talks/Figure13_Status_and_Survival_noStElo.tiff", height=20, width=20,
+     units='cm', compression="lzw", res=300)
+
 
 #par(mar=c(5, 5, 1, 1))
 par(mar=c(6, 7, 1, 1))
 
 
-plot(survival$StElo, 
+plot(survival$elo.z.event, 
      survival$Alive,
      type="n",
      #      xlab="Bib length (mm)",
@@ -168,15 +176,18 @@ plot(survival$StElo,
      #cex.lab=1.7,
      cex.lab=2.4,
      xaxt="n",yaxt="n",
-     xlim=c(0,1),ylim=c(0,1.1),
+     #xlim=c(0,1),
+     xlim=c(-3,4),
+     ylim=c(0,1.1),
      family="serif",
      frame.plot = FALSE)
 
-title(xlab="Standardized Elo-rating", line=4, cex.lab=3.0, family="serif")
+title(xlab="randomized Elo-rating", line=4, cex.lab=3.0, family="serif")
 title(ylab="survival", line=4.5, cex.lab=3.0, family="serif")
 
 
-axis(1,at=seq(0,1,by=0.2),
+axis(1,at=seq(-3,4,by=1),
+     #1,at=seq(0,1,by=0.2),
      las=1,
      cex.axis=1.8,
      family="serif") 
@@ -196,45 +207,45 @@ axis(2,at=seq(0,1,by=0.25),
 #        pch = 19, col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.02),
 #        cex = 1.2)
 
-points(survival.m$StElo, 
+points(survival.m$elo.z.event, 
        survival.m$Alive, 
        pch = 19, col=rgb(darkblue[1],darkblue[2],darkblue[3],0.4),
        cex = 2.0)
 
-points(survival.f$StElo, 
+points(survival.f$elo.z.event, 
        survival.f$Alive+0.03, 
        pch = 19, col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.4),
        cex = 2.0)
 
-index.m<-newdat$SexEstimate=="1"
-index.f<-newdat$SexEstimate=="0"
+index.m<-newdat$sex=="1"
+index.f<-newdat$sex=="0"
 
 
-polygon(c(newdat$StElo[index.m],rev(newdat$StElo[index.m])),
+polygon(c(newdat$elo.z.event[index.m],rev(newdat$elo.z.event[index.m])),
         c(newdat$lower[index.m],rev(newdat$upper[index.m])),
         border=NA,col=rgb(darkblue[1],darkblue[2],darkblue[3], 0.15))
 
-polygon(c(newdat$StElo[index.f],rev(newdat$StElo[index.f])),
+polygon(c(newdat$elo.z.event[index.f],rev(newdat$elo.z.event[index.f])),
         c(newdat$lower[index.f],rev(newdat$upper[index.f])),
         border=NA,col=rgb(chocolate1[1], chocolate1[2], chocolate1[3], 0.15))
 
-lines(newdat$StElo[index.m], newdat$fit[index.m], lwd=3.5,
+lines(newdat$elo.z.event[index.m], newdat$fit[index.m], lwd=3.5,
       col=rgb(darkblue[1],darkblue[2],darkblue[3],0.65)) 
 
-lines(newdat$StElo[index.m], newdat$lower[index.m], lty=2, lwd=2,
+lines(newdat$elo.z.event[index.m], newdat$lower[index.m], lty=2, lwd=2,
       col=rgb(darkblue[1],darkblue[2],darkblue[3],0.65))
 
-lines(newdat$StElo[index.m], newdat$upper[index.m], lty=2, lwd=2,
+lines(newdat$elo.z.event[index.m], newdat$upper[index.m], lty=2, lwd=2,
       col=rgb(darkblue[1],darkblue[2],darkblue[3],0.65))
 
 
-lines(newdat$StElo[index.f], newdat$fit[index.f], lwd=3.5,
+lines(newdat$elo.z.event[index.f], newdat$fit[index.f], lwd=3.5,
       col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.8)) 
 
-lines(newdat$StElo[index.f], newdat$lower[index.f], lty=2, lwd=2,
+lines(newdat$elo.z.event[index.f], newdat$lower[index.f], lty=2, lwd=2,
       col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.8))
 
-lines(newdat$StElo[index.f], newdat$upper[index.f], lty=2, lwd=2,
+lines(newdat$elo.z.event[index.f], newdat$upper[index.f], lty=2, lwd=2,
       col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.8))
 
 
