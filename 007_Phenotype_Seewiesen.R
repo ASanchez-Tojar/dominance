@@ -644,3 +644,15 @@ final.cap.db.3 <- do.call("rbind", as.list(
 # I'm saving this file for the following scripts
 
 write.csv(final.cap.db.3,"finaldatabases/final.cap.db.3.csv",row.names=FALSE)
+
+
+# adding area data
+
+area<-read.table("../areas/areas_combinedSRDM.csv",header = TRUE, sep=",")
+
+area.2 <- area[,c(1:9)]
+
+area.3 <-summaryBy(Area + Mean.Gray.Value ~ Bird.ID, data = area.2, 
+                          FUN = list(mean))
+
+area.4 <- merge(final.cap.db.3,area.3,by.y="Bird.ID",by.x="individual",all.x=TRUE)
