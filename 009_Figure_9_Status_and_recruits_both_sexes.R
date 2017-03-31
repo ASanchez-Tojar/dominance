@@ -63,6 +63,10 @@ rank.TLandM.VB.fitness.m.2$eventSW <- as.factor(rank.TLandM.VB.fitness.m.2$event
 
 rank.TLandM.VB.fitness.m.2$StElo.z <- scale(rank.TLandM.VB.fitness.m.2$StElo) 
 
+# zipoisson?
+table(rank.TLandM.VB.fitness.m.2$gen.recruits == 0)/nrow(rank.TLandM.VB.fitness.m.2)
+ppois(0, mean(rank.TLandM.VB.fitness.m.2$gen.recruits))# just a few more 0's than expected
+
 mod.gen.recruits.m <- glmer(gen.recruits~
                               elo.z.event+
                               age+
@@ -74,26 +78,42 @@ mod.gen.recruits.m <- glmer(gen.recruits~
                             family=poisson)
 
 
-######
-# MCMC
-######
-
-prior<-list(R = list(V = diag(2), nu = 0.002), 
-               G =list(G1 = list(V = diag(1), nu = 0.002)))
-
-model1.1 <- MCMCglmm(gen.recruits~trait-1+
-                       at.level(trait, 1):elo.z.event+
-                       at.level(trait, 1):age+
-                       at.level(trait, 1):I(age^2)+
-                       at.level(trait, 1):tarsus+
-                       at.level(trait, 1):eventSW,
-                     random = ~BirdID, 
-                     rcov = ~idh(trait):units,
-                     data = rank.TLandM.VB.fitness.m.2, 
-                     prior = prior,
-                     family="zipoisson",
-                     nitt = 5000000, thin = 4500, burnin = 500000, 
-                     verbose=FALSE)
+# ######
+# # MCMC
+# ######
+# 
+# prior_overdisp <- list(R=list(V=diag(c(1,1)),nu=0.002,fix=2),
+#                        G=list(list(V=diag(c(1,1e-6)),nu=0.002,fix=2)))
+# 
+# model1.2 <- MCMCglmm(gen.recruits~trait-1+
+#                        elo.z.event+
+#                        age+
+#                        I(age^2)+
+#                        tarsus+
+#                        eventSW,
+#                      random = ~idh(trait):BirdID, 
+#                      rcov = ~idh(trait):units,
+#                      data = rank.TLandM.VB.fitness.m.2, 
+#                      prior = prior_overdisp,
+#                      family="zipoisson",
+#                      nitt = 10000000, thin = 9000, burnin = 1000000, 
+#                      verbose=FALSE)
+# 
+# datam <- rank.TLandM.VB.fitness.m.2[!(is.na(rank.TLandM.VB.fitness.m.2$tarsus)),]
+# 
+# prior <- list(R = list(V = 1, nu = 0.002),
+#               G=list(list(V=diag(1),nu=0.002)))
+# 
+# mod.MCMC <- MCMCglmm(gen.recruits~
+#                        elo.z.event+
+#                        age+
+#                        I(age^2)+
+#                        #tarsus+
+#                        eventSW, 
+#                      random = ~BirdID,
+#                      family = "poisson",
+#                      data = datam, 
+#                      prior = prior, verbose = FALSE)
 
 
 
@@ -159,6 +179,11 @@ rank.TLandM.VB.fitness.f.2$eventSW <- as.factor(rank.TLandM.VB.fitness.f.2$event
 
 rank.TLandM.VB.fitness.f.2$StElo.z <- scale(rank.TLandM.VB.fitness.f.2$StElo) 
 
+# zipoisson?
+table(rank.TLandM.VB.fitness.f.2$gen.recruits == 0)/nrow(rank.TLandM.VB.fitness.f.2)
+ppois(0, mean(rank.TLandM.VB.fitness.f.2$gen.recruits))# just a few more 0's than expected
+
+
 mod.gen.recruits.f <- glmer(gen.recruits~
                               elo.z.event+
                               age+
@@ -168,6 +193,7 @@ mod.gen.recruits.f <- glmer(gen.recruits~
                               (1|BirdID),
                             data=rank.TLandM.VB.fitness.f.2,
                             family=poisson)
+
 
 
 #simulating a posterior distribution with 5000 draws
