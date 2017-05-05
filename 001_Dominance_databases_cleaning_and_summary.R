@@ -115,7 +115,7 @@ summary(time)
 # Loading dominance database
 ########################################################################################################
 
-dom <- read.table("MegaDataBase-v133-201311-201611-FY-Dominance_Lundy_20170505.csv",header=TRUE,sep=',')
+dom <- read.table("MegaDataBase-v135-201311-201611-FY-Dominance_Lundy_20170505.csv",header=TRUE,sep=',')
 
 
 ########################################################################################################
@@ -1615,8 +1615,8 @@ for (i in 1:nrow(birdsex.1)){
 
 # GO AND CHECK IF NEEDED
 
-#dom[dom$individual1=="bmwd" & dom$sex1=="nosex",]
-#dom[dom$individual2=="bmwd" & dom$sex2=="f",]
+#dom[dom$individual1=="dmrv" & dom$sex1=="f",]
+#dom[dom$individual2=="dmrv" & dom$sex2=="f",]
 
 ########################################################################################################
 # # 6.2. Checking if there are misssexed individuals
@@ -1680,7 +1680,7 @@ for(i in 1:nrow(comp.sex.2)){
   
 }
 
-#dom[dom$individual1=="oymw" & dom$sex1=="m",]
+#dom[dom$individual1=="bmrv" & dom$sex1=="m",]
 
 ########################################################################################################
 # 7. Checking that all colour combinations seen in the videos are real, i.e. are in the database
@@ -2042,9 +2042,9 @@ cat(paste0("\nThe number of interactions with doubts is: ",
 
 sink()
 
-#round(table(dom.final.v2$eventSW)/c(109,182,116,90,59,126,148),1)
-#mean(table(dom.final.v2$eventSW)/c(109,182,116,90,59,126,148))
-#sd(table(dom.final.v2$eventSW)/c(109,182,116,90,59,126,148))
+#round(table(dom.final.v2$eventSW)/c(109,182,116,90,59,128,148),1)
+#mean(table(dom.final.v2$eventSW)/c(109,182,116,90,59,128,148))
+#sd(table(dom.final.v2$eventSW)/c(109,182,116,90,59,128,148))
 
 sink("summaries/interactionsperdate.txt")
 table(dom.final.v2$date)
