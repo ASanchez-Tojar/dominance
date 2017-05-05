@@ -115,7 +115,7 @@ summary(time)
 # Loading dominance database
 ########################################################################################################
 
-dom <- read.table("MegaDataBase-v131-201311-201611-FY-Dominance_Lundy_20170501.csv",header=TRUE,sep=',')
+dom <- read.table("MegaDataBase-v133-201311-201611-FY-Dominance_Lundy_20170505.csv",header=TRUE,sep=',')
 
 
 ########################################################################################################
@@ -1615,7 +1615,8 @@ for (i in 1:nrow(birdsex.1)){
 
 # GO AND CHECK IF NEEDED
 
-#dom[dom$individual1=="dmoc" & dom$sex1=="f",]
+#dom[dom$individual1=="bmwd" & dom$sex1=="nosex",]
+#dom[dom$individual2=="bmwd" & dom$sex2=="f",]
 
 ########################################################################################################
 # # 6.2. Checking if there are misssexed individuals
@@ -2041,9 +2042,9 @@ cat(paste0("\nThe number of interactions with doubts is: ",
 
 sink()
 
-#round(table(dom.final.v2$eventSW)/c(109,182,116,90,59,126,143),1)
-#mean(table(dom.final.v2$eventSW)/c(109,182,116,90,59,126,143))
-#sd(table(dom.final.v2$eventSW)/c(109,182,116,90,59,126,143))
+#round(table(dom.final.v2$eventSW)/c(109,182,116,90,59,126,148),1)
+#mean(table(dom.final.v2$eventSW)/c(109,182,116,90,59,126,148))
+#sd(table(dom.final.v2$eventSW)/c(109,182,116,90,59,126,148))
 
 sink("summaries/interactionsperdate.txt")
 table(dom.final.v2$date)
