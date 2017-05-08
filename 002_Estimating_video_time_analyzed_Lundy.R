@@ -40,6 +40,10 @@ names(time.per.date) <- c("date","time.s")
 time.per.date$time.h <- time.per.date$time.s/3600
 
 
+sum(time.per.date$time.h)
+mean(time.per.date$time.h)
+range(time.per.date$time.h)
+
 # # This version of the database is sorted by date,video,realtime (realtime from ealier to later)
 # 
 # dom <- read.table("MegaDataBase-v136-201311-201611-FY-Dominance_Lundy_20170508.csv",header=TRUE,sep=',')
