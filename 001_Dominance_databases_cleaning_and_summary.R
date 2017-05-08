@@ -146,6 +146,10 @@ for(i in 1:nrow(dom)){
 
 dom$event <- as.factor(dom$event)
 
+# quick, manual check: 
+# round((c(1232,2273,1184,1292,1006,2004,2079)*100)/c(2433,4117,2751,2954,1817,3175,3607),1)
+
+
 # Modifying year to make it based on season, so 2013 is actually 2014 winter, and 2016 winter is
 # actually 2017
 
@@ -160,8 +164,7 @@ dom$year2 <- ifelse(dom$event==201611,
 #    Winner and Loser are not the same individual.
 ########################################################################################################
 
-#     This is to check if I made any mistake writting the ID's in the wrong row, i.e. looking for typos
-# while copying
+#     This is to check if there are any typos during video analysis
 
 
 ########################################################################################################
@@ -209,18 +212,13 @@ for (i in 1:nrow(dom)){
   }
 }
 
-#     After you run those two for loops you are supposed to go and fix in the database whatever problem
+#     After you run those two for loops you are expected to go and fix in the database whatever problem
 # popped up. Then, move on to the next step.
 
 
 ########################################################################################################
 # # 2.3. Checking that Winner is different from Loser
 ########################################################################################################
-
-#     This is something that elo.seq() will tell you, but it wouldn't tell you were exactly so we can
-# prevent the error here
-
-# This for loop does that
 
 for (i in 1:nrow(dom)){
   if(dom$Winner[i]==dom$Loser[i] & dom$Winner[i]!="zz/zz" 
@@ -236,7 +234,7 @@ for (i in 1:nrow(dom)){
 ########################################################################################################
 
 #       Keep in search of typos. Excluding, of course, the notidentified which have 13 characters and 
-# are of not interest.
+# are of not interest here.
 
 for (i in 1:nrow(dom)){
   if(dom$individual1[i]!="notidentified" & dom$individual2[i]!="notidentified" &
@@ -256,10 +254,8 @@ for (i in 1:nrow(dom)){
 
 
 ########################################################################################################
-# # 2.5. Checking that any code contains two "m" (metal rings)
+# # 2.5. Checking that no code contains two "m" (metal rings)
 ########################################################################################################
-
-# Dominic comment: check if there is at least one m (i.e. one BTO ring), !(=1)
 
 # Keep in search of typos. 
 
@@ -279,9 +275,6 @@ for (i in 1:nrow(dom)){
 ########################################################################################################
 # # 2.6. Checking that any code contains letters that aren't expected
 ########################################################################################################
-
-#       I know this isn't the most efficient way of doing it but it works I didn't have the time to keep 
-# working on this to make it pretty and efficient, I just needed to do what I wanted.
 
 # letters: contains all possible letters in our colour codes plus the / and the - (for the missing tarsus)
 
@@ -412,7 +405,7 @@ for (i in 1:nrow(dom)){
 # 3. Identifying and counting the number of unusable interactions
 ########################################################################################################
 
-#       This piece of coude subsets the data base but also prints the counts on the number of  
+#       This piece of code subsets the database but also prints the counts on the number of  
 # interactions involving:
 
 #     a. doubts with interaction
@@ -422,8 +415,8 @@ for (i in 1:nrow(dom)){
 #     e. individuals missing rings (zm/zz, zz/zm or any individual containing z)
 
 #       At the end, I generate a database that does not include any of those interactions becuase I
-# cannot use them for estimating dominance rank (I need to do both individuals). This database will be:
-# dom.final. Furthermore, I also generate a database that includes all of them but the doubst with 
+# cannot use them for estimating dominance rank. This database will be: dom.final. Furthermore, 
+# I also generate a database that includes all of them but the doubts with 
 # interactions (a.) and with BirdIDs (b.) to run analyses on the proportions of wins, as a simplified
 # version of dominance rank. This database will be: dom.prop.wins
 
@@ -442,14 +435,12 @@ dom$Loser <- as.factor(sub("/","",dom$Loser))
 
 
 ########################################################################################################
-# # # 3.1.1. Extra step to do everything the same but excluding displacements
+# # # 3.1.1. Extra step to do everything the same but excluding displacements and draws
 ########################################################################################################
 
 # Here you can choose whether you want to include displacements or not.
 
 dom <- subset(dom, dom$level!="1")
-
-dom <- subset(dom, dom$Draw==FALSE)
 
 
 ########################################################################################################
@@ -537,7 +528,19 @@ dom.final <- subset(dom.final,grepl("z",dom.final$individual1)==FALSE & grepl("z
 
 
 ########################################################################################################
-# # 3.7. Final clean database: dom.final and dom.prop.wins
+# # 3.7. Counting and excluding interactions involving draws
+########################################################################################################
+
+draws <- as.vector(table(dom.final$Draw))[2]
+perc.draws <- (draws*100)/length(dom.final$doubtswithinteraction)
+
+# Excluding those interactions with doubts about the interaction
+
+dom.final <- subset(dom.final, dom.final$Draw==FALSE)
+
+
+########################################################################################################
+# # 3.8. Final clean database: dom.final and dom.prop.wins
 ########################################################################################################
 
 #       Here I run factor in all the factors of the database in order to drop unused factor and get the
@@ -546,7 +549,7 @@ dom.final <- subset(dom.final,grepl("z",dom.final$individual1)==FALSE & grepl("z
 dom.final[,c(5:27)] <- lapply(dom.final[,c(5:27)], factor)
 
 
-# I then create date.ELO2.2 which is the date in the format that elo.seq() will require it.
+# I then create date.ELO2.2 which is the date in a different format
 
 dom.final$date.ELO2.2 <- as.factor(paste(dom.final$year,dom.final$month,dom.final$day,sep="-"))
 
@@ -562,7 +565,7 @@ dom.prop.wins$date.ELO2.2 <- as.factor(paste(dom.prop.wins$year,dom.prop.wins$mo
 
 
 ########################################################################################################
-# # 3.8. Counting number of interactions per individual (check counts.ind at the end of 3.9)
+# # 3.9. Counting number of interactions per individual (check counts.ind at the end of 3.9)
 ########################################################################################################
 
 #     The database that I'm creating contains counts on the number of interactions per individual. It 
@@ -571,13 +574,12 @@ dom.prop.wins$date.ELO2.2 <- as.factor(paste(dom.prop.wins$year,dom.prop.wins$mo
 
 
 ########################################################################################################
-# # # 3.8.1. Generating a list of the individuals included in the database
+# # # 3.9.1. Generating a list of the individuals included in the database
 ########################################################################################################
 
 #       This generates a list of the individiuals by combining the columns individual1 and individual2.
 # This way we can count interactions by counting number of times that each individual shows up in the
 # list.
-
 
 # List with all individuals interacting as individual1 and converting it as data.frame
 
@@ -585,34 +587,12 @@ list.ind1 <- dom.final$individual1
 
 list.ind1 <- as.data.frame(list.ind1)
 
-# length(list.ind1$list.ind1)
-# summary(list.ind1)
-# length(unique(list.ind1$list.ind1))
-
-# #checking that everything worked by comparing the new data.frame to the variable from
-# #the main database
-# library(compare)
-# comparison1 <- compare(list$list,EloR1$individual1,allowAll=TRUE)
-# summary(comparison1)
-# summary(comparison1$tM)
-
 
 # List with all individuals interacting as individual2 and converting it as dataframe
 
 list.ind2 <- dom.final$individual2
 
 list.ind2 <- as.data.frame(list.ind2)
-
-# length(list.ind2$list.ind2)
-# summary(list.ind2)
-# length(unique(list.ind2$list.ind2))
-
-# #checking that everything worked by comparing the new data.frame to the variable from
-# #the main database
-# library(compare)
-# comparison2 <- compare(list2$list2,EloR1$individual2,allowAll=TRUE)
-# summary(comparison2)
-# summary(comparison2$tM)
 
 
 #       Here I rename the variable in list.ind2 so that it is the same as in list.ind1, otherwise, rbind 
@@ -630,7 +610,7 @@ list.x <- rbind(list.ind1,list.ind2)
 
 
 ########################################################################################################
-# # # 3.8.2. Counting number of interactions per individual for the whole database
+# # # 3.9.2. Counting number of interactions per individual for the whole database
 ########################################################################################################
 
 # Generating a database with the individuals and their number of total interactions in the whole dataset
@@ -649,7 +629,7 @@ names(ind.counts)<-c("individual","totalfreq")
 
 
 ########################################################################################################
-# # # 3.8.3. Counting number of interactions per individual per date
+# # # 3.9.3. Counting number of interactions per individual per date
 ########################################################################################################
 
 #       Generating a database with the individuals and their number of interactions per date. This way I
@@ -688,7 +668,7 @@ counts.ind <- merge(ind.counts.date,ind.counts,by="individual")
 
 
 ########################################################################################################
-# # # 3.8.4. Counting number of dates each individual showed up in
+# # # 3.9.4. Counting number of dates each individual showed up in
 ########################################################################################################
 
 # This allows me to count the number of dates each individual showed up in
@@ -715,12 +695,12 @@ counts.ind <- merge(counts.ind,superlist.num.date,by="individual")
 
 
 ########################################################################################################
-# # # 3.8.5. Counting number of interactions per individual per year
+# # # 3.9.5. Counting number of interactions per individual per year
 ########################################################################################################
 
 
 ########################################################################################################
-# # # # 3.8.5.1. First preparing the database
+# # # # 3.9.5.1. First preparing the database
 ########################################################################################################
 
 # Creating two data.frames with individual1 and the year, and indivual2 and the year
@@ -747,7 +727,7 @@ superlist.year <- rbind(list.ind1.year,list.ind2.year)
 # 
 
 ########################################################################################################
-# # # # 3.8.5.2. Second, counting
+# # # # 3.9.5.2. Second, counting
 ########################################################################################################
 
 ind.counts.year <- count(superlist.year,c("individual","year"))
@@ -789,7 +769,7 @@ counts.ind <- merge(counts.ind,ind.counts.year.2,by="indyear")
 
 
 ########################################################################################################
-# # # 3.8.6. Counting number of years each individual showed up in
+# # # 3.9.6. Counting number of years each individual showed up in
 ########################################################################################################
 
 onlyind2 <- ind.counts.year$individual
@@ -811,13 +791,8 @@ counts.ind <- merge(counts.ind,superlist.year.2,by="individual")
 
 
 ########################################################################################################
-# # # 3.8.7. Counting number of interactions per individual per sampling event
+# # # 3.9.7. Counting number of interactions per individual per sampling event
 ########################################################################################################
-
-#     First, making a sampling event identifier in the general database (this works because it is always
-# within a single month, except may/june 2016)
-
-# MOVED ABOVE
 
 # I'll need to have the same identifier (event) in the counts.ind database, so I'm going to create it
 
@@ -830,9 +805,6 @@ for(i in 1:nrow(counts.ind)){
 }
 
 counts.ind$event <- as.factor(counts.ind$event)
-
-#old way
-#counts.ind$event <- as.factor(substr(counts.ind[,3], 1, 6))
 
 
 #       Generating a database with the individuals and their number of interactions per sampling event.
@@ -884,7 +856,7 @@ counts.ind <- merge(counts.ind,superlist.event1,by="indevent")
 
 
 ########################################################################################################
-# # # 3.8.8. Counting number of events each individual showed up in
+# # # 3.9.8. Counting number of events each individual showed up in
 ########################################################################################################
 
 # This allows me to count the number of sampling events each individual showed up in
@@ -911,7 +883,7 @@ counts.ind <- merge(counts.ind,superlist.num.event,by="individual")
 
 
 ########################################################################################################
-# # # 3.8.9. The final counting database is: counts.ind
+# # # 3.9.9. The final counting database is: counts.ind
 ########################################################################################################
 
 # reordering the columns in the way I want
@@ -975,16 +947,10 @@ counts.ind$indyear <- as.factor(counts.ind$indyear)
 # FROM Query1 LEFT JOIN tblCaptures ON Query1.CaptureRef = tblCaptures.CaptureRef;
 
 
-
-
 birdsex <- read.table("BirdID-colour-rings_sex_cohort-last-time-seen-ringing-date-death-date-as-to-20161227.csv",
                       header=TRUE,sep=',')
 
 birdsex$BirdID <- as.factor(birdsex$BirdID)
-
-# str(birdsex)
-# head(birdsex)
-# summary(birdsex)
 
 
 ########################################################################################################
@@ -992,8 +958,8 @@ birdsex$BirdID <- as.factor(birdsex$BirdID)
 ########################################################################################################
 
 #     First thing is to create a new variable in the database containing m and f for the sex instead of 
-# 0 and 1. This is because we coded it as m=male and f=female while analyzing the videos (it was easier
-# and less error prone). Then, transform it to a factor
+# 0 and 1. This is because we coded it as m=male and f=female while analyzing the videos. Then, transform 
+# it to a factor
 
 birdsex$SexEstimate2<-ifelse(birdsex$SexEstimate==0,"f",ifelse(birdsex$SexEstimate==1,"m",""))
 
