@@ -115,7 +115,7 @@ summary(time)
 # Loading dominance database
 ########################################################################################################
 
-dom <- read.table("MegaDataBase-v135-201311-201611-FY-Dominance_Lundy_20170505.csv",header=TRUE,sep=',')
+dom <- read.table("MegaDataBase-v136-201311-201611-FY-Dominance_Lundy_20170508.csv",header=TRUE,sep=',')
 
 
 ########################################################################################################
@@ -989,8 +989,6 @@ birdsex$LastLiveRecord2<-as.Date(birdsex$LastLiveRecord,format='%d-%b-%y')
 birdsex$CaptureDate2<-as.Date(birdsex$CaptureDate,format='%d-%b-%y')
 birdsex$DeathDate2<-as.Date(birdsex$DeathDate,format='%d-%b-%y')
 
-#summary(birdsex)
-
 
 #     This adds a new variable saying whether the Code is actually a colour ring or not. This is
 # because before I use the query Fieldring and that gives the metal ring of those birds that were not
@@ -1063,10 +1061,8 @@ birdsex <- subset(birdsex,is.na(birdsex$DeathDate2)==TRUE|
 
 #     Now I'm going to add a new variable to the database that contains a count of how many times the
 # colour code is included in the database. For that, I will count the number of times that each colour
-# code appears in the database and include that informationas a new variable. This will allow me to 
+# code appears in the database and include that information as a new variable. This will allow me to 
 # divide the database in two, and focus only in the subset with the duplicates.
-
-#library(plyr)
 
 # Generating a database with FieldRing and it counting
 
@@ -1099,9 +1095,7 @@ birdsex <- birdsex[order(birdsex$Code,birdsex$Cohort, birdsex$LastLiveRecord2),]
 
 # Now I'm going to add a function to choose, from those individuals that show up twice, the most
 # recent birdid, unless the oldest individual was last seen less than two years before the newest
-# was ringed, that I will keep both individuals in the list. However, if the oldest died before the 
-# newest was ringed, I will discard the oldest.
-
+# was ringed. However, if the oldest died before the newest was ringed, I will discard the oldest.
 
 #     I'm going to split the database in two, one with the observations for Code frequency = 1 and
 # another for the observations with Code frequency = 2. I will make the script faster and easier to
@@ -1111,7 +1105,7 @@ birdsex.1 <- subset(birdsex,birdsex$freqCode == 1)
 birdsex.2 <- subset(birdsex,birdsex$freqCode == 2)
 
 
-# Following Malika's advice, I make them dates with POSIXct instead of as.Date
+# I make them dates with POSIXct instead of as.Date
 
 birdsex$LastLiveRecord2 <- as.POSIXct(birdsex$LastLiveRecord2)
 birdsex$CaptureDate2 <- as.POSIXct(birdsex$CaptureDate2)
@@ -1124,9 +1118,9 @@ birdsex$DeathDate2 <- as.POSIXct(birdsex$DeathDate2)
 
 #     Since I've found that some BirdIDs are repeated in the dataset, I'm gonna check which and why
 # so that I can sort out that before the following steps. So, as I did before, I'm going to count
-# how many times each birdID is and check those that show up more than once. I'm carrying the
+# how many times each birdID is present and check those that show up more than once. I'm carrying the
 # following steps:
-#     1. Generating a database with FieldRing and it counting
+#     1. Generating a database with FieldRing and its counting
 #     2. Making freq as a factor to later on know how many colour codes have 2 entries in the database
 #     3. Merging the counting information into the database
 
@@ -1152,9 +1146,9 @@ birdsex.3 <- subset(birdsex.2,as.numeric(birdsex.2$freqBirdID)>1)
 birdsex.5 <- subset(birdsex.2,as.numeric(birdsex.2$freqBirdID)==1)
 
 
-# The thing is that some birdID have 2 or more entries with different ringing date, don't know why. Also, 
-# some birds have changes in their colour combination. I'm only interested in the last CaptureDate2
-# of each bird (there is one exception, 4119 which is fully repeated). So, eventhough I know it
+# Some birdIDs have 2 or more entries with different ringing date, don't know why. Also, 
+# some birds have changed their colour combination. I'm only interested in the last CaptureDate2
+# of each bird (there is one exception, 4119 which is fully repeated). So, even though I know it
 # isn't elegant, what I'm going to do is just to order this subset by CaptureDate2 and keep the most
 # recent ringing date of each of these birds. I will do that for all those cases where ringing date
 # (i.e. CaptureDate) is before November 2013 (when my videos started), because this way I'm sure I can
@@ -1205,12 +1199,12 @@ for(i in 1:nrow(birdsex.3)){
 
 #     After removing those repeated BirdIDs, a put back the single entries together with the remaining 
 # rows with repeated Codes. Now I want to count again to see what are the Codes that are still repeated
-# i.e. the problematic ones. The ones that arent problematic anymore will be moved to birdsex.1, i.e. 
+# i.e. the problematic ones. The ones that aren't problematic anymore will be moved to birdsex.1, i.e. 
 # the data frame that has the unique Codes.I'm carrying the
 # following steps:
 
-#     1. Generating a database with Code and it counting
-#     2. Making freq as a factor to later on now how many colour codes have 2 entries in the database
+#     1. Generating a database with Code and its counting
+#     2. Making freq as a factor to later on know how many colour codes have 2 entries in the database
 #     3. Merging the counting information into the database
 
 #    There is one individual whose colour code was change on the 14th of November, 2013. Therefore, I
@@ -1233,9 +1227,6 @@ birdsex.5 <- rename(birdsex.5, c("freq"="freqCode"))
 # First,subset and check the names of both
 
 birdsex.6 <- subset(birdsex.5,birdsex.5$freqCode=="1")
-
-#names(birdsex.1)
-#names(birdsex.6)
 
 
 #     Now, I'm going to put birdsex.1 and birdsex.6 together. I'm using rbind() because both the same
@@ -1283,7 +1274,7 @@ birdsex.2.split <- split(birdsex.2,birdsex.2$Code)
 
 # if diffyears is more than 2 years, it is ok, we can keep the most recent bird.
 # if diffyears is less than 0 years, i.e. negative, and one of them did not die before November 2013,
-#       exclude this colour combination from analysis because you wouldn't now which individual it is.
+#       exclude this colour combination from analysis because you wouldn't know which individual is.
 #       (you could check if sex is different but it might be mistake prone if you assigned the wrong
 #         sex while watching the videos)
 # if diffyears is in between 0 and 2, and the older bird did not die before the most recent was ringed
@@ -1517,8 +1508,8 @@ counts.ind <- subset(counts.ind,!(counts.ind$individual %in% birdsex.2.ID))
 # 6. MORE CHECKING: checking that colour code and sex matches what's in the database:
 ########################################################################################################
 
-#     This is a way of checking for missidentifications. Of course, it doesn't pick up all of them but
-# at least it picks up those colour combinations whose sex isn't what it was expected. Furthermore,
+#     This is a way of checking for missidentifications. Of course, it wouldn't pick up all of them but
+# at least it'd pick up those colour combinations whose sex isn't what it was expected. Furthermore,
 # if the bird colour combination wasn't seen during the year before, it tells you so that you can 
 # decide if you want to double-check the colour combination in the video.
 
@@ -1571,7 +1562,7 @@ checksex <- factor(superlist.sex.3[duplicated(superlist.sex.3$individual),1])
 # been wrongly assigned and check why. For this, the following for loop prints the real sex of those
 # birds that have been assigned with two sexes in the dominance database. Therefore, go to the dominance
 # database, have a look at those colour combinations and correct whatever needs to be corrected after
-# rewatching the corresponding videos.
+# re-analysing the corresponding videos.
 
 for (i in 1:nrow(birdsex.1)){
   if(birdsex.1$Code[i] %in% checksex){
@@ -1581,8 +1572,11 @@ for (i in 1:nrow(birdsex.1)){
 
 # GO AND CHECK IF NEEDED
 
-#dom[dom$individual1=="dmrv" & dom$sex1=="f",]
-#dom[dom$individual2=="dmrv" & dom$sex2=="f",]
+# dom[dom$individual1=="yrym" & dom$sex1=="f",]
+# dom[dom$individual1=="yrym" & dom$sex1=="m",]
+# dom[dom$individual2=="yrym" & dom$sex2=="f",]
+# dom[dom$individual2=="yrym" & dom$sex2=="m",]
+
 
 ########################################################################################################
 # # 6.2. Checking if there are misssexed individuals
@@ -2008,9 +2002,9 @@ cat(paste0("\nThe number of interactions with doubts is: ",
 
 sink()
 
-#round(table(dom.final.v2$eventSW)/c(109,182,116,90,59,128,148),1)
-#mean(table(dom.final.v2$eventSW)/c(109,182,116,90,59,128,148))
-#sd(table(dom.final.v2$eventSW)/c(109,182,116,90,59,128,148))
+#round(table(dom.final.v2$eventSW)/c(109,182,116,90,59,128,147),1)
+#mean(table(dom.final.v2$eventSW)/c(109,182,116,90,59,128,147))
+#sd(table(dom.final.v2$eventSW)/c(109,182,116,90,59,128,147))
 
 sink("summaries/interactionsperdate.txt")
 table(dom.final.v2$date)
