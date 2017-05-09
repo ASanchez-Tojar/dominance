@@ -119,7 +119,7 @@ elo_scores_all_events_age$BirdID_eventSW <- factor(paste(elo_scores_all_events_a
  
 # # the mean value of StElos per individual for the whole study period: 
 # 
-# numberofStEloperbird <- 
+# numberofStEloperbird <-
 #   as.numeric(table(as.factor(elo_scores_all_events_age$BirdID)))
 # 
 # summary(numberofStEloperbird[numberofStEloperbird!=0])
@@ -530,7 +530,7 @@ VB.TLandM.age$Cohort <- ifelse(is.na(VB.TLandM.age$Cohort),
 
 # # the mean value of bib measurements per individual for the whole study period: 
 # 
-# numberofBibmeasurementsperstudyperido <- 
+# numberofBibmeasurementsperstudyperido <-
 #   as.numeric(table(VB.TLandM.age$BirdID))
 # 
 # summary(numberofBibmeasurementsperstudyperido[numberofBibmeasurementsperstudyperido!=0])
@@ -619,3 +619,4 @@ names(age.fitness) <- c("BirdID","BirdID_eventSW","year",
 # I'm saving this file for the following scripts
 
 write.csv(age.fitness,"finaldatabases/age.fitness.csv",row.names=FALSE)
+
