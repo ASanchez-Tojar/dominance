@@ -684,12 +684,12 @@ genetic.males.breeding.year$BirdID_eventSW <- factor(paste(genetic.males.breedin
 names(genetic.males.breeding.year) <- c("Dad","year","BirdID_eventSW")
 
 
-# Now I need the same for the social list cleaned above. I exclude 2016 
-# because we don't have the pedigree yet
+# Now I need the same for the social list cleaned above. I don't exclude 2016 
+# because we now have the pedigree for 2016
 
 social.males.breeding.year <- unique(SocialDads.year[!(is.na(SocialDads.year$SocialDadID)) &
-                                                       SocialDads.year$SocialDadCertain==TRUE &                                                       
-                                                       SocialDads.year$year!=2016,
+                                                       SocialDads.year$SocialDadCertain==TRUE, #&                                                       
+                                                       #SocialDads.year$year!=2016,
                                                      c("SocialDadID",
                                                        "year","BirdID_eventSW")])
 
@@ -773,7 +773,7 @@ genetic.fitness <- merge(genetic.per.Dad.3,
                          by="BirdID_eventSW",
                          all.x=TRUE)
 
-# assigning 0 recruits to those social that breed in 2014 and 2015
+# assigning 0 recruits to those that breed in 2014 and 2015
 
 genetic.fitness$gen.recruits <- ifelse(genetic.fitness$year!=2016,
                                        ifelse(is.na(genetic.fitness$gen.recruits),
@@ -800,6 +800,8 @@ genetic.fitness$gen.recruits <- ifelse(genetic.fitness$year!=2016,
 # 
 # # However, All the ones showing up in social.fitness but not in 
 # # genetic.fitness correspond to 2016, when there is no pedigree available.
+# # In fact, since we've added 2016, there are no longer individuals that 
+# # show up in social.fitness but not in genetic.fitness
 # 
 # setdiff(social.fitness$BirdID_eventSW,
 #         genetic.fitness$BirdID_eventSW)
@@ -814,24 +816,24 @@ fitness <- merge(genetic.fitness,
                  by="BirdID_eventSW",
                  all.x=TRUE)
 
-
-# Now I have to add the ones from 2016, which are still missing after that merge()
-
-social.fitness.2016 <- social.fitness[social.fitness$year==2016,]
-
-social.fitness.2016$gen.fledg.12d <- NA
-
-social.fitness.2016$gen.recruits <- NA
-
-social.fitness.2016 <- social.fitness.2016[,c("BirdID_eventSW","SocialDadID",
-                                              "year","gen.fledg.12d",
-                                              "gen.recruits","soc.fledg.12d",
-                                              "soc.recruits")]
-
-names(social.fitness.2016) <- c("BirdID_eventSW","GeneticDadID",
-                                "year","gen.fledg.12d",
-                                "gen.recruits","soc.fledg.12d",
-                                "soc.recruits")
+# # This does not longer applies as the pedigree of 2016 is now available
+# # Now I have to add the ones from 2016, which are still missing after that merge()
+# 
+# social.fitness.2016 <- social.fitness[social.fitness$year==2016,]
+# 
+# social.fitness.2016$gen.fledg.12d <- NA
+# 
+# social.fitness.2016$gen.recruits <- NA
+# 
+# social.fitness.2016 <- social.fitness.2016[,c("BirdID_eventSW","SocialDadID",
+#                                               "year","gen.fledg.12d",
+#                                               "gen.recruits","soc.fledg.12d",
+#                                               "soc.recruits")]
+# 
+# names(social.fitness.2016) <- c("BirdID_eventSW","GeneticDadID",
+#                                 "year","gen.fledg.12d",
+#                                 "gen.recruits","soc.fledg.12d",
+#                                 "soc.recruits")
 
 
 
@@ -839,19 +841,21 @@ names(social.fitness.2016) <- c("BirdID_eventSW","GeneticDadID",
 # FINAL FITNESS DATABASE (for real)
 ##########################################################################
 
-fitness.full <- rbind(fitness,social.fitness.2016)
+fitness.full <- fitness
 
-
+# fitness.full <- rbind(fitness,social.fitness.2016)
+# 
+# 
 names(fitness.full) <- c("BirdID_eventSW","BirdID",
                          "year","gen.fledg.12d",
                          "gen.recruits","soc.fledg.12d",
                          "soc.recruits")
-
-fitness.full <- fitness.full[order(fitness.full$BirdID,
-                                   fitness.full$year),]
-
-row.names(fitness.full) <- NULL
-
+# 
+# fitness.full <- fitness.full[order(fitness.full$BirdID,
+#                                    fitness.full$year),]
+# 
+# row.names(fitness.full) <- NULL
+# 
 # cor(fitness.full[,c("gen.fledg.12d",
 #                     "gen.recruits","soc.fledg.12d",
 #                     "soc.recruits")],use="complete.obs")
@@ -1106,12 +1110,12 @@ genetic.females.breeding.year$BirdID_eventSW <- factor(paste(genetic.females.bre
 names(genetic.females.breeding.year) <- c("Mum","year","BirdID_eventSW")
 
 
-# Now I need the same for the social list cleaned above. I exclude 2016 
-# because we don't have the pedigree yet
+# Now I need the same for the social list cleaned above. I don't exclude 2016 
+# anymore because we have the pedigree now
 
 social.females.breeding.year <- unique(SocialMums.year[!(is.na(SocialMums.year$SocialMumID)) &
-                                                         SocialMums.year$SocialMumCertain==TRUE &                                                       
-                                                         SocialMums.year$year!=2016,
+                                                         SocialMums.year$SocialMumCertain==TRUE,# &                                                       
+                                                         #SocialMums.year$year!=2016,
                                                      c("SocialMumID",
                                                        "year","BirdID_eventSW")])
 
@@ -1195,7 +1199,8 @@ genetic.fitness.f <- merge(genetic.per.Mum.3,
                          by="BirdID_eventSW",
                          all.x=TRUE)
 
-# assigning 0 recruits to those social that breed in 2014 and 2015
+# assigning 0 recruits to those social that breed in 2014 and 2015,
+# we don't know yet for 2016 as 2017 breeding season isn't over yet!
 
 genetic.fitness.f$gen.recruits <- ifelse(genetic.fitness.f$year!=2016,
                                        ifelse(is.na(genetic.fitness.f$gen.recruits),
@@ -1222,6 +1227,8 @@ genetic.fitness.f$gen.recruits <- ifelse(genetic.fitness.f$year!=2016,
 # 
 # # However, All the ones showing up in social.fitness but not in 
 # # genetic.fitness correspond to 2016, when there is no pedigree available.
+# # In fact, since we've added 2016, there are no longer individuals that 
+# # show up in social.fitness but not in genetic.fitness
 # 
 # setdiff(social.fitness.f$BirdID_eventSW,
 #         genetic.fitness.f$BirdID_eventSW)
@@ -1237,23 +1244,24 @@ fitness.f <- merge(genetic.fitness.f,
                  all.x=TRUE)
 
 
-# Now I have to add the ones from 2016, which are still missing after that merge()
-
-social.fitness.f.2016 <- social.fitness.f[social.fitness.f$year==2016,]
-
-social.fitness.f.2016$gen.fledg.12d <- NA
-
-social.fitness.f.2016$gen.recruits <- NA
-
-social.fitness.f.2016 <- social.fitness.f.2016[,c("BirdID_eventSW","SocialMumID",
-                                                  "year","gen.fledg.12d",
-                                                  "gen.recruits","soc.fledg.12d",
-                                                  "soc.recruits")]
-
-names(social.fitness.f.2016) <- c("BirdID_eventSW","GeneticMumID",
-                                  "year","gen.fledg.12d",
-                                  "gen.recruits","soc.fledg.12d",
-                                  "soc.recruits")
+# # This does not longer applies as the pedigree of 2016 is now available
+# # Now I have to add the ones from 2016, which are still missing after that merge()
+# 
+# social.fitness.f.2016 <- social.fitness.f[social.fitness.f$year==2016,]
+# 
+# social.fitness.f.2016$gen.fledg.12d <- NA
+# 
+# social.fitness.f.2016$gen.recruits <- NA
+# 
+# social.fitness.f.2016 <- social.fitness.f.2016[,c("BirdID_eventSW","SocialMumID",
+#                                                   "year","gen.fledg.12d",
+#                                                   "gen.recruits","soc.fledg.12d",
+#                                                   "soc.recruits")]
+# 
+# names(social.fitness.f.2016) <- c("BirdID_eventSW","GeneticMumID",
+#                                   "year","gen.fledg.12d",
+#                                   "gen.recruits","soc.fledg.12d",
+#                                   "soc.recruits")
 
 
 
@@ -1261,7 +1269,9 @@ names(social.fitness.f.2016) <- c("BirdID_eventSW","GeneticMumID",
 # FINAL FITNESS DATABASE (for real)
 ##########################################################################
 
-fitness.f.full <- rbind(fitness.f,social.fitness.f.2016)
+fitness.f.full <- fitness.f
+
+# fitness.f.full <- rbind(fitness.f,social.fitness.f.2016)
 
 
 names(fitness.f.full) <- c("BirdID_eventSW","BirdID",
@@ -1272,7 +1282,7 @@ names(fitness.f.full) <- c("BirdID_eventSW","BirdID",
 fitness.f.full <- fitness.f.full[order(fitness.f.full$BirdID,
                                        fitness.f.full$year),]
 
-row.names(fitness.f.full) <- NULL
+# row.names(fitness.f.full) <- NULL
 
 # cor(fitness.f.full[,c("gen.fledg.12d",
 #                     "gen.recruits","soc.fledg.12d",
