@@ -241,10 +241,45 @@ fledglings6 <- merge(fledglings6,SocialMums,
 # Assigning genetic dads to each BirdID
 ##########################################################################
 
-# Now I'm going to add the genetic dad from the pedigree
+# Now I'm going to add the genetic dad from the pedigree. The pedigree
+# is the sum of three different files. This is because I'm adding the 
+# 2016 pedigree as well as the vanished individuals.
 
-pedigree <- read.table("fledglings12/PedigreeUpToIncl2015-versionwithNA.txt",
+pedigree.a <- read.table("fledglings12/PedigreeUpToIncl2015-versionwithNA.txt",
                        header=TRUE,sep="\t")
+
+pedigree.b <- read.table("fledglings12/mystery_disappear_JP.csv",
+                         header=TRUE,sep=",")
+
+pedigree.c <- read.table("fledglings12/2016_Pedigree_NdR.csv",
+                         header=TRUE,sep=",")
+
+pedigree.c.2 <- pedigree.c[pedigree.c$BirdID!="BPS0861",]
+
+
+# preparing final pedigree database
+
+pedigree.a.2 <- pedigree.a[,c("id","dam","sire","Cohort")]
+
+
+pedigree.b.2 <- pedigree.b[,c("BirdID","MotherID","FatherID","Cohort")]
+names(pedigree.b.2) <- c("id","dam","sire","Cohort")
+
+
+pedigree.c.3 <- pedigree.c.2[,c("BirdID","GeneticMother","GeneticFather")]
+names(pedigree.c.3) <- c("id","dam","sire")
+
+
+cohort <- read.table("fledglings12/BirdID_Cohort_FULLdb_20170509.csv",
+                         header=TRUE,sep=",")
+
+pedigree.c.4 <- merge(pedigree.c.3,cohort,
+                      by.x="id",by.y="BirdID",all.x=TRUE)
+
+
+pedigree <- rbind(pedigree.a.2,pedigree.b.2,pedigree.c.4)
+pedigree$id <- as.numeric(pedigree$id)
+pedigree <- pedigree[order(pedigree$id),]
 
 
 # reducing database before merging
@@ -282,7 +317,7 @@ fledglings6.ped <- merge(fledglings6.ped,pedigree.f.red,
 ##########################################################################
 
 # List of genetic fathers from 2014-2016 extracted from pedigree:
-# Notice that the genetic pedigree isn't available for 2016 or birds caught
+# Notice that the genetic pedigree isn't available birds caught
 # unringed in February 2016.
 
 genetic.males.breeding <- unique(pedigree[pedigree$Cohort>2013 & 
@@ -362,8 +397,8 @@ fledglings6.ped$recruited <- ifelse(fledglings6.ped$Cohort==2016,
 
 # Note: there are no individuals that did not reach 12 days but recruited,
 # which is a good sign
-# fledglings6.ped[fledglings6.ped$age.days<12 & 
-#                   !(is.na(fledglings6.ped$age.days)) & 
+# fledglings6.ped[fledglings6.ped$age.days<12 &
+#                   !(is.na(fledglings6.ped$age.days)) &
 #                   fledglings6.ped$recruited==1,
 #                 c("BirdID")]
 
