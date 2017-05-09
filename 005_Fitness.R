@@ -409,7 +409,7 @@ fledglings6.ped$recruited <- ifelse(fledglings6.ped$Cohort==2016,
 
 # Subsetting the database according to those that survived, at least, to 
 # day 12. This way we can estimate the number of fledglings per individual. 
-# I leave NAs as I also want to estimate the number of genetic fledglings. 
+# I leave NAs because I also want to estimate the number of genetic fledglings. 
 # But I remove those age.days = NA for which HatchDate is known, this is 
 # because these ones refer to chicks that were first recorded as dead 
 # individuals, i.e. they did not make it to 12 days old
@@ -444,8 +444,8 @@ social.per.Dad <- count(offspring.12d.ped,c("SocialDadID","Cohort"))
 social.per.Dad.2 <- social.per.Dad[!(is.na(social.per.Dad$SocialDadID)),]
 
 
-# To include birds with 0 fitness, I need to check all social breeders each 
-# year to assigned them 0 if they are not in social.per.Dad.2
+# To include birds with 0 fitness, I need to check all social breeders of 
+# each year to assigned them 0 only if they are not in social.per.Dad.2
 
 
 # First, load a database with BroodRef and BroodName to get year for each
@@ -582,7 +582,7 @@ social.per.Dad.3 <- rbind(social.per.Dad.2,social.fitness.0)
 
 names(social.per.Dad.3) <- c("SocialDadID","year","soc.fledg.12d","BirdID_eventSW")
 
-# hist(social.per.Dad.3$soc.fledg.12d,breaks=22)
+# hist(social.per.Dad.3$soc.fledg.12d,breaks=22,right=FALSE)
 
 
 
@@ -628,7 +628,7 @@ social.fitness <- merge(social.per.Dad.3,
                         all.x=TRUE)
 
 # assigning 0 recruits to those social dads with soc.recruits==NA that 
-# breed in 2014 and 2015. @016 excluded because we don't know yet.
+# breed in 2014 and 2015. 2016 excluded because we don't know yet.
 
 social.fitness$soc.recruits <- ifelse(social.fitness$year!=2016,
                                       ifelse(is.na(social.fitness$soc.recruits),
