@@ -115,7 +115,7 @@ summary(time)
 # Loading dominance database
 ########################################################################################################
 
-dom <- read.table("MegaDataBase-v136-201311-201611-FY-Dominance_Lundy_20170508.csv",header=TRUE,sep=',')
+dom <- read.table("MegaDataBase-v137-201311-201611-FY-Dominance_Lundy_20170512.csv",header=TRUE,sep=',')
 
 
 ########################################################################################################
@@ -2002,9 +2002,9 @@ cat(paste0("\nThe number of interactions with doubts is: ",
 
 sink()
 
-#round(table(dom.final.v2$eventSW)/c(109,182,116,90,59,128,147),1)
-#mean(table(dom.final.v2$eventSW)/c(109,182,116,90,59,128,147))
-#sd(table(dom.final.v2$eventSW)/c(109,182,116,90,59,128,147))
+#round(table(dom.final.v2$eventSW)/c(107,178,115,89,58,127,143),1)
+#mean(table(dom.final.v2$eventSW)/c(107,178,115,89,58,127,143))
+#sd(table(dom.final.v2$eventSW)/c(107,178,115,89,58,127,143))
 
 sink("summaries/interactionsperdate.txt")
 table(dom.final.v2$date)
@@ -2026,7 +2026,7 @@ hist(superlist.eventSW$freqppereventSW,breaks=max(superlist.eventSW$freqppereven
      main = "",
      xlab = "Number of interactions per event (summer/winter)",
      ylab = "",
-     ylim = c(0,100),
+     ylim = c(0,80),
      xlim = c(0,400),
      col="grey75",
      axes=FALSE,
@@ -2034,7 +2034,7 @@ hist(superlist.eventSW$freqppereventSW,breaks=max(superlist.eventSW$freqppereven
      right=FALSE)
 title(ylab="Number of individuals", line=2.2, cex.lab=1.75)
 axis(1,at = seq(0,400,by=50),lwd=1)
-axis(2,at = seq(0,100,by=10),lwd=1,line=-0.5, las=2)
+axis(2,at = seq(0,80,by=10),lwd=1,line=-0.5, las=2)
 
 dev.off()
 
