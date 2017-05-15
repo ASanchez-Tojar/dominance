@@ -251,10 +251,13 @@ pedigree.a <- read.table("fledglings12/PedigreeUpToIncl2015-versionwithNA.txt",
 pedigree.b <- read.table("fledglings12/mystery_disappear_JP.csv",
                          header=TRUE,sep=",")
 
-pedigree.c <- read.table("fledglings12/2016_Pedigree_NdR.csv",
+pedigree.c <- read.table("fledglings12/2015_ExtraWinterBirds_CervusOutput_onlypedigree_ManuallyAdjusted.csv",
+                                   header=TRUE,sep=",")
+
+pedigree.d <- read.table("fledglings12/2016_Pedigree_NdR_ManuallyAdjusted.csv",
                          header=TRUE,sep=",")
 
-pedigree.c.2 <- pedigree.c[pedigree.c$BirdID!="BPS0861",]
+pedigree.d.2 <- pedigree.d[pedigree.d$BirdID!="BPS0861",]
 
 
 # preparing final pedigree database
@@ -266,18 +269,13 @@ pedigree.b.2 <- pedigree.b[,c("BirdID","MotherID","FatherID","Cohort")]
 names(pedigree.b.2) <- c("id","dam","sire","Cohort")
 
 
-pedigree.c.3 <- pedigree.c.2[,c("BirdID","GeneticMother","GeneticFather")]
-names(pedigree.c.3) <- c("id","dam","sire")
+names(pedigree.c) <- c("id","dam","sire","Cohort")
 
 
-cohort <- read.table("fledglings12/BirdID_Cohort_FULLdb_20170509.csv",
-                         header=TRUE,sep=",")
-
-pedigree.c.4 <- merge(pedigree.c.3,cohort,
-                      by.x="id",by.y="BirdID",all.x=TRUE)
+names(pedigree.d.2) <- c("id","dam","sire","Cohort")
 
 
-pedigree <- rbind(pedigree.a.2,pedigree.b.2,pedigree.c.4)
+pedigree <- rbind(pedigree.a.2,pedigree.b.2,pedigree.c,pedigree.d.2)
 pedigree$id <- as.numeric(pedigree$id)
 pedigree <- pedigree[order(pedigree$id),]
 
