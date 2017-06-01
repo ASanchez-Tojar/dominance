@@ -212,7 +212,6 @@ plot(data.plot5$elo.z.event,
      frame.plot = FALSE)
 
 title(xlab="randomized Elo-rating", line=4, cex.lab=3, family="serif")
-#title(xlab="Standardized Elo-rating", line=4, cex.lab=3.2, family="serif")
 title(ylab="annual fledglings", line=4, cex.lab=3, family="serif")
 
 
