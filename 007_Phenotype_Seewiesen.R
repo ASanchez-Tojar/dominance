@@ -594,9 +594,13 @@ id.meanVB.age.TL <- merge(id.meanVB.age,id.tarsus2,by="Ring.ID",all.x=TRUE)
 # I also want to add the average meanVB restricted only to the first 10 weeks
 
 db.noNA.age.AST.10weeks <- subset(db.noNA.age.AST,db.noNA.age.AST$weeknumber2<11)
+#db.noNA.age.AST.10weeks <- subset(db.noNA.age.AST,db.noNA.age.AST$weeknumber2>9)
 
 id.meanVB.age.10weeks <-summaryBy(meanVB ~ Ring.ID, data = db.noNA.age.AST.10weeks, 
                                   FUN = list(mean))
+
+# for ANTJE
+write.csv(id.meanVB.age.10weeks,"id.meanVB.DecFebApr.csv",row.names=FALSE)
 
 # the mean value of measurements per individual is: 
 
