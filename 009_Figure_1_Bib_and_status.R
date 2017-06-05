@@ -28,7 +28,8 @@ rm(list=ls())
 
 # loading the clean databases from Lundy with all the data needed
 
-rank.TLandM.VB.fitness <- read.table("finaldatabases/rank.TLandM.VB.fitness.csv",header=TRUE,sep=",")
+#rank.TLandM.VB.fitness <- read.table("finaldatabases/rank.TLandM.VB.fitness.csv",header=TRUE,sep=",")
+rank.TLandM.VB.fitness <- read.table("finaldatabases/rank.TLandM.VB.fitness.sex.csv",header=TRUE,sep=",")
 VB.TLandM.age.fitness <- read.table("finaldatabases/VB.TLandM.age.fitness.csv",header=TRUE,sep=",")
 
 
@@ -41,6 +42,9 @@ rank.TLandM.VB.fitness.m <- rank.TLandM.VB.fitness[rank.TLandM.VB.fitness$sex==1
 
 final.cap.db.3 <- read.table("finaldatabases/final.cap.db.3.csv",header=TRUE,sep=",")
 
+# scaling Elo and bib per season
+final.cap.db.3 <- do.call("rbind", as.list(  
+  by(final.cap.db.3, final.cap.db.3["Aviary"], transform, elo.z.Av=scale(StElo))))
 
 
 
@@ -81,7 +85,7 @@ newdat<-expand.grid(age = mean(data.plot1$age,na.rm = TRUE),
                     tarsus = mean(data.plot1$tarsus,na.rm = TRUE),
                     bib.z.event=seq(min(data.plot1$bib.z.event,na.rm = TRUE),
                             max(data.plot1$bib.z.event,na.rm = TRUE),
-                            0.01))
+                            0.001))
 
 
 xmat<-model.matrix(~age+
@@ -119,21 +123,19 @@ newdat$upper<-apply(fitmatboth, 1, quantile, prob= 0.975)
 
 data.plot2 <- final.cap.db.3[!(is.na(final.cap.db.3$age2014.mean)) &
                                !(is.na(final.cap.db.3$TarsusLength)) &
-                               !(is.na(final.cap.db.3$meanVB.mean10)) &
-                               #final.cap.db.3$age2014.mean<5&
-                               final.cap.db.3$meanVB.mean10>41,
-                             ]
+                               #final.cap.db.3$age2014.mean<5 &
+                               #final.cap.db.3$meanVB.mean10>41&
+                               !(is.na(final.cap.db.3$meanVB.mean10)),]
 
-data.plot2$StElo.z <- scale(data.plot2$StElo)
 
-mod.rank.bib.capt <- lmer(StElo.z~age2014.mean+
+mod.rank.bib.capt <- lmer(elo.z.Av~age2014.mean+
                             TarsusLength+
                             bib.z.Av+
                             (1|Aviary),
                           data=data.plot2)
 
-smod.rank.bib.capt<-sim(mod.rank.bib.capt,5000)
 
+smod.rank.bib.capt<-sim(mod.rank.bib.capt,5000)
 
 
 # Generating a database with what is run in the model. The model estimates
@@ -144,7 +146,7 @@ newdat.2<-expand.grid(age2014.mean = mean(data.plot2$age2014.mean,na.rm = TRUE),
                     TarsusLength = mean(data.plot2$TarsusLength,na.rm = TRUE),
                     bib.z.Av=seq(min(data.plot2$bib.z.Av,na.rm = TRUE),
                                       max(data.plot2$bib.z.Av,na.rm = TRUE),
-                                      0.01))
+                                      0.001))
 
 
 xmat.2<-model.matrix(~~age2014.mean+
@@ -188,7 +190,7 @@ rgbing <- c(255,255,255)
 lightblue <- c(166,206,227)/rgbing
 darkblue <- c(31,120,180)/rgbing
 chocolate1 <- c(255,127,36)/rgbing
-
+black <- c(0,0,0)
 
 
 # PLOT saved as .tiff
@@ -203,96 +205,92 @@ chocolate1 <- c(255,127,36)/rgbing
 #      units='cm', compression="lzw", res=300)
 
 
-tiff("plots/talks/Figure1_Status_and_Bib_notStElo.tiff", height=20, width=20,
+tiff("plots/talks/Figure1_Status_and_Bib_notStElo_captivity_nooutlier.tiff", height=20, width=20,
      units='cm', compression="lzw", res=300)
 
 #par(mar=c(5, 5, 1, 1))
 par(mar=c(6, 7, 1, 1))
 
 
-plot(data.plot1$bib.z.event, 
-     data.plot1$elo.z.event, 
+plot(data.plot2$bib.z.event, 
+     data.plot2$elo.z.event, 
      type="n",
-     xlab="bib length",
-     ylab= "randomized Elo-rating",
-     #xlab="",
-     #ylab="",
+     # xlab="bib length",
+     # ylab= "randomized Elo-rating",
+     xlab="",
+     ylab="",
      #cex.lab=1.7,
      cex.lab=2.4,
      xaxt="n",yaxt="n",
-     #xlim=c(43,59),
-     xlim=c(-3,3),
-     ylim=c(-2.5,4),
-     #ylim=c(0,1),
+     xlim=c(-3,2.5),
+     ylim=c(-3,3.5),
      family="serif",
      frame.plot = FALSE)
 
-# title(xlab="Bib length (mm)", line=4, cex.lab=3.0, family="serif")
-# title(ylab="Standardized Elo-rating", line=4.5, cex.lab=3.0, family="serif")
+#title(xlab="standardized bib length", line=4, cex.lab=3.0, family="serif")
+#title(ylab="randomized Elo-rating", line=4.5, cex.lab=3.0, family="serif")
 
-axis(1,at=seq(-3,3,by=1),
+axis(1,at=seq(-3,2.5,by=0.5),
      #1,at=seq(43,59,by=2),
-     #cex.axis=1.3,
-     cex.axis=1.8,
+     cex.axis=1.3,
      family="serif")
 
-axis(2,at=seq(-2,4,by=1),
+axis(2,at=seq(-3,3.5,by=0.5),
      #2,at=seq(0,1,by=0.2),
      las=2,
-     #cex.axis=1.3,
-     cex.axis=1.8,
+     cex.axis=1.3,
      family="serif") 
 
-points(data.plot2$bib.z.Av, 
-       data.plot2$StElo.z, 
-       pch = 19, 
+points(data.plot2$bib.z.Av,
+       data.plot2$elo.z.Av,
+       pch = 19,
        #col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.25),
-       col=rgb(120/255,120/255,120/255,0.25),
+       col=rgb(black[1]/255,black[2]/255,black[3]/255,0.25),
        cex = 1.5)
 
-points(data.plot1$bib.z.event, 
-       data.plot1$elo.z.event, 
-       pch = 19, 
-       #col=rgb(darkblue[1],darkblue[2],darkblue[3],0.25),
-       col=rgb(1,0,0,0.25),
-       cex = 1.5)
+# points(data.plot1$bib.z.event, 
+#        data.plot1$elo.z.event, 
+#        pch = 19, 
+#        col=rgb(darkblue[1],darkblue[2],darkblue[3],0.25),
+#        #col=rgb(1,0,0,0.25),
+#        cex = 1.5)
 
 polygon(c(newdat.2$bib.z.Av,rev(newdat.2$bib.z.Av)),
         c(newdat.2$lower,rev(newdat.2$upper)),
         border=NA,
         #col=rgb(chocolate1[1], chocolate1[2], chocolate1[3], 0.15)
-        col=rgb(120/255,120/255,120/255,0.15))
+        col=rgb(black[1]/255,black[2]/255,black[3]/255,0.15))
 
-polygon(c(newdat$bib.z.event,rev(newdat$bib.z.event)),
-        c(newdat$lower,rev(newdat$upper)),
-        border=NA,
-        #col=rgb(darkblue[1],darkblue[2],darkblue[3], 0.15)
-        col=rgb(1,0,0,0.15))
+# polygon(c(newdat$bib.z.event,rev(newdat$bib.z.event)),
+#         c(newdat$lower,rev(newdat$upper)),
+#         border=NA,
+#         col=rgb(darkblue[1],darkblue[2],darkblue[3], 0.15))
+#         #col=rgb(1,0,0,0.15))
 
 lines(newdat.2$bib.z.Av, newdat.2$fit, lwd=3.5,
       #col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.8)
-      col=rgb(120/255,120/255,120/255,0.8)) 
+      col=rgb(black[1]/255,black[2]/255,black[3]/255,0.8))
 
 lines(newdat.2$bib.z.Av, newdat.2$lower, lty=2, lwd=2,
       #col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.65)
-      col=rgb(120/255,120/255,120/255,0.65))
+      col=rgb(black[1]/255,black[2]/255,black[3]/255,0.65))
 
 lines(newdat.2$bib.z.Av, newdat.2$upper, lty=2, lwd=2,
       #col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.65)
-      col=rgb(120/255,120/255,120/255,0.65))
+      col=rgb(black[1]/255,black[2]/255,black[3]/255,0.65))
 
 
-lines(newdat$bib.z.event, newdat$fit, lwd=3.5,
-      #col=rgb(darkblue[1],darkblue[2],darkblue[3],0.8)
-      col=rgb(1,0,0,0.8)) 
-      
-lines(newdat$bib.z.event, newdat$lower, lty=2, lwd=2,
-      #col=rgb(darkblue[1],darkblue[2],darkblue[3],0.65)
-      col=rgb(1,0,0,0.65))
-
-lines(newdat$bib.z.event, newdat$upper, lty=2, lwd=2,
-      #col=rgb(darkblue[1],darkblue[2],darkblue[3],0.65)
-      col=rgb(1,0,0,0.65))
+# lines(newdat$bib.z.event, newdat$fit, lwd=3.5,
+#       col=rgb(darkblue[1],darkblue[2],darkblue[3],0.8))
+#       #col=rgb(1,0,0,0.8)) 
+#       
+# lines(newdat$bib.z.event, newdat$lower, lty=2, lwd=2,
+#       col=rgb(darkblue[1],darkblue[2],darkblue[3],0.65))
+#       #col=rgb(1,0,0,0.65))
+# 
+# lines(newdat$bib.z.event, newdat$upper, lty=2, lwd=2,
+#       col=rgb(darkblue[1],darkblue[2],darkblue[3],0.65))
+#       #col=rgb(1,0,0,0.65))
 
 # op <- par(family = "serif")
 # par(op)
