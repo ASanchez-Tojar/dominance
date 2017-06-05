@@ -205,7 +205,7 @@ black <- c(0,0,0)
 #      units='cm', compression="lzw", res=300)
 
 
-tiff("plots/talks/Figure1_Status_and_Bib_notStElo_captivity_nooutlier.tiff", height=20, width=20,
+tiff("plots/talks/Figure1_Status_and_Bib_notStElo_wild_noline.tiff", height=20, width=20,
      units='cm', compression="lzw", res=300)
 
 #par(mar=c(5, 5, 1, 1))
@@ -222,15 +222,15 @@ plot(data.plot2$bib.z.event,
      #cex.lab=1.7,
      cex.lab=2.4,
      xaxt="n",yaxt="n",
-     xlim=c(-3,2.5),
+     xlim=c(-2.5,3),
      ylim=c(-3,3.5),
      family="serif",
      frame.plot = FALSE)
 
-#title(xlab="standardized bib length", line=4, cex.lab=3.0, family="serif")
-#title(ylab="randomized Elo-rating", line=4.5, cex.lab=3.0, family="serif")
+title(xlab="standardized bib length", line=4, cex.lab=3.0, family="serif")
+title(ylab="randomized Elo-rating", line=4.5, cex.lab=3.0, family="serif")
 
-axis(1,at=seq(-3,2.5,by=0.5),
+axis(1,at=seq(-2.5,3,by=0.5),
      #1,at=seq(43,59,by=2),
      cex.axis=1.3,
      family="serif")
@@ -241,56 +241,56 @@ axis(2,at=seq(-3,3.5,by=0.5),
      cex.axis=1.3,
      family="serif") 
 
-points(data.plot2$bib.z.Av,
-       data.plot2$elo.z.Av,
-       pch = 19,
-       #col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.25),
-       col=rgb(black[1]/255,black[2]/255,black[3]/255,0.25),
-       cex = 1.5)
-
-# points(data.plot1$bib.z.event, 
-#        data.plot1$elo.z.event, 
-#        pch = 19, 
-#        col=rgb(darkblue[1],darkblue[2],darkblue[3],0.25),
-#        #col=rgb(1,0,0,0.25),
+# points(data.plot2$bib.z.Av,
+#        data.plot2$elo.z.Av,
+#        pch = 19,
+#        #col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.25),
+#        col=rgb(black[1]/255,black[2]/255,black[3]/255,0.25),
 #        cex = 1.5)
 
-polygon(c(newdat.2$bib.z.Av,rev(newdat.2$bib.z.Av)),
-        c(newdat.2$lower,rev(newdat.2$upper)),
-        border=NA,
-        #col=rgb(chocolate1[1], chocolate1[2], chocolate1[3], 0.15)
-        col=rgb(black[1]/255,black[2]/255,black[3]/255,0.15))
+points(data.plot1$bib.z.event,
+       data.plot1$elo.z.event,
+       pch = 19,
+       col=rgb(darkblue[1],darkblue[2],darkblue[3],0.25),
+       #col=rgb(1,0,0,0.25),
+       cex = 1.5)
 
-# polygon(c(newdat$bib.z.event,rev(newdat$bib.z.event)),
-#         c(newdat$lower,rev(newdat$upper)),
+# polygon(c(newdat.2$bib.z.Av,rev(newdat.2$bib.z.Av)),
+#         c(newdat.2$lower,rev(newdat.2$upper)),
 #         border=NA,
-#         col=rgb(darkblue[1],darkblue[2],darkblue[3], 0.15))
-#         #col=rgb(1,0,0,0.15))
+#         #col=rgb(chocolate1[1], chocolate1[2], chocolate1[3], 0.15)
+#         col=rgb(black[1]/255,black[2]/255,black[3]/255,0.15))
 
-lines(newdat.2$bib.z.Av, newdat.2$fit, lwd=3.5,
-      #col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.8)
-      col=rgb(black[1]/255,black[2]/255,black[3]/255,0.8))
+polygon(c(newdat$bib.z.event,rev(newdat$bib.z.event)),
+        c(newdat$lower,rev(newdat$upper)),
+        border=NA,
+        col=rgb(darkblue[1],darkblue[2],darkblue[3], 0.15))
+        #col=rgb(1,0,0,0.15))
 
-lines(newdat.2$bib.z.Av, newdat.2$lower, lty=2, lwd=2,
-      #col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.65)
-      col=rgb(black[1]/255,black[2]/255,black[3]/255,0.65))
-
-lines(newdat.2$bib.z.Av, newdat.2$upper, lty=2, lwd=2,
-      #col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.65)
-      col=rgb(black[1]/255,black[2]/255,black[3]/255,0.65))
+# lines(newdat.2$bib.z.Av, newdat.2$fit, lwd=3.5,
+#       #col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.8)
+#       col=rgb(black[1]/255,black[2]/255,black[3]/255,0.8))
+# 
+# lines(newdat.2$bib.z.Av, newdat.2$lower, lty=2, lwd=2,
+#       #col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.65)
+#       col=rgb(black[1]/255,black[2]/255,black[3]/255,0.65))
+# 
+# lines(newdat.2$bib.z.Av, newdat.2$upper, lty=2, lwd=2,
+#       #col=rgb(chocolate1[1], chocolate1[2], chocolate1[3],0.65)
+#       col=rgb(black[1]/255,black[2]/255,black[3]/255,0.65))
 
 
 # lines(newdat$bib.z.event, newdat$fit, lwd=3.5,
 #       col=rgb(darkblue[1],darkblue[2],darkblue[3],0.8))
-#       #col=rgb(1,0,0,0.8)) 
-#       
-# lines(newdat$bib.z.event, newdat$lower, lty=2, lwd=2,
-#       col=rgb(darkblue[1],darkblue[2],darkblue[3],0.65))
-#       #col=rgb(1,0,0,0.65))
-# 
-# lines(newdat$bib.z.event, newdat$upper, lty=2, lwd=2,
-#       col=rgb(darkblue[1],darkblue[2],darkblue[3],0.65))
-#       #col=rgb(1,0,0,0.65))
+#       #col=rgb(1,0,0,0.8))
+
+lines(newdat$bib.z.event, newdat$lower, lty=2, lwd=2,
+      col=rgb(darkblue[1],darkblue[2],darkblue[3],0.65))
+      #col=rgb(1,0,0,0.65))
+
+lines(newdat$bib.z.event, newdat$upper, lty=2, lwd=2,
+      col=rgb(darkblue[1],darkblue[2],darkblue[3],0.65))
+      #col=rgb(1,0,0,0.65))
 
 # op <- par(family = "serif")
 # par(op)
