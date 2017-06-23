@@ -17,9 +17,7 @@
 # Packages needed
 ########################################################################################################
 
-# packages needed to be loaded for this script (a couple of them might be only needed in the following
-# script)
-
+# packages needed
 library(doBy)
 library(reshape)
 library(EloRating)
@@ -29,10 +27,8 @@ library(EloChoice)
 library(aniDom)
 
 
-# Clear memory and get to know where you are
+# Clear memory
 rm(list=ls())
-#getwd()
-
 
 
 #########################################################################################################
@@ -44,54 +40,44 @@ rm(list=ls())
 #########################################################################################################
 
 # loading the database
-
 dom.cap <- read.table("captive-dom-levels-v1.csv",header=TRUE,sep=",")
 
 
-# getting rid off some typos (e.g. level==0) and displacements
-
+# getting rid off some typos (e.g. level==0)
 dom.cap.2 <- subset(dom.cap,dom.cap$Level!=0)
 
+# discarding level = 1
 dom.cap.3 <- subset(dom.cap.2,dom.cap.2$Level!=1)
 
 
 # assigning the aviary to each individual (i.e. Losers and Winners)
-
 dom.cap.3$Loser_Aviary <- factor(paste(dom.cap.3$Loser,dom.cap.3$Aviary,sep="_"))
-
 dom.cap.3$Winner_Aviary <- factor(paste(dom.cap.3$Winner,dom.cap.3$Aviary,sep="_"))
 
 
 # loading dataset with age and ID!
-
 ID <- read.table("captivesparrowsage2014-v2.csv",header=TRUE,sep=",")
 
 
 # generating a colour code_Aviary identifier
-
 ID$newcc_NewAv <- factor(paste(ID$newcc,ID$NewAv,sep="_"))
-
 ID.2 <- ID[,c("newcc_NewAv","BTO")]
 
 
 # Merging both databases in order to get the BTO (i.e. unique identifier)
-# of each individual
-
+# for each individual
 dom.cap.ID <- merge(dom.cap.3,ID.2,
                     by.x="Loser_Aviary",by.y="newcc_NewAv",
                     all.x=TRUE)
 
 
-# There seem to be some other typos (because BTO==NA in 9 cases)
-# I therefore get rid off them
-
+# There are some other typos (because BTO==NA in 9 cases).
+# I get rid off them
 dom.cap.ID.2 <- subset(dom.cap.ID,!(is.na(dom.cap.ID$BTO)))
 
 
 # I keep building the final database
-
 dom.cap.ID.3 <- rename(dom.cap.ID.2, c(BTO="Loser2"))
-
 dom.cap.ID.4 <- merge(dom.cap.ID.3,ID.2,
                       by.x="Winner_Aviary",by.y="newcc_NewAv",
                       all.x=TRUE)
@@ -101,14 +87,11 @@ dom.cap.ID.5 <- rename(dom.cap.ID.4, c(BTO="Winner2"))
 
 # now the BTO's of Losers and Winners are added. It is time for the final database
 # First, cleaning a bit, I don't need the rest of the variables.
-
 final.dom.cap <- dom.cap.ID.5[,c("Date","Aviary","Loser2","Winner2","Level","Draw")]
 
 
-# Then, renaming back and make date a factor. I want to exclude February from analyses
-# This is because I'm missing data on the levels for part of February and Abril. Moises
-# has it but I don't manage to contact him.
-
+# Renaming and making date a factor. I'm also excluding February and April from 
+# analyses because we are focussing on the intensive part of the study.
 final.dom.cap.2 <- rename(final.dom.cap, c(Loser2="Loser",Winner2="Winner"))
 
 final.dom.cap.2$Date <- factor(final.dom.cap.2$Date)
@@ -118,30 +101,18 @@ final.dom.cap.3 <- subset(final.dom.cap.3,final.dom.cap.3$Date!="2015-02-23")
 
 
 # re-setting the levels of the factor
-
 final.dom.cap.3$Date <- factor(final.dom.cap.3$Date)
+
+
+# there are some further typos, Loser equals Winner, I'm going to remove them from the database
+final.dom.cap.3<-final.dom.cap.3[final.dom.cap.3$Loser!=final.dom.cap.3$Winner,]
+
+final.dom.cap.3$Aviary <- as.factor(final.dom.cap.3$Aviary)
 
 
 #########################################################################################################
 # # 13.2. Obtaining the elo-scores for each individual
 #########################################################################################################
-
-# First, spliting the database by aviary
-
-#     Creating a different database per aviary with this for loop, and at the same time, creating a 
-# database per aviary with elo_scores
-
-seqcheck(winner=final.dom.cap.3$Winner, 
-         loser=final.dom.cap.3$Loser, 
-         Date=final.dom.cap.3$Date, 
-         draw=final.dom.cap.3$Draw)
-
-# there are some further typos, Loser equals Winner, I'm going to remove them from the database
-
-final.dom.cap.3<-final.dom.cap.3[final.dom.cap.3$Loser!=final.dom.cap.3$Winner,]
-
-final.dom.cap.3$Aviary <- as.factor(final.dom.cap.3$Aviary)
-
 
 ########################################################################################################
 # # # 13.2.1. Generating a list of the individuals included in the database
@@ -149,34 +120,25 @@ final.dom.cap.3$Aviary <- as.factor(final.dom.cap.3$Aviary)
 
 # Before I proceed to estimate the StElo of each individual, I want to do some countings
 
-#       This generates a list of the individiuals by combining the columns Loser and Winner
-# This way we can count interactions by counting number of times that each individual shows up in the
-# list.
-
-
 # List with all individuals interacting as Loser and converting it as data.frame
-
 list.Loser <- final.dom.cap.3$Loser
 
 list.Loser <- as.data.frame(list.Loser)
 
 
 # List with all individuals interacting as Winner and converting it as dataframe
-
 list.Winner <- final.dom.cap.3$Winner
 
 list.Winner <- as.data.frame(list.Winner)
 
 
-#     Here I rename the variable in list.Winner and list.Loser so that they have the same names, otherwise, rbind 
+# Here I rename the variable in list.Winner and list.Loser so that they have the same names, otherwise, rbind 
 # does not work the way I want it to work
-
 names(list.Loser) <- c("BirdID")
 names(list.Winner) <- c("BirdID")
 
 
 # Now I construct a variable by rbinding together the 2 dataframes
-
 list.x <- rbind(list.Loser,list.Winner)
 
 
@@ -185,7 +147,6 @@ list.x <- rbind(list.Loser,list.Winner)
 ########################################################################################################
 
 # Generating a database with the individuals and their number of total interactions in the whole dataset
-
 ind.counts <- count(list.x,"BirdID")
 
 names(ind.counts)<-c("BirdID","totalfreq")
@@ -214,35 +175,31 @@ axis(2,at = seq(0,7,by=1),lwd=1,line=-0.75, las=2)
 
 dev.off()
 
+
 ########################################################################################################
 # # # 13.2.3. Counting number of interactions per individual per date
 ########################################################################################################
 
-#       Generating a database with the individuals and their number of interactions per date. This way I
+# Generating a database with the individuals and their number of interactions per date. This way I
 # know which individuals are seen in more than one date
 
 # Creating two data.frames: one with Loser and the date, and another with Winner and the date
-
 list.Loser.date<-final.dom.cap.3[,c("Loser","Date")]
 list.Winner.date<-final.dom.cap.3[,c("Winner","Date")]
 
 
 # Renaming the variables so that they have the same name for the rbind
-
 names(list.Loser.date) <- c("BirdID","date")
 names(list.Winner.date) <- c("BirdID","date")
 
 
 # Pasting them together using rbind
-
 superlist.date<-rbind(list.Loser.date,list.Winner.date)
 
 
-#       Now I can count the number of times each individual showed up in each date by counting the
+# Now I can count the number of times each individual showed up in each date by counting the
 # number of dates each individual showed up in
-
 ind.counts.date <- count(superlist.date,c("BirdID","date"))
-
 names(ind.counts.date) <- c("BirdID","date","freqperdate")
 
 #hist(ind.counts.date$freqperdate,breaks=20)
@@ -277,14 +234,12 @@ dev.off()
 ########################################################################################################
 
 # This allows me to count the number of dates each individual showed up in
-
 onlyind <- ind.counts.date$BirdID
 
 onlyind <- as.data.frame(onlyind)
 
 
 # Counting number of dates per individual
-
 superlist.num.date <- count(onlyind,"onlyind")
 
 names(superlist.num.date) <- c("BirdID","freqofdates")
@@ -456,10 +411,10 @@ dev.off()
 
 
 ########################################################################################################
-# 1. Analyzing elo-random using EloChoice()
+# 1. Analyzing elo-random using aniDom
 ########################################################################################################
 
-#using elochoice() to quicly estimate randomized Elo-ratings
+#using aniDom to estimate randomized Elo-ratings
 counter <- 1
 
 for(i in levels(final.dom.cap.3$Aviary)){
@@ -599,8 +554,8 @@ db.noNA.age.AST.10weeks <- subset(db.noNA.age.AST,db.noNA.age.AST$weeknumber2<11
 id.meanVB.age.10weeks <-summaryBy(meanVB ~ Ring.ID, data = db.noNA.age.AST.10weeks, 
                                   FUN = list(mean))
 
-# for ANTJE
-write.csv(id.meanVB.age.10weeks,"id.meanVB.DecFebApr.csv",row.names=FALSE)
+# # for ANTJE
+# write.csv(id.meanVB.age.10weeks,"id.meanVB.DecFebApr.csv",row.names=FALSE)
 
 # the mean value of measurements per individual is: 
 
@@ -660,3 +615,53 @@ area.3 <-summaryBy(Area + Mean.Gray.Value ~ Bird.ID, data = area.2,
                           FUN = list(mean))
 
 area.4 <- merge(final.cap.db.3,area.3,by.y="Bird.ID",by.x="individual",all.x=TRUE)
+
+
+# Plotting
+
+plot(area.4$Area.mean~area.4$meanVB.mean10)
+cor.test(area.4$Area.mean,area.4$meanVB.mean10)
+model.ar <- lm(scale(Area.mean)~scale(meanVB.mean10),data=area.4)
+summary(model.ar)
+
+
+#to save the figure as tiff
+tiff("plots/length_and_area.tiff",
+     height=18, width=18,units='cm', compression="lzw", res=600)
+
+par(mar=c(6, 7, 1, 1))
+
+
+plot(area.4$meanVB.mean10, 
+     area.4$Area.mean, 
+     type="n",
+     xlab="",
+     ylab="",
+     cex.lab=1.7,
+     xaxt="n",yaxt="n",
+     xlim=c(46,58),
+     ylim=c(5,11),
+     family="serif",
+     frame.plot = FALSE)
+
+title(xlab="bib length (cm)", line=4, cex.lab=3.0, family="serif")
+title(ylab="bib area (cm2)", line=4.5, cex.lab=3.0, family="serif")
+
+axis(1,at=seq(46,58,by=2),
+     cex.axis=1.3,
+     family="serif")
+
+axis(2,at=seq(5,11,by=0.5),
+     las=2,
+     cex.axis=1.3,
+     family="serif") 
+
+
+points(area.4$meanVB.mean10, 
+       area.4$Area.mean, 
+       pch = 19,
+       col=rgb(0,0,0,0.25),
+       cex = 1.5)
+
+
+dev.off()
