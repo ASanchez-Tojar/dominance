@@ -52,16 +52,29 @@ final.cap.db.3 <- do.call("rbind", as.list(
 # WILD MODEL
 ################################################################
 
+rank.TLandM.VB.fitness.m <- rank.TLandM.VB.fitness.m[!(is.na(rank.TLandM.VB.fitness.m$bib)),]
+                                                       
+
 rank.TLandM.VB.fitness.m <- rank.TLandM.VB.fitness.m[rank.TLandM.VB.fitness.m$bib>35,]
 
-mod.rank.bib <- lmer(elo.z.event~age+
+# mod.df <- lme(elo.z.event~age+
+#                 tarsus+
+#                 bib.z.event,
+#               random = ~1|BirdID,
+#               data=rank.TLandM.VB.fitness.m)
+
+mod.rank.bib <- lmer(#StElo~age+
+                       elo.z.event~age+
                        tarsus+
                        bib.z.event+
                        #season+
                        #as.factor(eventSW)+
-                       (1|eventSW)+
+                       #(1|eventSW)+
                        (1|BirdID),
                      data=rank.TLandM.VB.fitness.m)
+
+# if(requireNamespace("pbkrtest", quietly = TRUE))
+# anova(mod.rank.bib,ddf="Kenward-Roger")
 
 
 # subsetting only the necessary for the plotting of each model. 
@@ -126,6 +139,12 @@ data.plot2 <- final.cap.db.3[!(is.na(final.cap.db.3$age2014.mean)) &
                                #final.cap.db.3$age2014.mean<5 &
                                #final.cap.db.3$meanVB.mean10>41&
                                !(is.na(final.cap.db.3$meanVB.mean10)),]
+
+mod.capt.df <- lme(elo.z.Av~age2014.mean+
+                     TarsusLength+
+                     bib.z.Av,
+                   random = ~ 1|Aviary,
+                   data=data.plot2)
 
 
 mod.rank.bib.capt <- lmer(elo.z.Av~age2014.mean+
