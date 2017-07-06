@@ -7,38 +7,31 @@
 # Description of script and Instructions
 ########################################################################################################
 
-# This script is to test what is the effect of randomizing the order in which the
-# interactions take place. For that, I simulate 1000 StElo values per individual per event,
-# each time randomizing the order
+# This script is to estimate dominance status using the randomized Elo-rating
+# from R package "aniDom" (Farine & Sanchez-Tojar 2017, https://cran.r-project.org/web/packages/aniDom/index.html)
 
 
 ########################################################################################################
 # Packages needed
 ########################################################################################################
 
-# packages needed to be loaded for this script (a couple of them might be only needed in the following
-# script)
-
+# packages needed
 library(EloRating)
 #require(plyr)
 #library(arm)
 library(rptR)
-library(EloChoice)
+#library(EloChoice)
 library(aniDom)
 
-# Clear memory and get to know where you are
+# Clear memory
 rm(list=ls())
-#getwd()
 
 
-# loading the clean database to estimate the ratings. Same as the one
-# used in 003_Elo-rating.R
-
+# loading the clean database to estimate the ratings.
 dom.final.v2 <- read.table("dom.final.v2.csv",header=TRUE,sep=",")
 
 
 # # Creating date as require by EloRating
-# 
 # dom.final.v2$date.ELO2.2 <- as.factor(paste(dom.final.v2$year,
 #                                             dom.final.v2$month,
 #                                             dom.final.v2$day,
@@ -46,12 +39,12 @@ dom.final.v2 <- read.table("dom.final.v2.csv",header=TRUE,sep=",")
 
 dom.final.v2$eventSW <- as.factor(dom.final.v2$eventSW)
 
+
 ########################################################################################################
-# 1. Obtaining 1000 elo-scores for each individual (using EloChoice())
+# 1. Obtaining dominance status
 ########################################################################################################
 
-#using elochoice() to quicly estimate randomized Elo-ratings
-
+#using aniDom to estimate randomized Elo-ratings
 counter <- 1
 
 for(i in levels(dom.final.v2$eventSW)){
@@ -80,14 +73,21 @@ for(i in levels(dom.final.v2$eventSW)){
   
   
   #estimating repeatability for uncertainty
-  
   r <- estimate_uncertainty_by_repeatability(as.character(x$Winner),
                                              as.character(x$Loser),
                                              identities = unique(c(as.character(x$Winner),as.character(x$Loser))))
+  
+  s <- estimate_uncertainty_by_splitting(as.character(x$Winner),
+                                             as.character(x$Loser),
+                                             identities = unique(c(as.character(x$Winner),as.character(x$Loser))),
+                                         randomise = TRUE)
+  
   if(counter==1){
     domUncertainty <- rbind(c(counter,r))
+    domSplit <- rbind(c(counter,s))
   } else {
     domUncertainty <- rbind(domUncertainty,c(counter,r))
+    domSplit <- rbind(domSplit,c(counter,s))
   }
   
   counter <- counter + 1
