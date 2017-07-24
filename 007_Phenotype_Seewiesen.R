@@ -611,8 +611,11 @@ area<-read.table("../areas/areas_combinedSRDM.csv",header = TRUE, sep=",")
 
 area.2 <- area[,c(1:9)]
 
-area.3 <-summaryBy(Area + Mean.Gray.Value ~ Bird.ID, data = area.2, 
-                          FUN = list(mean))
+# area.3 <-summaryBy(Area + Mean.Gray.Value ~ Bird.ID, data = area.2, 
+#                           FUN = list(mean))
+
+area.3 <-summaryBy(Area ~ Bird.ID, data = area.2, 
+                   FUN = function(x) { c(m = mean(x,na.rm=TRUE))})
 
 area.4 <- merge(final.cap.db.3,area.3,by.y="Bird.ID",by.x="individual",all.x=TRUE)
 
