@@ -26,18 +26,18 @@
 # happening outside nestboxes. To account for this, I've excluded from the list of
 # social breeders all birds observed breeding in inaccessible nests and for which 
 # this measure of fitness was recorded as NA. Practically, this means that the 
-# estimate of this measure of fitness is NA instead of 0 for this birds. Thus, 0 
+# estimate of this measure of fitness is NA instead of 0 for these birds. Thus, 0 
 # fitness was only assigned to those birds that were observed breeding in accessible 
 # nests and whose breeding failed before day 12 after hatching. Further biases come 
 # from birds that bred but were not observed doing so. These is probably negligible 
-# in our population as we do a lot of effor in monitoring all breeding occuring on 
-# Lundy, but also, it would be accounted for in the genetic measures of fitness (2)
+# in our population as we do a lot of effort in monitoring all breeding, but also, 
+# it would be accounted for in the genetic measures of fitness (2)
 # and (4).
 
 # (2) Annual number of genetic offspring surviving to day 12 after hatching: in short,
 # this measure of fitness is estimated similarly to the one above. The main difference
 # being that the dad assigned is the genetic dad according to the genetic pedigree of
-# the population (only available for 2014 and 2015). This allows to look at genetic
+# the population (available for 2014-2016). This allows us to look at genetic
 # effects of the Dad's phenoype on nestling survival to independence. Importantly, 
 # this measure of fitness takes into account the occurrence of extra-pair paternity. 
 # There would be some bias specific to this estimate, specifically, fitness would be
@@ -47,7 +47,8 @@
 
 # (3) Annual number of social recruits: in short, it is estimated using the same list
 # of breeders than (1). A bird is considered to be a recruit if it attempted breeding 
-# at least once, this involves all sort of breeding, social and genetic.This allows to 
+# at least once, this involves all sort of breeding, social and genetic (only social 
+# available for 2017, but both social and genetic for 2014-2016). This allows us to 
 # look at social effects of the Dad's phenoype on nestling survival to breeding, i.e.
 # recruitment. It has been argued that bib size, which is supposedly a proxy of
 # dominance status, depends on the social dad (Griffith et al. 1999). We can test this
@@ -241,44 +242,49 @@ fledglings6 <- merge(fledglings6,SocialMums,
 # Assigning genetic dads to each BirdID
 ##########################################################################
 
-# Now I'm going to add the genetic dad from the pedigree. The pedigree
-# is the sum of three different files. This is because I'm adding the 
-# 2016 pedigree as well as the vanished individuals.
+# # Now I'm going to add the genetic dad from the pedigree. The pedigree
+# # is the sum of three different files. This is because I'm adding the 
+# # 2016 pedigree as well as the vanished individuals.
+# 
+# pedigree.a <- read.table("fledglings12/PedigreeUpToIncl2015-versionwithNA.txt",
+#                        header=TRUE,sep="\t")
+# 
+# pedigree.b <- read.table("fledglings12/mystery_disappear_JP.csv",
+#                          header=TRUE,sep=",")
+# 
+# pedigree.c <- read.table("fledglings12/2015_ExtraWinterBirds_CervusOutput_onlypedigree_ManuallyAdjusted.csv",
+#                                    header=TRUE,sep=",")
+# 
+# pedigree.d <- read.table("fledglings12/2016_Pedigree_NdR_ManuallyAdjusted.csv",
+#                          header=TRUE,sep=",")
+# 
+# pedigree.d.2 <- pedigree.d[pedigree.d$BirdID!="BPS0861",]
+# 
+# 
+# # preparing final pedigree database
+# 
+# pedigree.a.2 <- pedigree.a[,c("id","dam","sire","Cohort")]
+# 
+# 
+# pedigree.b.2 <- pedigree.b[,c("BirdID","MotherID","FatherID","Cohort")]
+# names(pedigree.b.2) <- c("id","dam","sire","Cohort")
+# 
+# 
+# names(pedigree.c) <- c("id","dam","sire","Cohort")
+# 
+# 
+# names(pedigree.d.2) <- c("id","dam","sire","Cohort")
+# 
+# 
+# pedigree <- rbind(pedigree.a.2,pedigree.b.2,pedigree.c,pedigree.d.2)
+# pedigree$id <- as.numeric(pedigree$id)
+# pedigree <- pedigree[order(pedigree$id),]
 
-pedigree.a <- read.table("fledglings12/PedigreeUpToIncl2015-versionwithNA.txt",
+
+# importing a final pedigree version where 2016 and lost birds are included
+
+pedigree <- read.table("fledglings12/PedigreeUpToIncl2016-mysterydissapear_versionwithNA.txt",
                        header=TRUE,sep="\t")
-
-pedigree.b <- read.table("fledglings12/mystery_disappear_JP.csv",
-                         header=TRUE,sep=",")
-
-pedigree.c <- read.table("fledglings12/2015_ExtraWinterBirds_CervusOutput_onlypedigree_ManuallyAdjusted.csv",
-                                   header=TRUE,sep=",")
-
-pedigree.d <- read.table("fledglings12/2016_Pedigree_NdR_ManuallyAdjusted.csv",
-                         header=TRUE,sep=",")
-
-pedigree.d.2 <- pedigree.d[pedigree.d$BirdID!="BPS0861",]
-
-
-# preparing final pedigree database
-
-pedigree.a.2 <- pedigree.a[,c("id","dam","sire","Cohort")]
-
-
-pedigree.b.2 <- pedigree.b[,c("BirdID","MotherID","FatherID","Cohort")]
-names(pedigree.b.2) <- c("id","dam","sire","Cohort")
-
-
-names(pedigree.c) <- c("id","dam","sire","Cohort")
-
-
-names(pedigree.d.2) <- c("id","dam","sire","Cohort")
-
-
-pedigree <- rbind(pedigree.a.2,pedigree.b.2,pedigree.c,pedigree.d.2)
-pedigree$id <- as.numeric(pedigree$id)
-pedigree <- pedigree[order(pedigree$id),]
-
 
 # reducing database before merging
 
@@ -315,8 +321,6 @@ fledglings6.ped <- merge(fledglings6.ped,pedigree.f.red,
 ##########################################################################
 
 # List of genetic fathers from 2014-2016 extracted from pedigree:
-# Notice that the genetic pedigree isn't available birds caught
-# unringed in February 2016.
 
 genetic.males.breeding <- unique(pedigree[pedigree$Cohort>2013 & 
                                             !(is.na(pedigree$sire)),
@@ -373,10 +377,37 @@ all.females.breeding <- c(SocialMums.list,
 
 
 ##########################################################################
+# Creating 2017 breeder list (males and females)
+##########################################################################
+
+# This needs to be updated after Aaron comes back with the database. 
+# I've obtained the list on the 4th of August 2017, so there will be (just)
+# a couple of social parents missing for the time being.
+
+socialParents2017 <- read.table("fledglings12/socialparents2017_20170804.csv",
+                                header=TRUE,sep=",")
+
+SocialDads.2017 <- socialParents2017[,c("BroodName","SocialDadID","SocialDadCertain")]
+names(SocialDads.2017) <- c("BroodName","ParentID","ParentCertain")
+
+SocialDads.2017.certain <- SocialDads.2017[SocialDads.2017$ParentCertain==TRUE,]
+
+
+SocialMums.2017 <- socialParents2017[,c("BroodName","SocialMumID","SocialMumCertain")]
+names(SocialMums.2017) <- c("BroodName","ParentID","ParentCertain")
+
+SocialMums.2017.certain <- SocialMums.2017[SocialMums.2017$ParentCertain==TRUE,]
+
+all.social.breeders.2017 <- unique(c(SocialDads.2017.certain$ParentID,
+                                     SocialMums.2017.certain$ParentID))
+
+##########################################################################
 # Final breeder list (males and females)
 ##########################################################################
 
-all.birds.breeding <- c(all.males.breeding,all.females.breeding)
+all.birds.breeding <- c(all.males.breeding,
+                        all.females.breeding,
+                        all.social.breeders.2017)
                                                
 
 ##########################################################################
