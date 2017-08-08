@@ -426,7 +426,7 @@ all.birds.breeding <- c(all.males.breeding,
 fledglings6.ped$recruited <- ifelse(!(fledglings6.ped$BirdID %in% all.birds.breeding),
                                     0,1)
 
-# # Note: there is only one individual which age is below 12 and recruited.
+# # Note: there is only one individual which age is below 12 and recruited (9252).
 # # It corresponds to an end of the season individual that had to be ringed
 # # before day 12.
 # fledglings6.ped[fledglings6.ped$age.days<12 &
@@ -449,8 +449,18 @@ fledglings6.ped$recruited <- ifelse(!(fledglings6.ped$BirdID %in% all.birds.bree
 offspring.12d.ped <- subset(fledglings6.ped,
                             fledglings6.ped$age.days>11 | 
                               (is.na(fledglings6.ped$age.days) & 
-                                 is.na(fledglings6.ped$HatchDate))
+                                 is.na(fledglings6.ped$HatchDate)) |
+                              (fledglings6.ped$age.days<12 & 
+                                 fledglings6.ped$recruited==1)
 )
+
+# offspring.10d.ped <- subset(fledglings6.ped,
+#                             fledglings6.ped$age.days>9 | 
+#                               (is.na(fledglings6.ped$age.days) & 
+#                                  is.na(fledglings6.ped$HatchDate)) |
+#                               (fledglings6.ped$age.days<10 & 
+#                                  fledglings6.ped$recruited==1)
+# )
 
 
 
@@ -469,6 +479,7 @@ offspring.12d.ped <- subset(fledglings6.ped,
 # Now I can count the annual number of social offspring reaching the age
 # of 12 days per social dad. I just need to count the number of times each 
 # SocialDadID shows up in each year. 
+# There is no dominance data for 2017, so I don't do this for 2017.
 
 social.per.Dad <- count(offspring.12d.ped,c("SocialDadID","Cohort"))
 
@@ -660,13 +671,12 @@ social.fitness <- merge(social.per.Dad.3,
                         all.x=TRUE)
 
 # assigning 0 recruits to those social dads with soc.recruits==NA that 
-# breed in 2014 and 2015. 2016 excluded because we don't know yet.
+# breed in 2014 and 2015. 2016 included but only social data available.
 
-social.fitness$soc.recruits <- ifelse(social.fitness$year!=2016,
-                                      ifelse(is.na(social.fitness$soc.recruits),
+social.fitness$soc.recruits <- ifelse(is.na(social.fitness$soc.recruits),
                                              0,
-                                             social.fitness$soc.recruits),
-                                      social.fitness$soc.recruits)
+                                             social.fitness$soc.recruits)
+
 
 # hist(social.fitness$soc.recruits,breaks=3,right=FALSE)
 
@@ -805,13 +815,11 @@ genetic.fitness <- merge(genetic.per.Dad.3,
                          by="BirdID_eventSW",
                          all.x=TRUE)
 
-# assigning 0 recruits to those that breed in 2014 and 2015
+# assigning 0 recruits to those that breed in 2014, 2015 and 2016
 
-genetic.fitness$gen.recruits <- ifelse(genetic.fitness$year!=2016,
-                                       ifelse(is.na(genetic.fitness$gen.recruits),
+genetic.fitness$gen.recruits <- ifelse(is.na(genetic.fitness$gen.recruits),
                                               0,
-                                              genetic.fitness$gen.recruits),
-                                       genetic.fitness$gen.recruits)
+                                              genetic.fitness$gen.recruits)
 
 
 # names(genetic.fitness) <- c("BirdID_eventSW","GeneticDadID",
@@ -1088,11 +1096,9 @@ social.fitness.f <- merge(social.per.Mum.3,
 # assigning 0 recruits to those social mums with soc.recruits==NA that 
 # bred in 2014 and 2015. 2016 excluded because we don't know yet.
 
-social.fitness.f$soc.recruits <- ifelse(social.fitness.f$year!=2016,
-                                      ifelse(is.na(social.fitness.f$soc.recruits),
+social.fitness.f$soc.recruits <- ifelse(is.na(social.fitness.f$soc.recruits),
                                              0,
-                                             social.fitness.f$soc.recruits),
-                                      social.fitness.f$soc.recruits)
+                                             social.fitness.f$soc.recruits)
 
 # hist(social.fitness.f$soc.recruits,breaks=3,right=FALSE)
 
@@ -1234,11 +1240,9 @@ genetic.fitness.f <- merge(genetic.per.Mum.3,
 # assigning 0 recruits to those social that breed in 2014 and 2015,
 # we don't know yet for 2016 as 2017 breeding season isn't over yet!
 
-genetic.fitness.f$gen.recruits <- ifelse(genetic.fitness.f$year!=2016,
-                                       ifelse(is.na(genetic.fitness.f$gen.recruits),
+genetic.fitness.f$gen.recruits <- ifelse(is.na(genetic.fitness.f$gen.recruits),
                                               0,
-                                              genetic.fitness.f$gen.recruits),
-                                       genetic.fitness.f$gen.recruits)
+                                              genetic.fitness.f$gen.recruits)
 
 
 # names(genetic.fitness) <- c("BirdID_eventSW","GeneticDadID",
