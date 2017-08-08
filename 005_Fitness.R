@@ -415,17 +415,20 @@ all.birds.breeding <- c(all.males.breeding,
 ##########################################################################
 
 # This is, if BirdID showed up in all.birds.breeding, it means that it
-# recruited. Note that 2016 is excluded as we don't have data for the 
-# following season, i.e. no data for 2017 yet.
+# recruited. 
+# 
+# fledglings6.ped$recruited <- ifelse(fledglings6.ped$Cohort==2016,
+#                                       NA,
+#                                       ifelse(!(fledglings6.ped$BirdID %in% 
+#                                                  all.birds.breeding),
+#                                                 0,1))
 
-fledglings6.ped$recruited <- ifelse(fledglings6.ped$Cohort==2016,
-                                      NA,
-                                      ifelse(!(fledglings6.ped$BirdID %in% 
-                                                 all.birds.breeding),
-                                                0,1))
+fledglings6.ped$recruited <- ifelse(!(fledglings6.ped$BirdID %in% all.birds.breeding),
+                                    0,1)
 
-# Note: there are no individuals that did not reach 12 days but recruited,
-# which is a good sign
+# # Note: there is only one individual which age is below 12 and recruited.
+# # It corresponds to an end of the season individual that had to be ringed
+# # before day 12.
 # fledglings6.ped[fledglings6.ped$age.days<12 &
 #                   !(is.na(fledglings6.ped$age.days)) &
 #                   fledglings6.ped$recruited==1,
