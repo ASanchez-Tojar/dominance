@@ -456,12 +456,30 @@ names(rank.TLandM.VB.fitness) <- c("BirdID_eventSW","BirdID","colourrings",
                                    "soc.fledg.12d","soc.recruits",
                                    "elo.z.event","bib.z.event")
 
+#updating sex for those NA's
+
+sex <- read.table("finaldatabases/rank.TLandM.VB.fitness.sex.csv",
+                  header=TRUE,sep=",")
+
+sex <- sex[,c("BirdID","sex")]
+
+rank.TLandM.VB.fitness.2 <- rank.TLandM.VB.fitness[,c("BirdID_eventSW","BirdID",
+                                                      "colourrings","StElo","eventSW",
+                                                      "cohort",
+                                                      "cohortEstimated","age","tarsus",
+                                                      "mass","bib","season","meanage",
+                                                      "agewithin","bib.centred",
+                                                      "gen.fledg.12d","gen.recruits",
+                                                      "soc.fledg.12d","soc.recruits",
+                                                      "elo.z.event","bib.z.event")]
+rank.TLandM.VB.fitness.3 <- merge(rank.TLandM.VB.fitness.2,sex,
+                                  all.x=TRUE,by="BirdID")
 
 # I'm saving this file for the following scripts
 
-write.csv(rank.TLandM.VB.fitness,
-          "finaldatabases/rank.TLandM.VB.fitness.csv",
-          #"finaldatabases/rank.TLandM.VB.fitness_sim.csv",
+write.csv(rank.TLandM.VB.fitness.3,
+          #"finaldatabases/rank.TLandM.VB.fitness.csv",
+          "finaldatabases/rank.TLandM.VB.fitness_sim.csv",
           row.names=FALSE)
 
 
