@@ -129,12 +129,14 @@ elo_scores_all_events_age$BirdID_eventSW <- factor(paste(elo_scores_all_events_a
 # # # 10.1.3. Adding tarsus length, mass and visible badge
 #########################################################################################################
 
+# SQL: last update 9th Jan 2018
 # loading the database with tarsus length and mass (Stage=3, so it doesn't include measures in nest)
 # SELECT tblCaptures.BirdID, tblCaptures.CaptureDate, tblCaptures.CaptureTime, tblMeasurements.Tarsus, tblMeasurements.Mass, tblCaptures.Observer, tblCaptures.CaptureRef
 # FROM tblCaptures INNER JOIN tblMeasurements ON tblCaptures.CaptureRef = tblMeasurements.CaptureRef
 # WHERE (((tblCaptures.Stage)=3));
 
-tarsuslengthandMass <- read.table("BirdID-Tarsus-Mass_Dec2016.csv",header=TRUE,sep=",")
+#tarsuslengthandMass <- read.table("BirdID-Tarsus-Mass_Dec2016.csv",header=TRUE,sep=",")
+tarsuslengthandMass <- read.table("BirdID-Tarsus-Mass_Dec2017.csv",header=TRUE,sep=",")
 
 
 # # the mean value of tarsus measurements per individual is: 
@@ -150,7 +152,8 @@ tarsuslengthandMass <- read.table("BirdID-Tarsus-Mass_Dec2016.csv",header=TRUE,s
 # GROUP BY tblCaptures.BirdID, tblCaptures.CaptureDate, tblCaptures.CaptureTime, tblPlumage.Trait, tblCaptures.Observer, tblCaptures.CaptureRef
 # HAVING (((tblPlumage.Trait)='VB'));
 
-visibleBadge <-  read.table("BirdID-VisibleBadge_Dec2016_sortedDate.csv",header=TRUE,sep=",")
+#visibleBadge <-  read.table("BirdID-VisibleBadge_Dec2016_sortedDate.csv",header=TRUE,sep=",")
+visibleBadge <-  read.table("BirdID-VisibleBadge_Dec2017_sortedDate.csv",header=TRUE,sep=",")
 
 
 # #########################################################################################################
@@ -461,7 +464,7 @@ names(rank.TLandM.VB.fitness) <- c("BirdID_eventSW","BirdID","colourrings",
 sex <- read.table("finaldatabases/rank.TLandM.VB.fitness.sex.csv",
                   header=TRUE,sep=",")
 
-sex <- sex[,c("BirdID","sex")]
+sex <- unique(sex[,c("BirdID","sex")])
 
 rank.TLandM.VB.fitness.2 <- rank.TLandM.VB.fitness[,c("BirdID_eventSW","BirdID",
                                                       "colourrings","StElo","eventSW",
@@ -472,6 +475,7 @@ rank.TLandM.VB.fitness.2 <- rank.TLandM.VB.fitness[,c("BirdID_eventSW","BirdID",
                                                       "gen.fledg.12d","gen.recruits",
                                                       "soc.fledg.12d","soc.recruits",
                                                       "elo.z.event","bib.z.event")]
+
 rank.TLandM.VB.fitness.3 <- merge(rank.TLandM.VB.fitness.2,sex,
                                   all.x=TRUE,by="BirdID")
 
