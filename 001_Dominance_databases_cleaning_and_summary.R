@@ -1,5 +1,4 @@
 
-
 # Author: Alfredo Sanchez-Tojar, MPIO (Seewiesen) and ICL (Silwood Park), alfredo.tojar@gmail.com
 # Github profile: https://github.com/ASanchez-Tojar
 
@@ -941,13 +940,15 @@ counts.ind$indyear <- as.factor(counts.ind$indyear)
 # FROM ((tblBirdID INNER JOIN tblAllCodes ON tblBirdID.BirdID = tblAllCodes.BirdID) LEFT JOIN sys_LastSeenAlive ON tblBirdID.BirdID = sys_LastSeenAlive.BirdID) LEFT JOIN sys_SexEstimates ON tblBirdID.BirdID = sys_SexEstimates.BirdID
 # WHERE (((tblAllCodes.CodeType)='R'));
 
-# +
-
+# the save that query as "Query1" and run the following code
+# 
 # SELECT Query1.BirdID, Query1.Code, Query1.SexEstimate, Query1.Cohort, Query1.CohortEstimated, Query1.LastLiveRecord, tblCaptures.CaptureDate, Query1.DeathDate
 # FROM Query1 LEFT JOIN tblCaptures ON Query1.CaptureRef = tblCaptures.CaptureRef;
 
 
-birdsex <- read.table("BirdID-colour-rings_sex_cohort-last-time-seen-ringing-date-death-date-as-to-20161227.csv",
+# birdsex <- read.table("BirdID-colour-rings_sex_cohort-last-time-seen-ringing-date-death-date-as-to-20161227.csv",
+#                       header=TRUE,sep=',')
+birdsex <- read.table("BirdID-colour-rings_sex_cohort-last-time-seen-ringing-date-death-date-as-to-20180108.csv",
                       header=TRUE,sep=',')
 
 birdsex$BirdID <- as.factor(birdsex$BirdID)
