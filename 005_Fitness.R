@@ -380,11 +380,11 @@ all.females.breeding <- c(SocialMums.list,
 # Creating 2017 breeder list (males and females)
 ##########################################################################
 
-# This needs to be updated after Aaron comes back with the database. 
-# I've obtained the list on the 4th of August 2017, so there will be (just)
-# a couple of social parents missing for the time being.
-
-socialParents2017 <- read.table("fledglings12/socialparents2017_20170804.csv",
+#SQL code: last update 9th Jan 2018
+# SELECT tblBroods.BroodName, tblBroods.SocialDadID, tblBroods.SocialDadCertain, tblBroods.SocialMumID, tblBroods.SocialMumCertain, tblBroodEvents.EventNumber, tblBroodEvents.EventDate
+# FROM tblBroods LEFT JOIN tblBroodEvents ON tblBroods.BroodRef = tblBroodEvents.BroodRef
+# WHERE (((tblBroodEvents.EventNumber)=0) AND ((tblBroodEvents.EventDate)>#1/1/2017#));
+socialParents2017 <- read.table("fledglings12/socialparents2017_20180109.csv",
                                 header=TRUE,sep=",")
 
 SocialDads.2017 <- socialParents2017[,c("BroodName","SocialDadID","SocialDadCertain")]
